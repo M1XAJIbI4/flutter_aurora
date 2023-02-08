@@ -185,6 +185,7 @@ bool _writeFlutterPluginsList(FlutterProject project, List<Plugin> plugins) {
   final String androidKey = project.android.pluginConfigKey;
   final String macosKey = project.macos.pluginConfigKey;
   final String linuxKey = project.linux.pluginConfigKey;
+  final String auroraKey = project.aurora.pluginConfigKey;
   final String windowsKey = project.windows.pluginConfigKey;
   final String webKey = project.web.pluginConfigKey;
 
@@ -193,6 +194,7 @@ bool _writeFlutterPluginsList(FlutterProject project, List<Plugin> plugins) {
   pluginsMap[androidKey] = _filterPluginsByPlatform(plugins, androidKey);
   pluginsMap[macosKey] = _filterPluginsByPlatform(plugins, macosKey);
   pluginsMap[linuxKey] = _filterPluginsByPlatform(plugins, linuxKey);
+  pluginsMap[auroraKey] = _filterPluginsByPlatform(plugins, auroraKey);
   pluginsMap[windowsKey] = _filterPluginsByPlatform(plugins, windowsKey);
   pluginsMap[webKey] = _filterPluginsByPlatform(plugins, webKey);
 
@@ -695,6 +697,81 @@ foreach(ffi_plugin ${FLUTTER_FFI_PLUGIN_LIST})
 endforeach(ffi_plugin)
 ''';
 
+const String _auroraPluginCmakefileTemplate = r'''
+#
+# Generated file, do not edit.
+#
+set(ROOT_PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
+
+function(add_library TARGET)
+    _add_library(${TARGET} ${ARGN})
+    add_custom_command(TARGET ${TARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy
+                       "$<TARGET_FILE:${TARGET}>"
+                       "${ROOT_PROJECT_BINARY_DIR}/bundle/lib/$<TARGET_FILE_NAME:${TARGET}>")
+endfunction()
+
+list(APPEND FLUTTER_PLATFORM_PLUGIN_LIST
+{{#methodChannelPlugins}}
+    {{name}}
+{{/methodChannelPlugins}}
+)
+
+list(APPEND FLUTTER_FFI_PLUGIN_LIST
+{{#ffiPlugins}}
+    {{name}}
+{{/ffiPlugins}}
+)
+
+foreach(PLUGIN ${FLUTTER_PLATFORM_PLUGIN_LIST})
+    add_subdirectory({{pluginsDir}}/${PLUGIN}/{{os}} plugins/${PLUGIN})
+    target_link_libraries(${BINARY_NAME} PRIVATE ${PLUGIN}_platform_plugin)
+endforeach(PLUGIN)
+
+foreach(FFI_PLUGIN ${FLUTTER_FFI_PLUGIN_LIST})
+    add_subdirectory({{pluginsDir}}/${FFI_PLUGIN}/{{os}} plugins/${FFI_PLUGIN})
+endforeach(FFI_PLUGIN)
+''';
+
+
+const String _auroraPluginRegistryHeaderTemplate = '''
+//
+//  Generated file. Do not edit.
+//
+
+// clang-format off
+
+#ifndef GENERATED_PLUGIN_REGISTRANT
+#define GENERATED_PLUGIN_REGISTRANT
+
+void RegisterPlugins();
+
+#endif /* GENERATED_PLUGIN_REGISTRANT */
+''';
+
+const String _auroraPluginRegistryImplementationTemplate = '''
+//
+//  Generated file. Do not edit.
+//
+
+// clang-format off
+
+#include <flutter/application.h>
+{{#methodChannelPlugins}}
+#include <{{name}}/{{filename}}.h>
+{{/methodChannelPlugins}}
+
+#include "generated_plugin_registrant.h"
+
+void RegisterPlugins() {
+    Application::RegisterPlugins({
+{{#methodChannelPlugins}}
+        std::make_shared<{{class}}>(),
+{{/methodChannelPlugins}}
+    });
+}
+''';
+
 const String _dartPluginRegisterWith = r'''
       try {
         {{dartClass}}.registerWith();
@@ -853,6 +930,46 @@ Future<void> _writePluginCmakefile(File destinationFile, Map<String, Object> tem
   );
 }
 
+Future<void> _writeAuroraPluginFiles(FlutterProject project, List<Plugin> plugins) async {
+  final List<Plugin> methodChannelPlugins = _filterMethodChannelPlugins(plugins, AuroraPlugin.kConfigKey);
+  final List<Map<String, Object?>> auroraMethodChannelPlugins = _extractPlatformMaps(methodChannelPlugins, AuroraPlugin.kConfigKey);
+  final List<Plugin> ffiPlugins = _filterFfiPlugins(plugins, AuroraPlugin.kConfigKey)..removeWhere(methodChannelPlugins.contains);
+  final List<Map<String, Object?>> auroraFfiPlugins = _extractPlatformMaps(ffiPlugins, AuroraPlugin.kConfigKey);
+  final Map<String, Object> context = <String, Object>{
+    'os': 'aurora',
+    'methodChannelPlugins': auroraMethodChannelPlugins,
+    'ffiPlugins': auroraFfiPlugins,
+    'pluginsDir': _cmakeRelativePluginSymlinkDirectoryPath(project.aurora),
+  };
+
+  await _writeAuroraPluginRegistrant(project.aurora.managedDirectory, context);
+  await _writeAuroraPluginCmakefile(project.aurora.generatedPluginCmakeFile, context, globals.templateRenderer);
+}
+
+Future<void> _writeAuroraPluginRegistrant(Directory destination, Map<String, Object> templateContext) async {
+  _renderTemplateToFile(
+    _auroraPluginRegistryHeaderTemplate,
+    templateContext,
+    destination.childFile('generated_plugin_registrant.h'),
+    globals.templateRenderer,
+  );
+  _renderTemplateToFile(
+    _auroraPluginRegistryImplementationTemplate,
+    templateContext,
+    destination.childFile('generated_plugin_registrant.cpp'),
+    globals.templateRenderer,
+  );
+}
+
+Future<void> _writeAuroraPluginCmakefile(File destinationFile, Map<String, Object> templateContext, TemplateRenderer templateRenderer) async {
+  _renderTemplateToFile(
+    _auroraPluginCmakefileTemplate,
+    templateContext,
+    destinationFile,
+    templateRenderer,
+  );
+}
+
 Future<void> _writeMacOSPluginRegistrant(FlutterProject project, List<Plugin> plugins) async {
   final List<Plugin> methodChannelPlugins = _filterMethodChannelPlugins(plugins, MacOSPlugin.kConfigKey);
   final List<Map<String, Object?>> macosMethodChannelPlugins = _extractPlatformMaps(methodChannelPlugins, MacOSPlugin.kConfigKey);
@@ -994,6 +1111,13 @@ void createPluginSymlinks(FlutterProject project, {bool force = false, @visibleF
     _createPlatformPluginSymlinks(
       project.linux.pluginSymlinkDirectory,
       platformPlugins[project.linux.pluginConfigKey] as List<Object?>?,
+      force: force,
+    );
+  }
+  if (localFeatureFlags.isAuroraEnabled && project.aurora.existsSync()) {
+    _createPlatformPluginSymlinks(
+      project.aurora.pluginSymlinkDirectory,
+      platformPlugins[project.aurora.pluginConfigKey] as List<Object?>?,
       force: force,
     );
   }
@@ -1142,6 +1266,7 @@ Future<void> injectPlugins(
   bool androidPlatform = false,
   bool iosPlatform = false,
   bool linuxPlatform = false,
+  bool auroraPlatform = false,
   bool macOSPlatform = false,
   bool windowsPlatform = false,
 }) async {
@@ -1156,6 +1281,9 @@ Future<void> injectPlugins(
   }
   if (linuxPlatform) {
     await _writeLinuxPluginFiles(project, plugins);
+  }
+  if (auroraPlatform) {
+    await _writeAuroraPluginFiles(project, plugins);
   }
   if (macOSPlatform) {
     await _writeMacOSPluginRegistrant(project, plugins);
@@ -1210,6 +1338,7 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
     AndroidPlugin.kConfigKey,
     IOSPlugin.kConfigKey,
     LinuxPlugin.kConfigKey,
+    AuroraPlugin.kConfigKey,
     MacOSPlugin.kConfigKey,
     WindowsPlugin.kConfigKey,
   ];
@@ -1367,6 +1496,7 @@ Future<void> generateMainDartWithPluginRegistrant(
     AndroidPlugin.kConfigKey: <Object?>[],
     IOSPlugin.kConfigKey: <Object?>[],
     LinuxPlugin.kConfigKey: <Object?>[],
+    AuroraPlugin.kConfigKey: <Object?>[],
     MacOSPlugin.kConfigKey: <Object?>[],
     WindowsPlugin.kConfigKey: <Object?>[],
   };

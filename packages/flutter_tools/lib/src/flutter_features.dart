@@ -24,6 +24,9 @@ class FlutterFeatureFlags implements FeatureFlags {
   bool get isLinuxEnabled => isEnabled(flutterLinuxDesktopFeature);
 
   @override
+  bool get isAuroraEnabled => isEnabled(flutterAuroraFeature);
+
+  @override
   bool get isMacOSEnabled => isEnabled(flutterMacOSDesktopFeature);
 
   @override

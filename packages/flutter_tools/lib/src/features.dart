@@ -23,6 +23,8 @@ abstract class FeatureFlags {
   /// Whether flutter desktop for linux is enabled.
   bool get isLinuxEnabled => false;
 
+  bool get isAuroraEnabled => false;
+
   /// Whether flutter desktop for macOS is enabled.
   bool get isMacOSEnabled => false;
 
@@ -57,6 +59,7 @@ abstract class FeatureFlags {
 const List<Feature> allFeatures = <Feature>[
   flutterWebFeature,
   flutterLinuxDesktopFeature,
+  flutterAuroraFeature,
   flutterMacOSDesktopFeature,
   flutterWindowsDesktopFeature,
   singleWidgetReload,
@@ -109,6 +112,25 @@ const Feature flutterLinuxDesktopFeature = Feature(
   name: 'support for desktop on Linux',
   configSetting: 'enable-linux-desktop',
   environmentOverride: 'FLUTTER_LINUX',
+  master: FeatureChannelSetting(
+    available: true,
+    enabledByDefault: true,
+  ),
+  beta: FeatureChannelSetting(
+    available: true,
+    enabledByDefault: true,
+  ),
+  stable: FeatureChannelSetting(
+    available: true,
+    enabledByDefault: true,
+  ),
+);
+
+/// The [Feature] for Aurora devices.
+const Feature flutterAuroraFeature = Feature(
+  name: 'Flutter for Aurora',
+  configSetting: 'enable-aurora',
+  environmentOverride: 'FLUTTER_AURORA',
   master: FeatureChannelSetting(
     available: true,
     enabledByDefault: true,

@@ -127,3 +127,46 @@ class LinuxProject extends FlutterProjectPlatform implements CmakeBasedProject {
     return firstMatchInFile(cmakeFile, _applicationIdPattern)?.group(1);
   }
 }
+
+/// The Aurora sub project.
+class AuroraProject extends FlutterProjectPlatform implements CmakeBasedProject {
+  AuroraProject.fromFlutter(this.parent);
+
+  @override
+  final FlutterProject parent;
+
+  @override
+  String get pluginConfigKey => AuroraPlugin.kConfigKey;
+
+  Directory get _editableDirectory => parent.directory.childDirectory('aurora');
+
+  /// The directory in the project that is managed by Flutter. As much as
+  /// possible, files that are edited by Flutter tooling after initial project
+  /// creation should live here.
+  Directory get managedDirectory => _editableDirectory.childDirectory('flutter');
+
+  /// The subdirectory of [managedDirectory] that contains files that are
+  /// generated on the fly. All generated files that are not intended to be
+  /// checked in should live here.
+  Directory get ephemeralDirectory => managedDirectory.childDirectory('ephemeral');
+
+  @override
+  bool existsSync() => _editableDirectory.existsSync();
+
+  @override
+  File get cmakeFile => _editableDirectory.childFile('CMakeLists.txt');
+
+  @override
+  File get managedCmakeFile => managedDirectory.childFile('CMakeLists.txt');
+
+  @override
+  File get generatedCmakeConfigFile => ephemeralDirectory.childFile('generated_config.cmake');
+
+  @override
+  File get generatedPluginCmakeFile => managedDirectory.childFile('generated_plugins.cmake');
+
+  @override
+  Directory get pluginSymlinkDirectory => ephemeralDirectory.childDirectory('.plugin_symlinks');
+
+  Future<void> ensureReadyForPlatformSpecificTooling() async {}
+}

@@ -204,6 +204,11 @@ class Template {
       if (relativeDestinationPath.startsWith('linux.tmpl') && !linux) {
         return null;
       }
+      // Only build a Aurora project if explicitly asked.
+      final bool aurora = (context['aurora'] as bool?) ?? false;
+      if (relativeDestinationPath.startsWith('aurora.tmpl') && !aurora) {
+        return null;
+      }
       // Only build a macOS project if explicitly asked.
       final bool macOS = (context['macos'] as bool?) ?? false;
       if (relativeDestinationPath.startsWith('macos.tmpl') && !macOS) {
@@ -215,6 +220,7 @@ class Template {
         return null;
       }
 
+      final String? organization = context['organization'] as String?;
       final String? projectName = context['projectName'] as String?;
       final String? androidIdentifier = context['androidIdentifier'] as String?;
       final String? pluginClass = context['pluginClass'] as String?;
@@ -231,6 +237,10 @@ class Template {
       if (android != null && android && androidIdentifier != null) {
         finalDestinationPath = finalDestinationPath
             .replaceAll('androidIdentifier', androidIdentifier.replaceAll('.', pathSeparator));
+      }
+      if (aurora != null && aurora && organization != null && projectName != null) {
+        final String auroraIdentifier = '$organization.$projectName';
+        finalDestinationPath = finalDestinationPath.replaceAll('auroraIdentifier', auroraIdentifier);
       }
       if (projectName != null) {
         finalDestinationPath = finalDestinationPath.replaceAll('projectName', projectName);

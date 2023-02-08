@@ -528,6 +528,76 @@ class LinuxPlugin extends PluginPlatform implements NativeOrDartPlugin {
   }
 }
 
+/// Contains the parameters to template a Aurora plugin.
+///
+/// The [name] of the plugin is required. Either [dartPluginClass] or [pluginClass] are required.
+/// [pluginClass] will be the entry point to the plugin's native code.
+class AuroraPlugin extends PluginPlatform implements NativeOrDartPlugin {
+  const AuroraPlugin({
+    required this.name,
+    this.pluginClass,
+    this.dartPluginClass,
+    bool? ffiPlugin,
+    this.defaultPackage,
+  })  : ffiPlugin = ffiPlugin ?? false,
+        assert(pluginClass != null || dartPluginClass != null || (ffiPlugin ?? false) || defaultPackage != null);
+
+  factory AuroraPlugin.fromYaml(String name, YamlMap yaml) {
+    assert(validate(yaml));
+    // Treat 'none' as not present. See https://github.com/flutter/flutter/issues/57497.
+    String? pluginClass = yaml[kPluginClass] as String?;
+    if (pluginClass == 'none') {
+      pluginClass = null;
+    }
+    return AuroraPlugin(
+      name: name,
+      pluginClass: pluginClass,
+      dartPluginClass: yaml[kDartPluginClass] as String?,
+      ffiPlugin: yaml[kFfiPlugin] as bool?,
+      defaultPackage: yaml[kDefaultPackage] as String?,
+    );
+  }
+
+  static bool validate(YamlMap yaml) {
+    if (yaml == null) {
+      return false;
+    }
+    return yaml[kPluginClass] is String ||
+        yaml[kDartPluginClass] is String ||
+        yaml[kFfiPlugin] == true ||
+        yaml[kDefaultPackage] is String;
+  }
+
+  static const String kConfigKey = 'aurora';
+
+  final String name;
+  final String? pluginClass;
+  final String? dartPluginClass;
+  final bool ffiPlugin;
+  final String? defaultPackage;
+
+  @override
+  bool hasMethodChannel() => pluginClass != null;
+
+  @override
+  bool hasFfi() => ffiPlugin;
+
+  @override
+  bool hasDart() => dartPluginClass != null;
+
+  @override
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      if (pluginClass != null) 'class': pluginClass,
+      if (pluginClass != null) 'filename': _filenameForCppClass(pluginClass!),
+      if (dartPluginClass != null) kDartPluginClass: dartPluginClass,
+      if (ffiPlugin) kFfiPlugin: true,
+      if (defaultPackage != null) kDefaultPackage: defaultPackage,
+    };
+  }
+}
+
 /// Contains the parameters to template a web plugin.
 ///
 /// The required fields include: [name] of the plugin, the [pluginClass] that will

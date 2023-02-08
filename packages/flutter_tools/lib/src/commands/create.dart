@@ -47,11 +47,11 @@ class CreateCommand extends CreateBase {
             'Dart code.',
         flutterProjectTypeToString(FlutterProjectType.plugin): 'Generate a shareable Flutter project containing an API '
             'in Dart code with a platform-specific implementation through method channels for Android, iOS, '
-            'Linux, macOS, Windows, web, or any combination of these.',
+            'Linux, Aurora, macOS, Windows, web, or any combination of these.',
         flutterProjectTypeToString(FlutterProjectType.ffiPlugin):
             'Generate a shareable Flutter project containing an API '
             'in Dart code with a platform-specific implementation through dart:ffi for Android, iOS, '
-            'Linux, macOS, Windows, or any combination of these.',
+            'Linux, Aurora, macOS, Windows, or any combination of these.',
         flutterProjectTypeToString(FlutterProjectType.module): 'Generate a project to add a Flutter module to an '
             'existing Android or iOS application.',
       },
@@ -285,6 +285,7 @@ class CreateCommand extends CreateBase {
       android: featureFlags.isAndroidEnabled && platforms.contains('android'),
       web: featureFlags.isWebEnabled && platforms.contains('web'),
       linux: featureFlags.isLinuxEnabled && platforms.contains('linux'),
+      aurora: featureFlags.isAuroraEnabled && platforms.contains('aurora'),
       macos: featureFlags.isMacOSEnabled && platforms.contains('macos'),
       windows: featureFlags.isWindowsEnabled && platforms.contains('windows'),
       // Enable null safety everywhere.
@@ -735,6 +736,8 @@ List<String> _getPlatformWarningList(List<String> requestedPlatforms) {
     'windows',
   if (requestedPlatforms.contains('linux') && !featureFlags.isLinuxEnabled)
     'linux',
+  if (requestedPlatforms.contains('aurora') && !featureFlags.isAuroraEnabled)
+    'aurora',
   ];
 
   return platformsToWarn;

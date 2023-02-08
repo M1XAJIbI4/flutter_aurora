@@ -1,0 +1,23 @@
+#include <{{projectName}}/{{pluginClassSnakeCase}}.h>
+#include <flutter/codecs/standard-method.h>
+#include <sys/utsname.h>
+
+std::string {{pluginClass}}::ChannelName()
+{
+    return "{{projectName}}";
+}
+
+Platform::MethodResponse {{pluginClass}}::HandlePlatformMethodCall(const Platform::MethodCall &call)
+{
+    const auto &[method, args] = Codec::Standard::DecodeMethodCall(call);
+
+    if (method == "getPlatformVersion") {
+        utsname uname_data{};
+        uname(&uname_data);
+
+        const auto version = std::string("Aurora (Linux): ") + uname_data.version;
+        return Codec::Standard::EncodeMethodResponse({version});
+    }
+
+    return Codec::Standard::EncodeMethodResponse({nullptr});
+}

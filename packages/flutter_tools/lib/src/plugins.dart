@@ -132,6 +132,11 @@ class Plugin {
           LinuxPlugin.fromYaml(name, platformsYaml[LinuxPlugin.kConfigKey] as YamlMap);
     }
 
+    if (_providesImplementationForPlatform(platformsYaml, AuroraPlugin.kConfigKey)) {
+      platforms[AuroraPlugin.kConfigKey] =
+          AuroraPlugin.fromYaml(name, platformsYaml[AuroraPlugin.kConfigKey] as YamlMap);
+    }
+
     if (_providesImplementationForPlatform(platformsYaml, MacOSPlugin.kConfigKey)) {
       platforms[MacOSPlugin.kConfigKey] =
           MacOSPlugin.fromYaml(name, platformsYaml[MacOSPlugin.kConfigKey] as YamlMap);
@@ -154,6 +159,7 @@ class Plugin {
       AndroidPlugin.kConfigKey,
       IOSPlugin.kConfigKey,
       LinuxPlugin.kConfigKey,
+      AuroraPlugin.kConfigKey,
       MacOSPlugin.kConfigKey,
       WindowsPlugin.kConfigKey,
     ];
@@ -313,6 +319,9 @@ class Plugin {
     }
     if (isInvalid(LinuxPlugin.kConfigKey, LinuxPlugin.validate)) {
       errors.add('Invalid "linux" plugin specification.');
+    }
+    if (isInvalid(AuroraPlugin.kConfigKey, AuroraPlugin.validate)) {
+      errors.add('Invalid "aurora" plugin specification.');
     }
     if (isInvalid(MacOSPlugin.kConfigKey, MacOSPlugin.validate)) {
       errors.add('Invalid "macos" plugin specification.');
