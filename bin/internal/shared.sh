@@ -114,7 +114,7 @@ function _wait_for_lock () {
 function upgrade_flutter () (
   mkdir -p "$FLUTTER_ROOT/bin/cache"
 
-  local revision="$(cd "$FLUTTER_ROOT"; git rev-parse HEAD)"
+  local revision="135454af32477f815a7525073027a3ff9eff1bfd" # tag: 3.3.10
   local compilekey="$revision:$FLUTTER_TOOL_ARGS"
 
   # Invalidate cache if:

@@ -235,40 +235,6 @@ class UpgradeCommandRunner {
   Future<FlutterVersion> fetchLatestVersion({
     required FlutterVersion localVersion,
   }) async {
-    String revision;
-    try {
-      // Fetch upstream branch's commits and tags
-      await globals.processUtils.run(
-        <String>['git', 'fetch', '--tags'],
-        throwOnError: true,
-        workingDirectory: workingDirectory,
-      );
-      // Get the latest commit revision of the upstream
-      final RunResult result = await globals.processUtils.run(
-          <String>['git', 'rev-parse', '--verify', kGitTrackingUpstream],
-          throwOnError: true,
-          workingDirectory: workingDirectory,
-      );
-      revision = result.stdout.trim();
-    } on Exception catch (e) {
-      final String errorString = e.toString();
-      if (errorString.contains('fatal: HEAD does not point to a branch')) {
-        throwToolExit(
-          'Unable to upgrade Flutter: Your Flutter checkout is currently not '
-          'on a release branch.\n'
-          'Use "flutter channel" to switch to an official channel, and retry. '
-          'Alternatively, re-install Flutter by going to $_flutterInstallDocs.'
-        );
-      } else if (errorString.contains('fatal: no upstream configured for branch')) {
-        throwToolExit(
-          'Unable to upgrade Flutter: The current Flutter branch/channel is '
-          'not tracking any remote repository.\n'
-          'Re-install Flutter by going to $_flutterInstallDocs.'
-        );
-      } else {
-        throwToolExit(errorString);
-      }
-    }
     // At this point the current checkout should be on HEAD of a branch having
     // an upstream. Check whether this upstream is "standard".
     final VersionCheckError? error = VersionUpstreamValidator(version: localVersion, platform: globals.platform).run();
@@ -280,7 +246,7 @@ class UpgradeCommandRunner {
         'for instructions.'
       );
     }
-    return FlutterVersion(workingDirectory: workingDirectory, frameworkRevision: revision);
+    return FlutterVersion(workingDirectory: workingDirectory);
   }
 
   /// Attempts a hard reset to the given revision.

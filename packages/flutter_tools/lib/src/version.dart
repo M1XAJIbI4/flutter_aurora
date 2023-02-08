@@ -72,14 +72,9 @@ class FlutterVersion {
   FlutterVersion({
     SystemClock clock = const SystemClock(),
     String? workingDirectory,
-    String? frameworkRevision,
   }) : _clock = clock,
        _workingDirectory = workingDirectory {
-    _frameworkRevision = frameworkRevision ?? _runGit(
-      gitLog(<String>['-n', '1', '--pretty=format:%H']).join(' '),
-      globals.processUtils,
-      _workingDirectory,
-    );
+    _frameworkRevision = '135454af32477f815a7525073027a3ff9eff1bfd';
     _gitTagVersion = GitTagVersion.determine(globals.processUtils, globals.platform, workingDirectory: _workingDirectory, gitRef: _frameworkRevision);
     _frameworkVersion = gitTagVersion.frameworkVersionFor(_frameworkRevision);
   }
@@ -94,7 +89,8 @@ class FlutterVersion {
   /// user explicitly wants to get the version, e.g. for `flutter --version` or
   /// `flutter doctor`.
   void fetchTagsAndUpdate() {
-    _gitTagVersion = GitTagVersion.determine(globals.processUtils, globals.platform, workingDirectory: _workingDirectory, fetchTags: true);
+    _frameworkRevision = '135454af32477f815a7525073027a3ff9eff1bfd';
+    _gitTagVersion = GitTagVersion.determine(globals.processUtils, globals.platform, workingDirectory: _workingDirectory, fetchTags: true, gitRef: _frameworkRevision);
     _frameworkVersion = gitTagVersion.frameworkVersionFor(_frameworkRevision);
   }
 
