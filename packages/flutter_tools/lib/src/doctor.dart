@@ -10,6 +10,8 @@ import 'package:process/process.dart';
 import 'android/android_studio_validator.dart';
 import 'android/android_workflow.dart';
 import 'artifacts.dart';
+import 'aurora/aurora_doctor.dart';
+import 'aurora/aurora_workflow.dart';
 import 'base/async_guard.dart';
 import 'base/context.dart';
 import 'base/file_system.dart';
@@ -59,6 +61,11 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
   List<Workflow>? _workflows;
 
   final LinuxWorkflow linuxWorkflow = LinuxWorkflow(
+    platform: globals.platform,
+    featureFlags: featureFlags,
+  );
+
+  final AuroraWorkflow auroraWorkflow = AuroraWorkflow(
     platform: globals.platform,
     featureFlags: featureFlags,
   );
@@ -129,6 +136,11 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
           processManager: globals.processManager,
           userMessages: userMessages,
         ),
+      if (auroraWorkflow.appliesToHostPlatform)
+        AuroraDoctorValidator(
+          processManager: globals.processManager,
+          userMessages: userMessages,
+        ),
       if (windowsWorkflow!.appliesToHostPlatform)
         visualStudioValidator!,
       if (ideValidators.isNotEmpty)
@@ -170,6 +182,10 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
 
       if (linuxWorkflow.appliesToHostPlatform) {
         _workflows!.add(linuxWorkflow);
+      }
+
+      if (auroraWorkflow.appliesToHostPlatform) {
+        _workflows!.add(auroraWorkflow);
       }
 
       if (macOSWorkflow.appliesToHostPlatform) {
