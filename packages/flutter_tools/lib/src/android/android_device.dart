@@ -224,6 +224,7 @@ class AndroidDevice extends Device {
       case TargetPlatform.ios:
       case TargetPlatform.linux_arm64:
       case TargetPlatform.linux_x64:
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.tester:
       case TargetPlatform.web_javascript:
       case TargetPlatform.windows_x64:
@@ -562,6 +563,7 @@ class AndroidDevice extends Device {
       case TargetPlatform.ios:
       case TargetPlatform.linux_arm64:
       case TargetPlatform.linux_x64:
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.tester:
       case TargetPlatform.web_javascript:
       case TargetPlatform.windows_x64:

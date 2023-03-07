@@ -195,6 +195,7 @@ class KernelSnapshot extends Target {
       case TargetPlatform.linux_x64:
         forceLinkPlatform = true;
         break;
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
       case TargetPlatform.android_arm64:

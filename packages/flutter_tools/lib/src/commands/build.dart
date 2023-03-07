@@ -13,6 +13,7 @@ import '../runner/flutter_command.dart';
 import 'build_aar.dart';
 import 'build_apk.dart';
 import 'build_appbundle.dart';
+import 'build_aurora.dart';
 import 'build_bundle.dart';
 import 'build_fuchsia.dart';
 import 'build_ios.dart';
@@ -39,6 +40,10 @@ class BuildCommand extends FlutterCommand {
     _addSubcommand(BuildWebCommand(verboseHelp: verboseHelp));
     _addSubcommand(BuildMacosCommand(verboseHelp: verboseHelp));
     _addSubcommand(BuildLinuxCommand(
+      operatingSystemUtils: globals.os,
+      verboseHelp: verboseHelp
+    ));
+    _addSubcommand(BuildAuroraCommand(
       operatingSystemUtils: globals.os,
       verboseHelp: verboseHelp
     ));

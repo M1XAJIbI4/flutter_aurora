@@ -64,6 +64,9 @@ class DevelopmentArtifact {
   /// Artifacts required for desktop Linux.
   static const DevelopmentArtifact linux = DevelopmentArtifact._('linux', feature: flutterLinuxDesktopFeature);
 
+  /// Artifacts required for Aurora OS.
+  static const DevelopmentArtifact aurora = DevelopmentArtifact._('aurora', feature: flutterAuroraFeature);
+
   /// Artifacts required for Fuchsia.
   static const DevelopmentArtifact fuchsia = DevelopmentArtifact._('fuchsia', feature: flutterFuchsiaFeature);
 
@@ -86,6 +89,7 @@ class DevelopmentArtifact {
     macOS,
     windows,
     linux,
+    aurora,
     fuchsia,
     universal,
     flutterRunner,
