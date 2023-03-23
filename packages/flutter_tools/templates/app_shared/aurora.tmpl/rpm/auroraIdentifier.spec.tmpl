@@ -18,7 +18,7 @@ BuildRequires: pkgconfig(flutter-embedder)
 %autosetup
 
 %build
-%cmake
+%cmake -DCMAKE_BUILD_TYPE=%{_flutter_build_type}
 %make_build
 
 %install

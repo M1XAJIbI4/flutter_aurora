@@ -109,13 +109,13 @@ Future<void> buildAurora(
   final Directory rpmsDir = globals.fs.directory(getAuroraBuildDirectory(targetPlatform, buildInfo))
                                       .childDirectory('RPMS');
 
-  final String rpm = await rpmsDir
+  final String rpms = await rpmsDir
       .list()
       .where((FileSystemEntity element) => element.basename.endsWith('.rpm'))
       .map((FileSystemEntity e) => e.absolute.path)
-      .first;
+      .join('\n');
 
-  globals.logger.printBox(rpm, title: 'Result');
+  globals.logger.printBox(rpms, title: 'Result');
 }
 
 Future<void> _timedBuildStep(String name, Future<void> Function() action) async {
@@ -337,7 +337,12 @@ Future<void> _buildRPM(
       psdkToolPath,
       'mb2',
       'build',
+      if (buildInfo.mode == BuildMode.debug) '-d',
       sourceDir.path,
+      '--',
+      '--define',
+      if (buildInfo.mode == BuildMode.debug) '_flutter_build_type Debug',
+      if (buildInfo.mode != BuildMode.debug) '_flutter_build_type Release',
     ],
     workingDirectory: getAuroraBuildDirectory(targetPlatform, buildInfo),
     trace: true,
