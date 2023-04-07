@@ -1,23 +1,38 @@
 #include <{{projectName}}/{{pluginClassSnakeCase}}.h>
-#include <flutter/codecs/standard-method.h>
+#include <flutter/method-channel.h>
 #include <sys/utsname.h>
 
-std::string {{pluginClass}}::ChannelName()
+void {{pluginClass}}::RegisterWithRegistrar(PluginRegistrar &registrar)
 {
-    return "{{projectName}}";
+    registrar.RegisterMethodChannel("{{projectName}}",
+                                    MethodCodecType::Standard,
+                                    [this](const MethodCall &call) { this->onMethodCall(call); });
 }
 
-Platform::MethodResponse {{pluginClass}}::HandlePlatformMethodCall(const Platform::MethodCall &call)
+void {{pluginClass}}::onMethodCall(const MethodCall &call)
 {
-    const auto &[method, args] = Codec::Standard::DecodeMethodCall(call);
+    const auto &method = call.GetMethod();
 
     if (method == "getPlatformVersion") {
-        utsname uname_data{};
-        uname(&uname_data);
-
-        const auto version = std::string("Aurora (Linux): ") + uname_data.version;
-        return Codec::Standard::EncodeMethodResponse({version});
+        onGetPlatformVersion(call);
+        return;
     }
 
-    return Codec::Standard::EncodeMethodResponse({nullptr});
+    unimplemented(call);
+}
+
+void {{pluginClass}}::onGetPlatformVersion(const MethodCall &call)
+{
+    utsname uname_data{};
+    uname(&uname_data);
+
+    std::string preamble = "Aurora (Linux): ";
+    std::string version = preamble + uname_data.version;
+
+    call.SendSuccessResponse(version);
+}
+
+void {{pluginClass}}::unimplemented(const MethodCall &call)
+{
+    call.SendSuccessResponse(nullptr);
 }
