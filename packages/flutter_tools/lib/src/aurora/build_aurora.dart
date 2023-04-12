@@ -5,15 +5,17 @@
 // import 'dart:io' as io;
 
 import '../artifacts.dart';
-import '../asset.dart';
 import '../base/analyze_size.dart';
 import '../base/common.dart';
 import '../base/file_system.dart';
 import '../base/logger.dart';
 import '../build_info.dart';
+import '../build_system/depfile.dart';
+import '../build_system/targets/common.dart';
 import '../bundle_builder.dart';
+import '../build_system/build_system.dart';
+import '../cache.dart';
 import '../convert.dart';
-import '../devfs.dart';
 import '../flutter_plugins.dart';
 import '../globals.dart' as globals;
 import '../project.dart';
@@ -146,36 +148,62 @@ Future<void> _buildAssets(
   BuildInfo buildInfo,
   String target
 ) async {
-  final String assetsDirPath = getBuildBundleDirectory(targetPlatform, buildInfo).childDirectory('flutter_assets').path;
+  final Directory assetsDirPath = getBuildBundleDirectory(targetPlatform, buildInfo).childDirectory('flutter_assets');
   final FlutterProject flutterProject = FlutterProject.current();
 
-  if (buildInfo.mode == BuildMode.debug) {
-    final BundleBuilder builder = BundleBuilder();
-    final String depfilePath = globals.fs.path.join(getAuroraBuildDirectory(targetPlatform, buildInfo), 'snapshot_blob.bin.d');
+  final String depfilePath = globals.fs.path.join(getAuroraBuildDirectory(targetPlatform, buildInfo), 'snapshot_blob.bin.d');
+  const Target buildTarget = CopyFlutterBundle();
 
-    await builder.build(platform: targetPlatform,
-                        buildInfo: buildInfo,
-                        mainPath: target,
-                        project: flutterProject,
-                        depfilePath: depfilePath,
-                        assetDirPath: assetsDirPath);
-  } else {
-    final AssetBundle? assets = await buildAssets(
-      manifestPath: flutterProject.pubspecFile.path,
-      packagesPath: flutterProject.packagesFile.path,
-      assetDirPath: assetsDirPath,
-    );
+  final Environment environment = Environment(
+    projectDir: flutterProject.directory,
+    outputDir: assetsDirPath,
+    buildDir: flutterProject.dartTool.childDirectory('flutter_build'),
+    cacheDir: globals.cache.getRoot(),
+    flutterRootDir: globals.fs.directory(Cache.flutterRoot),
+    engineVersion: globals.artifacts!.isLocalEngine
+        ? null
+        : globals.flutterVersion.engineRevision,
+    defines: <String, String>{
+      // used by the KernelSnapshot target
+      kTargetPlatform: getNameForTargetPlatform(targetPlatform),
+      kTargetFile: target,
+      kDeferredComponents: 'false',
+      ...buildInfo.toBuildSystemEnvironment(),
+    },
+    artifacts: globals.artifacts!,
+    fileSystem: globals.fs,
+    logger: globals.logger,
+    processManager: globals.processManager,
+    platform: globals.platform,
+    generateDartPluginRegistry: true,
+  );
 
-    if (assets == null) {
-      throwToolExit('Unable to find assets.', exitCode: 1);
+  final BuildResult result = await globals.buildSystem.build(buildTarget, environment);
+
+  if (!result.success) {
+    for (final ExceptionMeasurement measurement in result.exceptions.values) {
+      globals.printError('Target ${measurement.target} failed: ${measurement.exception}',
+        stackTrace: measurement.fatal
+            ? measurement.stackTrace
+            : null,
+      );
     }
-
-    final Map<String, DevFSContent> assetEntries = Map<String, DevFSContent>.of(
-      assets.entries,
-    );
-
-    await writeBundle(globals.fs.directory(assetsDirPath), assetEntries, assets.entryKinds);
+    throwToolExit('Failed to build bundle.');
   }
+
+  final Depfile depfile = Depfile(result.inputFiles, result.outputFiles);
+  final File outputDepfile = globals.fs.file(depfilePath);
+
+  if (!outputDepfile.parent.existsSync()) {
+    outputDepfile.parent.createSync(recursive: true);
+  }
+
+  final DepfileService depfileService = DepfileService(
+    fileSystem: globals.fs,
+    logger: globals.logger,
+  );
+
+  depfileService.writeToFile(depfile, outputDepfile);
 }
 
 Future<void> _buildKernel(
@@ -184,52 +212,60 @@ Future<void> _buildKernel(
   BuildInfo buildInfo,
   String target
 ) async {
-    final String? engineDartBinaryPath = globals.artifacts?.getHostArtifact(HostArtifact.engineDartBinary).path;
-    final String? frontendSnapshotPath = globals.artifacts?.getArtifactPath(Artifact.frontendServerSnapshotForEngineDartSdk);
-    final String? patchedSdkProductPath = globals.artifacts?.getArtifactPath(Artifact.flutterPatchedSdkPath);
+  final String? engineDartBinaryPath = globals.artifacts?.getHostArtifact(HostArtifact.engineDartBinary).path;
+  final String? frontendSnapshotPath = globals.artifacts?.getArtifactPath(Artifact.frontendServerSnapshotForEngineDartSdk);
+  final String? patchedSdkProductPath = globals.artifacts?.getArtifactPath(Artifact.flutterPatchedSdkPath);
 
-    if (engineDartBinaryPath == null) {
-      throwToolExit('Engine dart binary not found');
-    }
+  if (engineDartBinaryPath == null) {
+    throwToolExit('Engine dart binary not found');
+  }
 
-    if (frontendSnapshotPath == null) {
-      throwToolExit('Engine frontend snapshot not found');
-    }
+  if (frontendSnapshotPath == null) {
+    throwToolExit('Engine frontend snapshot not found');
+  }
 
-    if (patchedSdkProductPath == null) {
-      throwToolExit('Flutter patched sdk product not found');
-    }
+  if (patchedSdkProductPath == null) {
+    throwToolExit('Flutter patched sdk product not found');
+  }
 
-    final FlutterProject flutterProject = FlutterProject.current();
-    final String packagesConfigFile = flutterProject.packageConfigFile.path;
-    final String fsRoot = flutterProject.directory.path;
-    final String relativePackagesConfigFile = globals.fs.path.relative(packagesConfigFile, from: fsRoot);
-    final String buildDir = getAuroraBuildDirectory(targetPlatform, buildInfo);
-    final String outDillPath = globals.fs.path.join(buildDir, 'app.dill');
-    final String depfilePath = globals.fs.path.join(buildDir, 'kernel_snapshot.d');
+  final FlutterProject flutterProject = FlutterProject.current();
+  final String packagesConfigFile = flutterProject.packageConfigFile.path;
+  final String fsRoot = flutterProject.directory.path;
+  final String relativePackagesConfigFile = globals.fs.path.relative(packagesConfigFile, from: fsRoot);
+  final String buildDir = getAuroraBuildDirectory(targetPlatform, buildInfo);
+  final String outDillPath = globals.fs.path.join(buildDir, 'app.dill');
+  final String depfilePath = globals.fs.path.join(buildDir, 'kernel_snapshot.d');
+  final File dartPluginRegistrant = flutterProject.dartPluginRegistrant;
 
-    final int result = await globals.processUtils.stream(
-      <String>[
-        engineDartBinaryPath,
-        '--disable-dart-dev',
-        frontendSnapshotPath,
-        '--sdk-root', patchedSdkProductPath,
-        '--target', 'flutter',
-        '-Ddart.vm.profile=false',
-        '-Ddart.vm.product=true',
-        '--aot', '--tfa',
-        '--packages', relativePackagesConfigFile,
-        '--output-dill', outDillPath,
-        '--depfile', depfilePath,
-        target
+  final int result = await globals.processUtils.stream(
+    <String>[
+      engineDartBinaryPath,
+      '--disable-dart-dev',
+      frontendSnapshotPath,
+      '--sdk-root', patchedSdkProductPath,
+      '--target', 'flutter',
+      '-Ddart.vm.profile=false',
+      '-Ddart.vm.product=true',
+      '--aot', '--tfa',
+      '--packages', relativePackagesConfigFile,
+      '--output-dill', outDillPath,
+      '--depfile', depfilePath,
+      if (dartPluginRegistrant.existsSync()) ...<String>[
+        '--source',
+        dartPluginRegistrant.path,
+        '--source',
+        'package:flutter/src/dart_plugin_registrant.dart',
+        '-Dflutter.dart_plugin_registrant=${dartPluginRegistrant.uri}',
       ],
-      trace: true,
-      workingDirectory: flutterProject.directory.path
-    );
+      target
+    ],
+    trace: true,
+    workingDirectory: flutterProject.directory.path
+  );
 
-    if (result != 0) {
-      throwToolExit('Build process failed');
-    }
+  if (result != 0) {
+    throwToolExit('Build process failed');
+  }
 }
 
 Future<void> _buildSnapshot(

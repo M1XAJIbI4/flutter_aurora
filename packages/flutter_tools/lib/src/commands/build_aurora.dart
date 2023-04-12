@@ -26,7 +26,6 @@ class BuildAuroraCommand extends BuildSubCommand {
     addEnableExperimentation(hide: !verboseHelp);
     addNullSafetyModeOptions(hide: !verboseHelp);
     addSplitDebugInfoOption();
-    addTreeShakeIconsFlag();
     usesAnalyzeSizeFlag();
     usesDartDefineOption();
     usesPubOption();

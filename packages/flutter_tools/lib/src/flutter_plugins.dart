@@ -807,6 +807,9 @@ import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{#linux}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/linux}}
+{{#aurora}}
+import 'package:{{pluginName}}/{{pluginName}}.dart';
+{{/aurora}}
 {{#macos}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/macos}}
@@ -831,6 +834,9 @@ $_dartPluginRegisterWith
       {{#linux}}
 $_dartPluginRegisterWith
       {{/linux}}
+      {{#aurora}}
+$_dartPluginRegisterWith
+      {{/aurora}}
     } else if (Platform.isMacOS) {
       {{#macos}}
 $_dartPluginRegisterWith
@@ -1404,7 +1410,7 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
           // - the plugin requires at least Flutter 2.11 (when this opt-in logic
           //   was added), so that existing plugins continue to work.
           // See https://github.com/flutter/flutter/issues/87862 for details.
-          final bool isDesktop = platform == 'linux' || platform == 'macos' || platform == 'windows';
+          final bool isDesktop = platform == 'linux' || platform == 'macos' || platform == 'windows' || platform == 'aurora';
           final semver.VersionConstraint? flutterConstraint = plugin.flutterConstraint;
           final semver.Version? minFlutterVersion = flutterConstraint != null &&
             flutterConstraint is semver.VersionRange ? flutterConstraint.min : null;

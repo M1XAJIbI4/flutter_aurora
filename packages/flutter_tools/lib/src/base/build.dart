@@ -313,6 +313,7 @@ class AOTSnapshotter {
       TargetPlatform.darwin,
       TargetPlatform.linux_x64,
       TargetPlatform.linux_arm64,
+      TargetPlatform.aurora_arm,
       TargetPlatform.windows_x64,
     ].contains(platform);
   }
