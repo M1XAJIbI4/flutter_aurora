@@ -10,10 +10,9 @@ import '../base/common.dart';
 import '../base/file_system.dart';
 import '../base/logger.dart';
 import '../build_info.dart';
+import '../build_system/build_system.dart';
 import '../build_system/depfile.dart';
 import '../build_system/targets/common.dart';
-import '../bundle_builder.dart';
-import '../build_system/build_system.dart';
 import '../cache.dart';
 import '../convert.dart';
 import '../flutter_plugins.dart';
@@ -114,7 +113,7 @@ Future<void> buildAurora(
   final String rpms = await rpmsDir
       .list()
       .where((FileSystemEntity element) => element.basename.endsWith('.rpm'))
-      .map((FileSystemEntity e) => e.absolute.path)
+      .map((FileSystemEntity e) => e.isAbsolute ? e.path : './${e.path}')
       .join('\n');
 
   globals.logger.printBox(rpms, title: 'Result');
