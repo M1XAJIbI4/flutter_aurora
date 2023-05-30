@@ -706,12 +706,20 @@ set(ROOT_PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
 function(add_library TARGET)
     _add_library(${TARGET} ${ARGN})
 
-    if(NOT "${TARGET}" MATCHES "^PkgConfig::.*")
+    if (
+{{#methodChannelPlugins}}
+      "${TARGET}" MATCHES "^{{name}}_platform_plugin$" OR
+{{/methodChannelPlugins}}
+{{#ffiPlugins}}
+      "${TARGET}" MATCHES "^{{name}}$" OR
+{{/ffiPlugins}}
+      FALSE
+    )
       add_custom_command(TARGET ${TARGET} POST_BUILD
                         COMMAND ${CMAKE_COMMAND} -E copy
                         "$<TARGET_FILE:${TARGET}>"
                         "${ROOT_PROJECT_BINARY_DIR}/bundle/lib/$<TARGET_FILE_NAME:${TARGET}>")
-    endif(NOT "${TARGET}" MATCHES "^PkgConfig::.*")
+    endif()
 endfunction()
 
 list(APPEND FLUTTER_PLATFORM_PLUGIN_LIST
