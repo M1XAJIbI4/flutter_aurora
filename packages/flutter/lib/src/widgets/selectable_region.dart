@@ -241,6 +241,7 @@ class _SelectableRegionState extends State<SelectableRegion> with TextSelectionD
         break;
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return;

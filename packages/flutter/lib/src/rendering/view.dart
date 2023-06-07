@@ -299,6 +299,7 @@ class RenderView extends RenderObject with RenderObjectWithChildMixin<RenderBox>
       case TargetPlatform.fuchsia:
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         break;

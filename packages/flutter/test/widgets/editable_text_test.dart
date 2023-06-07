@@ -5700,6 +5700,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -6408,6 +6409,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -6450,6 +6452,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -6559,6 +6562,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -6601,6 +6605,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -6720,6 +6725,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -6762,6 +6768,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -6913,6 +6920,7 @@ void main() {
 
       // Linux extends to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selectionAfterHome,
           equals(
@@ -7267,6 +7275,7 @@ void main() {
 
       // These platforms select to the line start.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -7324,6 +7333,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -7459,6 +7469,7 @@ void main() {
 
       // These platforms select to the line end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -7516,6 +7527,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -10512,6 +10524,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection.baseOffset, 17);
         expect(controller.selection.extentOffset, 15);

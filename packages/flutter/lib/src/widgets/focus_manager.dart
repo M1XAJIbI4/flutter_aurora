@@ -1522,6 +1522,7 @@ class FocusManager with DiagnosticableTreeMixin, ChangeNotifier {
         }
         return FocusHighlightMode.touch;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return FocusHighlightMode.traditional;

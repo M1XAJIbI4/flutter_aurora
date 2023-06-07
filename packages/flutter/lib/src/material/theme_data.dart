@@ -418,6 +418,7 @@ class ThemeData with Diagnosticable {
         materialTapTargetSize ??= MaterialTapTargetSize.padded;
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
          materialTapTargetSize ??= MaterialTapTargetSize.shrinkWrap;
@@ -2627,6 +2628,7 @@ class VisualDensity with Diagnosticable {
       case TargetPlatform.fuchsia:
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return compact;

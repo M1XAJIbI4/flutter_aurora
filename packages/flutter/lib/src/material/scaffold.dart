@@ -2890,6 +2890,7 @@ class ScaffoldState extends State<Scaffold> with TickerProviderStateMixin, Resto
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         break;
     }

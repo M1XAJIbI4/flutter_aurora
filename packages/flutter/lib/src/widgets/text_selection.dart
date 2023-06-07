@@ -475,6 +475,7 @@ class TextSelectionOverlay {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         newSelection = TextSelection(
           baseOffset: _selection.baseOffset,
@@ -523,6 +524,7 @@ class TextSelectionOverlay {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         newSelection = TextSelection(
           baseOffset: position.offset,
@@ -1500,6 +1502,7 @@ class TextSelectionGestureDetectorBuilder {
         renderEditable.selectPosition(cause: SelectionChangedCause.tap);
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         if (isShiftPressedValid) {
           _isShiftTapping = true;
@@ -1572,6 +1575,7 @@ class TextSelectionGestureDetectorBuilder {
       final bool isShiftPressedValid = _isShiftPressed && renderEditable.selection?.baseOffset != null;
       switch (defaultTargetPlatform) {
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.macOS:
         case TargetPlatform.windows:
           // On desktop platforms the selection is set on tap down.
@@ -1708,6 +1712,7 @@ class TextSelectionGestureDetectorBuilder {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         if (!renderEditable.hasFocus) {
           renderEditable.selectPosition(cause: SelectionChangedCause.tap);
@@ -1777,6 +1782,7 @@ class TextSelectionGestureDetectorBuilder {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           _extendSelection(details.globalPosition, SelectionChangedCause.drag);
           break;

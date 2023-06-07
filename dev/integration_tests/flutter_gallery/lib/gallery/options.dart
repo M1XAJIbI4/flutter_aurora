@@ -418,6 +418,8 @@ class _PlatformItem extends StatelessWidget {
         return 'Cupertino';
       case TargetPlatform.linux:
         return 'Material Desktop (linux)';
+      case TargetPlatform.aurora:
+        return 'Material Desktop (aurora)';
       case TargetPlatform.macOS:
         return 'Material Desktop (macOS)';
       case TargetPlatform.windows:

@@ -782,6 +782,7 @@ class MaterialScrollBehavior extends ScrollBehavior {
       case Axis.vertical:
         switch (getPlatform(context)) {
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.macOS:
           case TargetPlatform.windows:
             return Scrollbar(
@@ -811,6 +812,7 @@ class MaterialScrollBehavior extends ScrollBehavior {
     switch (getPlatform(context)) {
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return child;

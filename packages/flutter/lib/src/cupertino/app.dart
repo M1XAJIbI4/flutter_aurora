@@ -457,6 +457,7 @@ class CupertinoScrollBehavior extends ScrollBehavior {
     // the base class as well.
     switch (getPlatform(context)) {
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return CupertinoScrollbar(

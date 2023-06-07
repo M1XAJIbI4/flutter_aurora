@@ -662,6 +662,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             return _buildMaterialSlider(context);
           case TargetPlatform.iOS:
@@ -748,6 +749,7 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
       case TargetPlatform.fuchsia:
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
         break;
       case TargetPlatform.windows:
@@ -1228,6 +1230,7 @@ class _RenderSlider extends RenderBox with RelayoutWhenSystemFontsChangeMixin {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         // Matches Android implementation of material slider.
         return 0.05;

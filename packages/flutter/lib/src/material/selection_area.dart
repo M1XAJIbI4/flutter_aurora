@@ -82,6 +82,7 @@ class _SelectionAreaState extends State<SelectionArea> {
         controls ??= cupertinoTextSelectionControls;
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         controls ??= desktopTextSelectionControls;
         break;

@@ -1569,6 +1569,7 @@ class EditableText extends StatefulWidget {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           break;
       }
@@ -1789,6 +1790,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         case TargetPlatform.iOS:
         case TargetPlatform.macOS:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           break;
         case TargetPlatform.android:

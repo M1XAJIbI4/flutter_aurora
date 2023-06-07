@@ -148,6 +148,7 @@ class ScrollBehavior {
     switch (getPlatform(context)) {
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return child;
@@ -177,6 +178,7 @@ class ScrollBehavior {
     // the Material and Cupertino subclasses as well.
     switch (getPlatform(context)) {
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return RawScrollbar(
@@ -224,6 +226,7 @@ class ScrollBehavior {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return (PointerEvent event) => VelocityTracker.withKind(event.kind);
     }
@@ -245,6 +248,7 @@ class ScrollBehavior {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return _clampingPhysics;
     }

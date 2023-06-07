@@ -54,6 +54,9 @@ enum TargetPlatform {
   /// Linux: <https://www.linux.org>
   linux,
 
+  /// Aurora: <https://auroraos.ru>
+  aurora,
+
   /// macOS: <https://www.apple.com/macos>
   macOS,
 

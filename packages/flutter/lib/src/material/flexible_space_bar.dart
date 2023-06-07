@@ -184,6 +184,7 @@ class _FlexibleSpaceBarState extends State<FlexibleSpaceBar> {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return false;
       case TargetPlatform.iOS:
@@ -298,6 +299,7 @@ class _FlexibleSpaceBarState extends State<FlexibleSpaceBar> {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
+            case TargetPlatform.aurora:
             case TargetPlatform.windows:
               title = Semantics(
                 namesRoute: true,

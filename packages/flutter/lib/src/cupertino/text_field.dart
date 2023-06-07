@@ -971,6 +971,7 @@ class _CupertinoTextFieldState extends State<CupertinoTextField> with Restoratio
         }
         return;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
@@ -1146,6 +1147,7 @@ class _CupertinoTextFieldState extends State<CupertinoTextField> with Restoratio
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         textSelectionControls ??= cupertinoTextSelectionControls;
         break;
 

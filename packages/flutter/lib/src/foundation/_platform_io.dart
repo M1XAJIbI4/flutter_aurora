@@ -11,14 +11,22 @@ export 'platform.dart' show TargetPlatform;
 /// The dart:io implementation of [platform.defaultTargetPlatform].
 platform.TargetPlatform get defaultTargetPlatform {
   platform.TargetPlatform? result;
+  bool? isAurora;
+  try {
+    isAurora = File('/etc/os-release').readAsLinesSync().contains('ID=auroraos');
+  } catch (e) {
+    isAurora = false;
+  }
   if (Platform.isAndroid) {
     result = platform.TargetPlatform.android;
   } else if (Platform.isIOS) {
     result = platform.TargetPlatform.iOS;
   } else if (Platform.isFuchsia) {
     result = platform.TargetPlatform.fuchsia;
-  } else if (Platform.isLinux) {
+  } else if (Platform.isLinux && !isAurora) {
     result = platform.TargetPlatform.linux;
+  } else if (Platform.isLinux && isAurora) {
+    result = platform.TargetPlatform.aurora;
   } else if (Platform.isMacOS) {
     result = platform.TargetPlatform.macOS;
   } else if (Platform.isWindows) {

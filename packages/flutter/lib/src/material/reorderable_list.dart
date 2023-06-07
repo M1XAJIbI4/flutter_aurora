@@ -350,6 +350,7 @@ class _ReorderableListViewState extends State<ReorderableListView> {
     if (widget.buildDefaultDragHandles) {
       switch (Theme.of(context).platform) {
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
         case TargetPlatform.macOS:
           switch (widget.scrollDirection) {

@@ -1697,6 +1697,7 @@ class _CalendarDateRangePickerState extends State<_CalendarDateRangePicker> {
         break;
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         break;

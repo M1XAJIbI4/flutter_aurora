@@ -532,6 +532,7 @@ class AlertDialog extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         label ??= MaterialLocalizations.of(context).alertDialogLabel;
     }
@@ -956,6 +957,7 @@ class SimpleDialog extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         label ??= MaterialLocalizations.of(context).dialogLabel;
     }

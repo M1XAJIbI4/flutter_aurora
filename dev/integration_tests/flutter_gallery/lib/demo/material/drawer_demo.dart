@@ -65,6 +65,7 @@ class _DrawerDemoState extends State<DrawerDemo> with TickerProviderStateMixin {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return Icons.arrow_back;
       case TargetPlatform.iOS:

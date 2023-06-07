@@ -299,6 +299,7 @@ class _CupertinoSwitchState extends State<CupertinoSwitch> with TickerProviderSt
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         break;

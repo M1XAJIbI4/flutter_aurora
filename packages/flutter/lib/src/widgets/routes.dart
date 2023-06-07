@@ -2232,6 +2232,7 @@ class _RenderFocusTrap extends RenderProxyBoxWithHitTestBehavior {
       case TargetPlatform.iOS:
         return !kIsWeb;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:

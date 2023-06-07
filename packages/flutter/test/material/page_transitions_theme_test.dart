@@ -25,6 +25,7 @@ void main() {
           break;
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           expect(
             theme.builders[platform],

@@ -5259,6 +5259,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection.baseOffset, 35);
         break;
@@ -5724,6 +5725,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection, const TextSelection.collapsed(offset: 8));
         expect(find.text('Cut'), findsNothing);
@@ -5750,6 +5752,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection, const TextSelection.collapsed(offset: 8));
         expect(find.text('Cut'), findsNothing);

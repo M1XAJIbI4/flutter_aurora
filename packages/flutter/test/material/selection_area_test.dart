@@ -25,6 +25,7 @@ void main() {
         expect(region.selectionControls, cupertinoTextSelectionControls);
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(region.selectionControls, desktopTextSelectionControls);
         break;

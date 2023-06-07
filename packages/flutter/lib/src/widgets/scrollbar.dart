@@ -1642,6 +1642,7 @@ class RawScrollbarState<T extends RawScrollbar> extends State<T> with TickerProv
       switch(ScrollConfiguration.of(context).getPlatform(context)) {
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.macOS:
         case TargetPlatform.windows:
           newPosition = clampDouble(newPosition, position.minScrollExtent, position.maxScrollExtent);

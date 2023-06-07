@@ -1109,6 +1109,7 @@ void main() {
           expect(FocusManager.instance.highlightMode, equals(FocusHighlightMode.touch));
           break;
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.macOS:
         case TargetPlatform.windows:
           expect(FocusManager.instance.highlightMode, equals(FocusHighlightMode.traditional));

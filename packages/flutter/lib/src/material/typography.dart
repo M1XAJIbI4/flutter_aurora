@@ -210,6 +210,7 @@ class Typography with Diagnosticable {
         white ??= whiteRedwoodCity;
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         black ??= blackHelsinki;
         white ??= whiteHelsinki;
         break;

@@ -406,6 +406,7 @@ class _MaterialScrollbarState extends RawScrollbarState<_MaterialScrollbar> {
         break;
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.fuchsia:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:

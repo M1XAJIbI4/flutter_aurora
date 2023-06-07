@@ -638,6 +638,7 @@ class _CircularProgressIndicatorState extends State<CircularProgressIndicator> w
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             if (widget.value != null) {
               return _buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0);

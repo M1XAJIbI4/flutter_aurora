@@ -401,6 +401,7 @@ class TooltipState extends State<Tooltip> with SingleTickerProviderStateMixin {
     switch (theme.platform) {
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return 24.0;
       case TargetPlatform.android:
@@ -415,6 +416,7 @@ class TooltipState extends State<Tooltip> with SingleTickerProviderStateMixin {
     switch (theme.platform) {
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0);
       case TargetPlatform.android:
@@ -429,6 +431,7 @@ class TooltipState extends State<Tooltip> with SingleTickerProviderStateMixin {
     switch (theme.platform) {
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return 12.0;
       case TargetPlatform.android:

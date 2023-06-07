@@ -210,6 +210,7 @@ class Drawer extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         label = semanticLabel ?? MaterialLocalizations.of(context).drawerLabel;
     }
@@ -575,6 +576,7 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
         break;
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         isDesktop = true;
         break;
@@ -621,6 +623,7 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
         case TargetPlatform.macOS:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           platformHasBackButton = false;
           break;

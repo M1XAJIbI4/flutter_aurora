@@ -148,6 +148,7 @@ void main() {
         expect(themeData.materialTapTargetSize, MaterialTapTargetSize.padded);
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(themeData.materialTapTargetSize, MaterialTapTargetSize.shrinkWrap);
@@ -357,6 +358,7 @@ void main() {
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(theme.splashFactory, equals(InkRipple.splashFactory));
@@ -371,6 +373,7 @@ void main() {
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(theme.splashFactory, equals(InkSplash.splashFactory));
@@ -385,6 +388,7 @@ void main() {
         expect(VisualDensity.adaptivePlatformDensity, equals(VisualDensity.standard));
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(VisualDensity.adaptivePlatformDensity, equals(VisualDensity.compact));
@@ -400,6 +404,7 @@ void main() {
         expect(themeData.visualDensity, equals(VisualDensity.standard));
         break;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(themeData.visualDensity, equals(VisualDensity.compact));

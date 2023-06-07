@@ -428,6 +428,7 @@ class DefaultTextEditingShortcuts extends StatelessWidget {
       case TargetPlatform.iOS:
         return _iOSShortcuts;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         return _linuxShortcuts;
       case TargetPlatform.macOS:
         return _macShortcuts;

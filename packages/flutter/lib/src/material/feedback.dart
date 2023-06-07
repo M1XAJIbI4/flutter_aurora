@@ -102,6 +102,7 @@ class Feedback {
         return SystemSound.play(SystemSoundType.click);
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return Future<void>.value();
@@ -145,6 +146,7 @@ class Feedback {
         return HapticFeedback.vibrate();
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return Future<void>.value();

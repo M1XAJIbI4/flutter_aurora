@@ -487,6 +487,7 @@ class Switch extends StatelessWidget {
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             return _buildMaterialSwitch(context);
           case TargetPlatform.iOS:

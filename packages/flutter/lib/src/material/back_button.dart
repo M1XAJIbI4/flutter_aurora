@@ -33,6 +33,7 @@ class BackButtonIcon extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return Icons.arrow_back;
       case TargetPlatform.iOS:

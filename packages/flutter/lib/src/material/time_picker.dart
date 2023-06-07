@@ -506,6 +506,7 @@ class _DayPeriodControl extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         _announceToAccessibility(context, MaterialLocalizations.of(context).anteMeridiemAbbreviation);
         break;
@@ -524,6 +525,7 @@ class _DayPeriodControl extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         _announceToAccessibility(context, MaterialLocalizations.of(context).postMeridiemAbbreviation);
         break;
@@ -2035,6 +2037,7 @@ class _TimePickerDialogState extends State<TimePickerDialog> with RestorationMix
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         _vibrateTimer?.cancel();
         _vibrateTimer = Timer(_kVibrateCommitDelay, () {
