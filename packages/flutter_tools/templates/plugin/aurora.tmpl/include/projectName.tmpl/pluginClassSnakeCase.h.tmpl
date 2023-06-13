@@ -2,12 +2,7 @@
 #define FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_H
 
 #include <flutter/plugin-interface.h>
-
-#ifdef PLUGIN_IMPL
-#define PLUGIN_EXPORT __attribute__((visibility("default")))
-#else
-#define PLUGIN_EXPORT
-#endif
+#include <{{projectName}}/globals.h>
 
 class PLUGIN_EXPORT {{pluginClass}} final : public PluginInterface
 {

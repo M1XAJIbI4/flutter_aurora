@@ -283,6 +283,7 @@
         "templates/plugin/linux.tmpl/pluginClassSnakeCase.cc.tmpl",
         "templates/plugin/aurora.tmpl/CMakeLists.txt.tmpl",
         "templates/plugin/aurora.tmpl/include/projectName.tmpl/pluginClassSnakeCase.h.tmpl",
+        "templates/plugin/aurora.tmpl/include/projectName.tmpl/globals.h.tmpl",
         "templates/plugin/aurora.tmpl/pluginClassSnakeCase.cpp.tmpl",
         "templates/plugin/macos.tmpl/Classes/pluginClass.swift.tmpl",
         "templates/plugin/README.md.tmpl",
