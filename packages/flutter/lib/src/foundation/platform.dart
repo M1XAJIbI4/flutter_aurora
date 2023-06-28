@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:io';
+
 import '_platform_io.dart'
   if (dart.library.html) '_platform_web.dart' as platform;
 
@@ -84,3 +86,21 @@ enum TargetPlatform {
 ///
 /// In general, therefore, this property should not be used in release builds.
 TargetPlatform? debugDefaultTargetPlatformOverride;
+
+/// That is true if the application run on the aurora.
+bool get kIsAurora => _kIsAurora;
+
+/// Private value if the application run on the aurora.
+bool _kIsAurora = _isAurora();
+
+/// Check is platform Aurora OS
+bool _isAurora() {
+  if (Platform.isLinux) {
+    try {
+      return File('/etc/os-release').readAsLinesSync().contains('ID=auroraos');
+    } catch (e) {
+      return false;
+    }
+  }
+  return false;
+}

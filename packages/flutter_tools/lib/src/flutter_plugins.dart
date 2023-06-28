@@ -806,6 +806,7 @@ const String _dartPluginRegistryForNonWebTemplate = '''
 // @dart = {{dartLanguageVersion}}
 
 import 'dart:io'; // flutter_ignore: dart_io_import.
+import 'package:flutter/foundation.dart' show kIsAurora;
 {{#android}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/android}}
@@ -838,13 +839,17 @@ $_dartPluginRegisterWith
       {{#ios}}
 $_dartPluginRegisterWith
       {{/ios}}
-    } else if (Platform.isLinux) {
+    } else if (kIsAurora) {
       {{#linux}}
 $_dartPluginRegisterWith
       {{/linux}}
       {{#aurora}}
 $_dartPluginRegisterWith
       {{/aurora}}
+    } else if (Platform.isLinux) {
+      {{#linux}}
+$_dartPluginRegisterWith
+      {{/linux}}
     } else if (Platform.isMacOS) {
       {{#macos}}
 $_dartPluginRegisterWith
@@ -1434,7 +1439,7 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
           plugin.pluginDartClassPlatforms[platform] == 'none') {
         continue;
       }
-      final String resolutionKey = '$platform/$implementsPackage';
+      final String resolutionKey = '$platform/${(implementsPackage ?? '').isEmpty ? plugin.name : implementsPackage}';
       if (directDependencyResolutions.containsKey(resolutionKey)) {
         final PluginInterfaceResolution? currResolution = directDependencyResolutions[resolutionKey];
         if (currResolution != null && currResolution.plugin.isDirectDependency) {
