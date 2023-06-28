@@ -840,9 +840,6 @@ $_dartPluginRegisterWith
 $_dartPluginRegisterWith
       {{/ios}}
     } else if (kIsAurora) {
-      {{#linux}}
-$_dartPluginRegisterWith
-      {{/linux}}
       {{#aurora}}
 $_dartPluginRegisterWith
       {{/aurora}}
@@ -1439,7 +1436,7 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
           plugin.pluginDartClassPlatforms[platform] == 'none') {
         continue;
       }
-      final String resolutionKey = '$platform/${(implementsPackage ?? '').isEmpty ? plugin.name : implementsPackage}';
+      final String resolutionKey = '$platform/$implementsPackage';
       if (directDependencyResolutions.containsKey(resolutionKey)) {
         final PluginInterfaceResolution? currResolution = directDependencyResolutions[resolutionKey];
         if (currResolution != null && currResolution.plugin.isDirectDependency) {
