@@ -28,6 +28,7 @@
 # Exclude Aurora OS artifacts
 !/bin/cache/artifacts
 /bin/cache/artifacts/*
+!/bin/cache/artifacts/aurora
 !/bin/cache/artifacts/engine
 /bin/cache/artifacts/engine/*
 !/bin/cache/artifacts/engine/aurora-*
