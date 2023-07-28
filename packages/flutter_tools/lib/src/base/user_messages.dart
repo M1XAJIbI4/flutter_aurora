@@ -249,8 +249,9 @@ class UserMessages {
       'Platform SDK setup: https://developer.auroraos.ru/doc/software_development/psdk/setup\n'
       'You may not have set the PSDK_DIR environment variable.';
   String get flutterEmbedderNotAvailable =>
-      'The flutter-embedder-devel package is not available in the repositories.\n'
-      'Make sure the version of the installed SDK is 4.2.0 or higher.';
+      'The flutter-embedder-devel package is not available in the platform sdk.\n'
+      'Please install all required packages according to these instruction.\n'
+      'Instruction: #todo';
 
   // Messages used in FlutterCommand
   String flutterElapsedTime(String name, String elapsedTime) => '"flutter $name" took $elapsedTime.';
