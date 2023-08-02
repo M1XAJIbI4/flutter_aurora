@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// SPDX-FileCopyrightText: 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // no-shuffle:
 //   //TODO(gspencergoog): Remove this tag once this test's state leaks/test
 //   dependencies have been fixed.
