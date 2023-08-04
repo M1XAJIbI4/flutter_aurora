@@ -19,7 +19,9 @@ open source.
 
 ## Documentation
 
-* [Install Flutter](https://flutter.dev/get-started/)
+* [Install Flutter for Aurora OS](documentation/installation.md)
+* [Flutter usage for Aurora OS](documentation/usage.md)
+* [Supported plugins for Aurora OS](#todo)
 * [Flutter documentation](https://flutter.dev/docs)
 * [Development wiki](https://github.com/flutter/flutter/wiki)
 * [Contributing to Flutter](https://github.com/flutter/flutter/blob/master/CONTRIBUTING.md)
