@@ -160,7 +160,7 @@ $ flutter pub add <PLUGIN_NAME>
 ```
 
 Однако во Flutter присутствуют и платформозависимые плагины, например `path_provider`.
-Для части таких плагинов имеется имплементация под ОС Аврора. Полный список поддерживаемых платформозависимых плагинов вы сможете найти в репозитории [flutter-plugins](#todo).
+Для части таких плагинов имеется имплементация под ОС Аврора. Полный список поддерживаемых платформозависимых плагинов вы сможете найти в репозитории [flutter-plugins](https://gitlab.com/omprussia/flutter/flutter-plugins).
 
 Для работы с платформозависимым плагином необходимо также подключить помимо его имплементацию под ОС Аврора.
 
@@ -168,11 +168,12 @@ $ flutter pub add <PLUGIN_NAME>
 
 ```yaml
 dependencies:
-    path_provider: ^2.0.7
-    path_provider_aurora:
-        git:
-            url: #todo
-            path: packages/path_provider/path_provider_aurora
+  path_provider: ^2.0.15
+  path_provider_aurora:
+    git:
+      url: git@gitlab.com:omprussia/flutter/flutter-plugins.git
+      ref: master
+      path: packages/path_provider/path_provider_aurora
 ```
 
-Информацию по подключению и использованию платформозависимых плагинов в ОС Аврора вы найдете в репозитории [flutter-plugins](#todo) в файле README.md в папке конкретного плагина.
+Информацию по подключению и использованию платформозависимых плагинов в ОС Аврора вы найдете в репозитории [flutter-plugins](https://gitlab.com/omprussia/flutter/flutter-plugins) в файле README.md в папке конкретного плагина.
