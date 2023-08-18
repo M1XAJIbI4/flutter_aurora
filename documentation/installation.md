@@ -9,7 +9,7 @@
 $ sudo apt-get install git git-lfs unzip bzip2 curl
 
 $ mkdir -p ~/.local/opt
-$ git clone https://gitlab.com/omprussia/.../flutter.git ~/.local/opt/flutter
+$ git clone https://gitlab.com/omprussia/flutter/flutter.git ~/.local/opt/flutter
 
 $ echo "alias flutter-aurora=$HOME/.local/opt/flutter/bin/flutter" >> ~/.bashrc
 $ exec bash
