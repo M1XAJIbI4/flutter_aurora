@@ -73,7 +73,7 @@ $ flutter-aurora create --platforms=aurora --template=<KEY> --org=<ORG_NAME> <AP
 
 ## Wiki
 
-Здесь собраны популярные вопросы о Flutter для ОС Аврора и ответы на них. Все вопросы и предложения приветствуем, оставляете сообщения в [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) будем разбирать каждый из них по возможности. Спасибо.
+В [Wiki](documentation/wiki.md) собраны популярные вопросы о Flutter для ОС Аврора и ответы на них. Все вопросы и предложения приветствуем, оставляете сообщения в [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) будем разбирать каждый из них по возможности. Спасибо.
 
 ## Вклад
 
