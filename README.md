@@ -22,10 +22,10 @@ Flutter SDK для ОС Аврора не состоит в [`upstream`](https:/
 $ flutter-aurora doctor
 
 # Создание нового проекта или добавление поддержки
-# ОС Аврара в уже сущесвующий проект
+# ОС Аврора в уже существующий проект
 $ flutter-aurora create --platforms=aurora --template=app
 
-# Сборка приложения 
+# Сборка приложения
 $ flutter-aurora build aurora --release
 ```
 
