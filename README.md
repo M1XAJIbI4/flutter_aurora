@@ -58,8 +58,8 @@ $ flutter-aurora create --platforms=aurora --template=<KEY> --org=<ORG_NAME> <AP
 Всего можно отметить пять видов возможных проектов на Flutter для ОС Аврора:
 
 - [Приложение](documentation/application.md);
-- [Dart package](ttps://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/dart_package.md);
-- [Plugin package](ttps://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/plugin_package.md);
+- [Dart package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/dart_package.md);
+- [Plugin package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/plugin_package.md);
 - [Qt plugin package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/qt_plugin_package.md);
 - [FFI Plugin package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/ffi_plugin_package.md).
 
