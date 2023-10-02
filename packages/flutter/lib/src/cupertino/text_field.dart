@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -882,6 +885,7 @@ class CupertinoTextField extends StatefulWidget {
       );
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return null;
@@ -1054,6 +1058,7 @@ class _CupertinoTextFieldState extends State<CupertinoTextField> with Restoratio
       case TargetPlatform.iOS:
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
@@ -1066,6 +1071,7 @@ class _CupertinoTextFieldState extends State<CupertinoTextField> with Restoratio
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
         break;
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
@@ -1238,6 +1244,7 @@ class _CupertinoTextFieldState extends State<CupertinoTextField> with Restoratio
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         textSelectionControls ??= cupertinoTextSelectionHandleControls;
 
       case TargetPlatform.macOS:

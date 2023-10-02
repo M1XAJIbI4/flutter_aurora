@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -263,6 +266,14 @@ class UserMessages {
   String pkgConfigTooOld(String minimumVersion) => 'pkg-config $minimumVersion or later is required.';
   String get gtkLibrariesMissing => 'GTK 3.0 development libraries are required for Linux development.\n'
       'They are likely available from your distribution (e.g.: apt install libgtk-3-dev)';
+
+  // Messages used in AuroraDoctorValidator
+  String get psdkMissing => 'Platfrom SDK is required for Aurora development.\n'
+      'Platform SDK setup: https://developer.auroraos.ru/doc/software_development/psdk/setup\n'
+      'You may not have set the PSDK_DIR environment variable.';
+  String get flutterEmbedderNotAvailable =>
+      'The flutter-embedder-devel package is not available in the repositories.\n'
+      'Make sure the version of the installed SDK is 4.2.0 or higher.';
 
   // Messages used in FlutterCommand
   String flutterElapsedTime(String name, String elapsedTime) => '"flutter $name" took $elapsedTime.';

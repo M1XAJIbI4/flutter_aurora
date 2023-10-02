@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -257,6 +260,7 @@ class CreateCommand extends CreateBase {
     final bool includeAndroid;
     final bool includeWeb;
     final bool includeLinux;
+    final bool includeAurora;
     final bool includeMacos;
     final bool includeWindows;
     if (template == FlutterProjectType.module) {
@@ -265,6 +269,7 @@ class CreateCommand extends CreateBase {
       includeAndroid = true;
       includeWeb = false;
       includeLinux = false;
+      includeAurora = false;
       includeMacos = false;
       includeWindows = false;
     } else if (template == FlutterProjectType.package) {
@@ -273,6 +278,7 @@ class CreateCommand extends CreateBase {
       includeAndroid = false;
       includeWeb = false;
       includeLinux = false;
+      includeAurora = false;
       includeMacos = false;
       includeWindows = false;
     } else {
@@ -280,6 +286,7 @@ class CreateCommand extends CreateBase {
       includeAndroid = featureFlags.isAndroidEnabled && platforms.contains('android');
       includeWeb = featureFlags.isWebEnabled && platforms.contains('web');
       includeLinux = featureFlags.isLinuxEnabled && platforms.contains('linux');
+      includeAurora = featureFlags.isAuroraEnabled && platforms.contains('aurora');
       includeMacos = featureFlags.isMacOSEnabled && platforms.contains('macos');
       includeWindows = featureFlags.isWindowsEnabled && platforms.contains('windows');
     }
@@ -314,6 +321,7 @@ class CreateCommand extends CreateBase {
       android: includeAndroid,
       web: includeWeb,
       linux: includeLinux,
+      aurora: includeAurora,
       macos: includeMacos,
       windows: includeWindows,
       dartSdkVersionBounds: "'>=$dartSdk <4.0.0'",
@@ -407,6 +415,7 @@ class CreateCommand extends CreateBase {
         androidPlatform: includeAndroid,
         iosPlatform: includeIos,
         linuxPlatform: includeLinux,
+        auroraPlatform: includeAurora,
         macOSPlatform: includeMacos,
         windowsPlatform: includeWindows,
         webPlatform: includeWeb,
@@ -470,7 +479,7 @@ If you prefer video documentation, consider: https://www.youtube.com/c/flutterde
 In order to run your $application, type:
 
   \$ cd $relativeAppPath
-  \$ flutter run
+  \$ flutter build ${requestedPlatforms.toString() == '[aurora]' ? 'aurora ' : ''}--release
 
 Your $application code is in $relativeAppMain.
 ''');
@@ -758,6 +767,8 @@ List<String> _getPlatformWarningList(List<String> requestedPlatforms) {
     'windows',
   if (requestedPlatforms.contains('linux') && !featureFlags.isLinuxEnabled)
     'linux',
+  if (requestedPlatforms.contains('aurora') && !featureFlags.isAuroraEnabled)
+    'aurora',
   ];
 
   return platformsToWarn;

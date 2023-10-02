@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -521,6 +524,7 @@ class MDnsVmServiceDiscovery {
       case TargetPlatform.fuchsia_x64:
       case TargetPlatform.linux_arm64:
       case TargetPlatform.linux_x64:
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.tester:
       case TargetPlatform.web_javascript:
       case TargetPlatform.windows_x64:

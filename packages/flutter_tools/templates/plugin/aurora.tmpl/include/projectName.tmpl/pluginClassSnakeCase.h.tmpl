@@ -1,0 +1,18 @@
+#ifndef FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_H
+#define FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_H
+
+#include <flutter/plugin-interface.h>
+#include <{{projectName}}/globals.h>
+
+class PLUGIN_EXPORT {{pluginClass}} final : public PluginInterface
+{
+public:
+    void RegisterWithRegistrar(PluginRegistrar &registrar) override;
+
+private:
+    void onMethodCall(const MethodCall &call);
+    void onGetPlatformVersion(const MethodCall &call);
+    void unimplemented(const MethodCall &call);
+};
+
+#endif /* FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_H */

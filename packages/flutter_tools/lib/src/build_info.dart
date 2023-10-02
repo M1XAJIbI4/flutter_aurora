@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -531,6 +534,7 @@ enum TargetPlatform {
   darwin,
   linux_x64,
   linux_arm64,
+  aurora_arm,
   windows_x64,
   fuchsia_arm64,
   fuchsia_x64,
@@ -551,6 +555,8 @@ enum TargetPlatform {
         return 'arm64';
       case TargetPlatform.fuchsia_x64:
         return 'x64';
+      case TargetPlatform.aurora_arm:
+        return 'arm';
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
       case TargetPlatform.android_arm64:
@@ -570,6 +576,7 @@ enum TargetPlatform {
   String get simpleName {
     switch (this) {
       case TargetPlatform.linux_x64:
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.darwin:
       case TargetPlatform.windows_x64:
         return 'x64';
@@ -730,6 +737,8 @@ String getNameForTargetPlatform(TargetPlatform platform, {DarwinArch? darwinArch
       return 'linux-x64';
     case TargetPlatform.linux_arm64:
       return 'linux-arm64';
+    case TargetPlatform.aurora_arm:
+      return 'aurora-arm';
     case TargetPlatform.windows_x64:
       return 'windows-x64';
     case TargetPlatform.fuchsia_arm64:
@@ -773,6 +782,8 @@ TargetPlatform getTargetPlatformForName(String platform) {
       return TargetPlatform.linux_x64;
    case 'linux-arm64':
       return TargetPlatform.linux_arm64;
+    case 'aurora-arm':
+      return TargetPlatform.aurora_arm;
     case 'windows-x64':
       return TargetPlatform.windows_x64;
     case 'web-javascript':
@@ -869,6 +880,18 @@ String getLinuxBuildDirectory([TargetPlatform? targetPlatform]) {
       targetPlatform.simpleName;
   final String subDirs = 'linux/$arch';
   return globals.fs.path.join(getBuildDirectory(), subDirs);
+}
+
+/// Return the name for the build mode, or "any" if null.
+String getNameForBuildMode(BuildMode buildMode) {
+  return buildMode.name;
+}
+
+/// Returns the Aurora build output directory.
+String getAuroraBuildDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
+  final String arch = getNameForTargetPlatform(targetPlatform);
+  final String buildMode = getNameForBuildMode(buildInfo.mode);
+  return globals.fs.path.join(getBuildDirectory(), 'aurora/$arch/$buildMode');
 }
 
 /// Returns the Windows build output directory.

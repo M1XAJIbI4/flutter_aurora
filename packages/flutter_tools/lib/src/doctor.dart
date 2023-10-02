@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -10,6 +13,8 @@ import 'package:process/process.dart';
 import 'android/android_studio_validator.dart';
 import 'android/android_workflow.dart';
 import 'artifacts.dart';
+import 'aurora/aurora_doctor.dart';
+import 'aurora/aurora_workflow.dart';
 import 'base/async_guard.dart';
 import 'base/context.dart';
 import 'base/file_system.dart';
@@ -82,6 +87,11 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
   final FeatureFlags featureFlags;
 
   late final LinuxWorkflow linuxWorkflow = LinuxWorkflow(
+    platform: platform,
+    featureFlags: featureFlags,
+  );
+
+  late final AuroraWorkflow auroraWorkflow = AuroraWorkflow(
     platform: platform,
     featureFlags: featureFlags,
   );
@@ -163,6 +173,11 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
           processManager: globals.processManager,
           userMessages: userMessages,
         ),
+      if (auroraWorkflow.appliesToHostPlatform)
+        AuroraDoctorValidator(
+          processManager: globals.processManager,
+          userMessages: userMessages,
+        ),
       if (windowsWorkflow!.appliesToHostPlatform)
         visualStudioValidator!,
       if (ideValidators.isNotEmpty)
@@ -204,6 +219,10 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
 
       if (linuxWorkflow.appliesToHostPlatform) {
         _workflows!.add(linuxWorkflow);
+      }
+
+      if (auroraWorkflow.appliesToHostPlatform) {
+        _workflows!.add(auroraWorkflow);
       }
 
       if (macOSWorkflow.appliesToHostPlatform) {
@@ -508,7 +527,7 @@ class FlutterValidator extends DoctorValidator {
 
     try {
       final FlutterVersion version = _flutterVersion();
-      final String? gitUrl = _platform.environment['FLUTTER_GIT_URL'];
+      final String gitUrl = _platform.environment['FLUTTER_GIT_URL'] ?? 'git@gitlab.com:omprussia/flutter/flutter.git';
       versionChannel = version.channel;
       frameworkVersion = version.frameworkVersion;
 
@@ -591,7 +610,7 @@ class FlutterValidator extends DoctorValidator {
     if (versionChannel != kUserBranch && frameworkVersion != '0.0.0-unknown') {
       return ValidationMessage(flutterVersionMessage);
     }
-    if (versionChannel == kUserBranch) {
+    if (versionChannel == kUserBranch && false) {
       flutterVersionMessage = '$flutterVersionMessage\n${_userMessages.flutterUnknownChannel}';
     }
     if (frameworkVersion == '0.0.0-unknown') {
@@ -612,6 +631,7 @@ class FlutterValidator extends DoctorValidator {
   /// Return a warning if the provided [binary] on the user's path does not
   /// resolve within the Flutter SDK.
   ValidationMessage? _validateSdkBinary(String binary, String flutterRoot) {
+    return null; // @todo upstream
     final String flutterBinDir = _fileSystem.path.join(flutterRoot, 'bin');
 
     final File? flutterBin = _operatingSystemUtils.which(binary);
@@ -644,7 +664,8 @@ class FlutterValidator extends DoctorValidator {
     final VersionCheckError? upstreamValidationError = VersionUpstreamValidator(version: version, platform: _platform).run();
 
     // VersionUpstreamValidator can produce an error if repositoryUrl is null
-    if (upstreamValidationError != null) {
+    // @todo upstream
+    if (upstreamValidationError != null && false) {
       final String errorMessage = upstreamValidationError.message;
       if (errorMessage.contains('could not determine the remote upstream which is being tracked')) {
         return ValidationMessage.hint(_userMessages.flutterUpstreamRepositoryUnknown);

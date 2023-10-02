@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -729,6 +732,7 @@ class AppBar extends StatefulWidget implements PreferredSizeWidget {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           return false;
         case TargetPlatform.iOS:
@@ -956,6 +960,7 @@ class _AppBarState extends State<AppBar> {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           namesRoute = true;
         case TargetPlatform.iOS:

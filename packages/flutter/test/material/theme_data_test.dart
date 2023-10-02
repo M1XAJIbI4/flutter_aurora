@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -91,6 +94,7 @@ void main() {
       case TargetPlatform.iOS:
         expect(themeData.materialTapTargetSize, MaterialTapTargetSize.padded);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(themeData.materialTapTargetSize, MaterialTapTargetSize.shrinkWrap);
@@ -417,6 +421,7 @@ void main() {
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(theme.splashFactory, equals(InkRipple.splashFactory));
@@ -431,6 +436,7 @@ void main() {
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(theme.splashFactory, equals(InkSplash.splashFactory));
@@ -444,6 +450,7 @@ void main() {
       case TargetPlatform.fuchsia:
         expect(VisualDensity.adaptivePlatformDensity, equals(VisualDensity.standard));
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(VisualDensity.adaptivePlatformDensity, equals(VisualDensity.compact));
@@ -457,6 +464,7 @@ void main() {
       case TargetPlatform.fuchsia:
         expect(VisualDensity.defaultDensityForPlatform(debugDefaultTargetPlatformOverride!), equals(VisualDensity.standard));
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(VisualDensity.defaultDensityForPlatform(debugDefaultTargetPlatformOverride!), equals(VisualDensity.compact));
@@ -471,6 +479,7 @@ void main() {
       case TargetPlatform.fuchsia:
         expect(themeData.visualDensity, equals(VisualDensity.standard));
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(themeData.visualDensity, equals(VisualDensity.compact));
@@ -483,6 +492,7 @@ void main() {
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(themeData.visualDensity, equals(VisualDensity.standard));

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -1940,6 +1943,7 @@ class EditableText extends StatefulWidget {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           break;
       }
@@ -2208,6 +2212,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return textEditingValue.text.isNotEmpty
            && !(textEditingValue.selection.start == 0
@@ -2260,6 +2265,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         case TargetPlatform.iOS:
         case TargetPlatform.macOS:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           break;
         case TargetPlatform.android:
@@ -2364,6 +2370,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
           break;
         case TargetPlatform.macOS:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           hideToolbar();
       }
@@ -2371,6 +2378,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           bringIntoView(textEditingValue.selection.extent);
         case TargetPlatform.macOS:
@@ -3691,6 +3699,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
           bringIntoView(newSelection.extent);
         }
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
@@ -4538,6 +4547,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
             throw UnimplementedError('Unexpected pointer down event for trackpad');
         }
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         widget.focusNode.unfocus();
@@ -4617,6 +4627,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
                   case TargetPlatform.macOS:
                   case TargetPlatform.fuchsia:
                   case TargetPlatform.linux:
+                  case TargetPlatform.aurora:
                   case TargetPlatform.windows:
                     // Composing text is not counted in history coalescing.
                     if (!widget.controller.value.composing.isCollapsed) {

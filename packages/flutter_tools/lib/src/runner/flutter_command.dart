@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -597,7 +600,8 @@ abstract class FlutterCommand extends Command<void> {
               'For each new version of your app, you will provide a version number to differentiate it from previous versions.\n'
               'On Android it is used as "versionName".\n'
               'On Xcode builds it is used as "CFBundleShortVersionString".\n'
-              'On Windows it is used as the major, minor, and patch parts of the product and file versions.',
+              'On Windows it is used as the major, minor, and patch parts of the product and file versions.\n'
+              'On Aurora it is used as the version in RPM spec file.',
         valueHelp: 'x.y.z');
   }
 
@@ -1812,6 +1816,11 @@ DevelopmentArtifact? artifactFromTargetPlatform(TargetPlatform targetPlatform) {
     case TargetPlatform.linux_arm64:
       if (featureFlags.isLinuxEnabled) {
         return DevelopmentArtifact.linux;
+      }
+      return null;
+    case TargetPlatform.aurora_arm:
+      if (featureFlags.isAndroidEnabled) {
+        return DevelopmentArtifact.aurora;
       }
       return null;
     case TargetPlatform.fuchsia_arm64:

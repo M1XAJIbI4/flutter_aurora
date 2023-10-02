@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -29,6 +32,7 @@ const List<String> _kAvailablePlatforms = <String>[
   'linux',
   'macos',
   'web',
+  'aurora',
 ];
 
 /// A list of all possible create platforms, even those that may not be enabled
@@ -40,6 +44,7 @@ const List<String> kAllCreatePlatforms = <String>[
   'linux',
   'macos',
   'web',
+  'aurora',
 ];
 
 const String _kDefaultPlatformArgumentHelp =
@@ -357,6 +362,7 @@ abstract class CreateBase extends FlutterCommand {
     bool android = false,
     bool web = false,
     bool linux = false,
+    bool aurora = false,
     bool macos = false,
     bool windows = false,
     bool implementationTests = false,
@@ -413,6 +419,7 @@ abstract class CreateBase extends FlutterCommand {
       'android': android,
       'web': web,
       'linux': linux,
+      'aurora': aurora,
       'macos': macos,
       'windows': windows,
       'year': DateTime.now().year,
@@ -515,6 +522,7 @@ abstract class CreateBase extends FlutterCommand {
     final bool androidPlatform = templateContext['android'] as bool? ?? false;
     final bool iosPlatform = templateContext['ios'] as bool? ?? false;
     final bool linuxPlatform = templateContext['linux'] as bool? ?? false;
+    final bool auroraPlatform = templateContext['aurora'] as bool? ?? false;
     final bool macOSPlatform = templateContext['macos'] as bool? ?? false;
     final bool windowsPlatform = templateContext['windows'] as bool? ?? false;
     final bool webPlatform = templateContext['web'] as bool? ?? false;
@@ -552,6 +560,9 @@ abstract class CreateBase extends FlutterCommand {
     }
     if (linuxPlatform) {
       platformsForMigrateConfig.add(SupportedPlatform.linux);
+    }
+    if (auroraPlatform) {
+      platformsForMigrateConfig.add(SupportedPlatform.aurora);
     }
     if (macOSPlatform) {
       platformsForMigrateConfig.add(SupportedPlatform.macos);

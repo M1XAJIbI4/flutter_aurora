@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -280,6 +283,7 @@ class Drawer extends StatelessWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         label = semanticLabel ?? MaterialLocalizations.of(context).drawerLabel;
     }
@@ -708,6 +712,7 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
         isDesktop = false;
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         isDesktop = true;
     }
@@ -751,6 +756,7 @@ class DrawerControllerState extends State<DrawerController> with SingleTickerPro
         case TargetPlatform.macOS:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           platformHasBackButton = false;
       }

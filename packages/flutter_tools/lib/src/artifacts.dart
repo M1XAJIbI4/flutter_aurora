@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -68,6 +71,9 @@ enum Artifact {
 
   /// The location of file generators.
   flutterToolsFileGenerators,
+
+  /// The flutter engine compiled for Aurora OS
+  auroraFlutterEngineSoPath,
 }
 
 /// A subset of [Artifact]s that are platform and build mode independent
@@ -136,6 +142,7 @@ TargetPlatform? _mapTargetPlatform(TargetPlatform? targetPlatform) {
     case TargetPlatform.darwin:
     case TargetPlatform.linux_x64:
     case TargetPlatform.linux_arm64:
+    case TargetPlatform.aurora_arm:
     case TargetPlatform.windows_x64:
     case TargetPlatform.fuchsia_arm64:
     case TargetPlatform.fuchsia_x64:
@@ -210,6 +217,8 @@ String? _artifactToFileName(Artifact artifact, Platform hostPlatform, [ BuildMod
       return 'font-subset$exe';
     case Artifact.constFinder:
       return 'const_finder.dart.snapshot';
+    case Artifact.auroraFlutterEngineSoPath:
+      return 'libflutter_engine.so';
     case Artifact.flutterToolsFileGenerators:
       return '';
   }
@@ -477,6 +486,8 @@ class CachedArtifacts implements Artifacts {
       case TargetPlatform.linux_arm64:
       case TargetPlatform.windows_x64:
         return _getDesktopArtifactPath(artifact, platform, mode);
+      case TargetPlatform.aurora_arm:
+        return _getAuroraArtifactPath(artifact, platform!, mode);
       case TargetPlatform.fuchsia_arm64:
       case TargetPlatform.fuchsia_x64:
         return _getFuchsiaArtifactPath(artifact, platform!, mode!);
@@ -535,6 +546,7 @@ class CachedArtifacts implements Artifacts {
       case Artifact.vmSnapshotData:
       case Artifact.windowsCppClientWrapper:
       case Artifact.windowsDesktopPath:
+      case Artifact.auroraFlutterEngineSoPath:
       case Artifact.flutterToolsFileGenerators:
         return _getHostArtifactPath(artifact, platform, mode);
     }
@@ -574,6 +586,7 @@ class CachedArtifacts implements Artifacts {
       case Artifact.vmSnapshotData:
       case Artifact.windowsCppClientWrapper:
       case Artifact.windowsDesktopPath:
+      case Artifact.auroraFlutterEngineSoPath:
       case Artifact.flutterToolsFileGenerators:
         return _getHostArtifactPath(artifact, platform, mode);
     }
@@ -625,6 +638,44 @@ class CachedArtifacts implements Artifacts {
       case Artifact.vmSnapshotData:
       case Artifact.windowsCppClientWrapper:
       case Artifact.windowsDesktopPath:
+      case Artifact.auroraFlutterEngineSoPath:
+      case Artifact.flutterToolsFileGenerators:
+        return _getHostArtifactPath(artifact, platform, mode);
+    }
+  }
+
+  String _getAuroraArtifactPath(Artifact artifact, TargetPlatform platform, BuildMode? mode) {
+    switch (artifact) {
+      case Artifact.genSnapshot:
+      case Artifact.icuData:
+      case Artifact.auroraFlutterEngineSoPath:
+        final String engineDir = _getEngineArtifactsPath(platform, mode)!;
+        return _fileSystem.path.join(engineDir, _artifactToFileName(artifact, _platform));
+      case Artifact.engineDartSdkPath:
+      case Artifact.engineDartBinary:
+      case Artifact.engineDartAotRuntime:
+      case Artifact.dart2jsSnapshot:
+      case Artifact.dart2wasmSnapshot:
+      case Artifact.wasmOptBinary:
+      case Artifact.frontendServerSnapshotForEngineDartSdk:
+      case Artifact.constFinder:
+      case Artifact.flutterMacOSFramework:
+      case Artifact.flutterPatchedSdkPath:
+      case Artifact.flutterTester:
+      case Artifact.fontSubset:
+      case Artifact.fuchsiaFlutterRunner:
+      case Artifact.fuchsiaKernelCompiler:
+      case Artifact.isolateSnapshotData:
+      case Artifact.linuxDesktopPath:
+      case Artifact.linuxHeaders:
+      case Artifact.platformKernelDill:
+      case Artifact.platformLibrariesJson:
+      case Artifact.skyEnginePath:
+      case Artifact.vmSnapshotData:
+      case Artifact.windowsCppClientWrapper:
+      case Artifact.windowsDesktopPath:
+      case Artifact.flutterXcframework:
+      case Artifact.flutterFramework:
       case Artifact.flutterToolsFileGenerators:
         return _getHostArtifactPath(artifact, platform, mode);
     }
@@ -701,6 +752,10 @@ class CachedArtifacts implements Artifacts {
                      .childDirectory(_enginePlatformDirectoryName(platform))
                      .childFile(_artifactToFileName(artifact, _platform, mode)!)
                      .path;
+      case Artifact.auroraFlutterEngineSoPath:
+        final String platformDirName = _enginePlatformDirectoryName(platform);
+        final String engineArtifactsPath = _cache.getArtifactDirectory('engine').path;
+        return _fileSystem.path.join(engineArtifactsPath, platformDirName, _artifactToFileName(artifact, _platform, mode));
       case Artifact.flutterFramework:
       case Artifact.flutterXcframework:
       case Artifact.fuchsiaFlutterRunner:
@@ -717,6 +772,8 @@ class CachedArtifacts implements Artifacts {
     switch (platform) {
       case TargetPlatform.linux_x64:
       case TargetPlatform.linux_arm64:
+      case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.darwin:
       case TargetPlatform.windows_x64:
         // TODO(zanderso): remove once debug desktop artifacts are uploaded
@@ -965,6 +1022,7 @@ class CachedLocalEngineArtifacts implements Artifacts {
       case Artifact.linuxHeaders:
       case Artifact.windowsDesktopPath:
       case Artifact.windowsCppClientWrapper:
+      case Artifact.auroraFlutterEngineSoPath:
         return _fileSystem.path.join(_hostEngineOutPath, artifactFileName);
       case Artifact.engineDartSdkPath:
         return _getDartSdkPath();
@@ -1023,6 +1081,7 @@ class CachedLocalEngineArtifacts implements Artifacts {
         return 'linux-x64';
       case TargetPlatform.windows_x64:
         return 'windows-x64';
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.ios:
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
@@ -1131,6 +1190,7 @@ class CachedLocalWebSdkArtifacts implements Artifacts {
         case Artifact.fuchsiaFlutterRunner:
         case Artifact.fontSubset:
         case Artifact.constFinder:
+        case Artifact.auroraFlutterEngineSoPath:
         case Artifact.flutterToolsFileGenerators:
           break;
       }
@@ -1221,6 +1281,7 @@ class CachedLocalWebSdkArtifacts implements Artifacts {
         return 'linux-x64';
       case TargetPlatform.windows_x64:
         return 'windows-x64';
+      case TargetPlatform.aurora_arm:
       case TargetPlatform.ios:
       case TargetPlatform.android:
       case TargetPlatform.android_arm:

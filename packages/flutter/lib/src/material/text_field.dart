@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -83,6 +86,7 @@ class _TextFieldSelectionGestureDetectorBuilder extends TextSelectionGestureDete
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           Feedback.forLongPress(_state.context);
       }
@@ -826,6 +830,7 @@ class TextField extends StatefulWidget {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return SpellCheckSuggestionsToolbar.editableText(
           editableTextState: editableTextState,
@@ -1152,6 +1157,7 @@ class _TextFieldState extends State<TextField> with RestorationMixin implements 
       case TargetPlatform.iOS:
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
@@ -1167,6 +1173,7 @@ class _TextFieldState extends State<TextField> with RestorationMixin implements 
         break;
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         if (cause == SelectionChangedCause.drag) {
           _editableText?.hideToolbar();
@@ -1268,6 +1275,7 @@ class _TextFieldState extends State<TextField> with RestorationMixin implements 
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         spellCheckConfiguration = TextField.inferAndroidSpellCheckConfiguration(
           widget.spellCheckConfiguration,
@@ -1324,6 +1332,7 @@ class _TextFieldState extends State<TextField> with RestorationMixin implements 
         selectionColor = selectionStyle.selectionColor ?? theme.colorScheme.primary.withOpacity(0.40);
 
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         forcePressEnabled = false;
         textSelectionControls ??= desktopTextSelectionHandleControls;
         paintCursorAboveText = false;

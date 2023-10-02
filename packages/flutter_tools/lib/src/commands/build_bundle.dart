@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -42,6 +45,7 @@ class BuildBundleCommand extends BuildSubCommand {
           'darwin',
           'linux-x64',
           'linux-arm64',
+          'aurora-arm',
           'windows-x64',
         ],
         help: 'The architecture for which to build the application.',
@@ -108,6 +112,11 @@ class BuildBundleCommand extends BuildSubCommand {
       case TargetPlatform.linux_x64:
       case TargetPlatform.linux_arm64:
         if (!featureFlags.isLinuxEnabled) {
+          throwToolExit('Linux is not a supported target platform.');
+        }
+        break;
+      case TargetPlatform.aurora_arm:
+        if (!featureFlags.isAuroraEnabled) {
           throwToolExit('Linux is not a supported target platform.');
         }
       case TargetPlatform.android:

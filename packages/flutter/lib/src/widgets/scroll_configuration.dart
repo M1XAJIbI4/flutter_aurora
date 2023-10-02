@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -161,6 +164,7 @@ class ScrollBehavior {
     // the Material and Cupertino subclasses as well.
     switch (getPlatform(context)) {
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         assert(details.controller != null);
@@ -183,6 +187,7 @@ class ScrollBehavior {
     switch (getPlatform(context)) {
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return child;
@@ -231,6 +236,7 @@ class ScrollBehavior {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return (PointerEvent event) => VelocityTracker.withKind(event.kind);
     }
@@ -259,6 +265,7 @@ class ScrollBehavior {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return _clampingPhysics;
     }

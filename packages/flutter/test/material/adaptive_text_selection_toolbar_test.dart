@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -71,6 +74,7 @@ void main() {
         expect(find.byType(CupertinoDesktopTextSelectionToolbar), findsOneWidget);
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(find.byType(TextSelectionToolbar), findsNothing);
         expect(find.byType(CupertinoTextSelectionToolbar), findsNothing);
@@ -159,6 +163,7 @@ void main() {
       case TargetPlatform.iOS:
         expect(find.byType(CupertinoTextSelectionToolbarButton), findsOneWidget);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(find.byType(DesktopTextSelectionToolbarButton), findsOneWidget);
       case TargetPlatform.macOS:
@@ -207,6 +212,7 @@ void main() {
         expect(findLiveTextButton(), findsOneWidget);
         expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(5));
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(find.text('Select all'), findsOneWidget);
         expect(find.byType(DesktopTextSelectionToolbarButton), findsNWidgets(5));
@@ -281,6 +287,7 @@ void main() {
         case TargetPlatform.iOS:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           expect(buttonTypes, contains(ContextMenuButtonType.selectAll));
         case TargetPlatform.macOS:
@@ -304,6 +311,7 @@ void main() {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           expect(buttonTypes, contains(ContextMenuButtonType.selectAll));
         case TargetPlatform.iOS:
@@ -364,6 +372,7 @@ void main() {
           expect(find.byType(DesktopTextSelectionToolbarButton), findsNothing);
           expect(find.byType(CupertinoDesktopTextSelectionToolbarButton), findsOneWidget);
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           expect(find.byType(TextSelectionToolbarTextButton), findsNothing);
           expect(find.byType(CupertinoTextSelectionToolbarButton), findsNothing);

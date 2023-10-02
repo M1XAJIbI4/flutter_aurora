@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -117,7 +120,7 @@ class _SelectionAreaState extends State<SelectionArea> {
     assert(debugCheckHasMaterialLocalizations(context));
     final TextSelectionControls controls = widget.selectionControls ?? switch (Theme.of(context).platform) {
       TargetPlatform.android || TargetPlatform.fuchsia => materialTextSelectionHandleControls,
-      TargetPlatform.linux || TargetPlatform.windows   => desktopTextSelectionHandleControls,
+      TargetPlatform.linux || TargetPlatform.windows || TargetPlatform.aurora => desktopTextSelectionHandleControls,
       TargetPlatform.iOS                               => cupertinoTextSelectionHandleControls,
       TargetPlatform.macOS                             => cupertinoDesktopTextSelectionHandleControls,
     };
