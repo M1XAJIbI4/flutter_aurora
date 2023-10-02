@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -84,11 +81,7 @@ import 'theme.dart';
 /// }
 /// ```
 /// {@end-tool}
-class Feedback {
-  // This class is not meant to be instantiated or extended; this constructor
-  // prevents instantiation and extension.
-  Feedback._();
-
+abstract final class Feedback {
   /// Provides platform-specific feedback for a tap.
   ///
   /// On Android the click system sound is played. On iOS this is a no-op.
@@ -105,7 +98,6 @@ class Feedback {
         return SystemSound.play(SystemSoundType.click);
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return Future<void>.value();
@@ -149,7 +141,6 @@ class Feedback {
         return HapticFeedback.vibrate();
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return Future<void>.value();

@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -69,6 +66,7 @@ class FlutterApplicationPackageFactory extends ApplicationPackageFactory {
             androidSdk: _androidSdk,
             userMessages: _userMessages,
             fileSystem: _fileSystem,
+            buildInfo: buildInfo,
           );
         }
         return AndroidApk.fromApk(
@@ -99,8 +97,6 @@ class FlutterApplicationPackageFactory extends ApplicationPackageFactory {
         return applicationBinary == null
             ? LinuxApp.fromLinuxProject(FlutterProject.current().linux)
             : LinuxApp.fromPrebuiltApp(applicationBinary);
-      case TargetPlatform.aurora_arm:
-        return null;
       case TargetPlatform.windows_x64:
         return applicationBinary == null
             ? WindowsApp.fromWindowsProject(FlutterProject.current().windows)

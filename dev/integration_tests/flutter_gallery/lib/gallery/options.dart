@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -60,8 +57,9 @@ class GalleryOptions {
 
   @override
   bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType)
+    if (other.runtimeType != runtimeType) {
       return false;
+    }
     return other is GalleryOptions
         && other.themeMode == themeMode
         && other.textScaleFactor == textScaleFactor
@@ -181,7 +179,7 @@ class _TextButton extends StatelessWidget {
     return TextButton(
       style: TextButton.styleFrom(
         foregroundColor: theme.colorScheme.onPrimary,
-        textStyle: theme.textTheme.subtitle1,
+        textStyle: theme.textTheme.titleMedium,
         padding: EdgeInsets.zero,
       ),
       onPressed: onPressed,
@@ -200,7 +198,7 @@ class _Heading extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     return _OptionsItem(
       child: DefaultTextStyle(
-        style: theme.textTheme.headline6!.copyWith(
+        style: theme.textTheme.titleLarge!.copyWith(
           fontFamily: 'GoogleSans',
           color: theme.colorScheme.onPrimary,
           fontWeight: FontWeight.w700,
@@ -238,7 +236,7 @@ class _ThemeModeItem extends StatelessWidget {
                 const Text('Theme'),
                 Text(
                   modeLabels[options!.themeMode!]!,
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).primaryTextTheme.bodyMedium,
                 ),
               ],
             ),
@@ -285,7 +283,7 @@ class _TextScaleFactorItem extends StatelessWidget {
                 const Text('Text size'),
                 Text(
                   options!.textScaleFactor!.label,
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).primaryTextTheme.bodyMedium,
                 ),
               ],
             ),
@@ -331,7 +329,7 @@ class _VisualDensityItem extends StatelessWidget {
                 const Text('Visual density'),
                 Text(
                   options!.visualDensity!.label,
-                  style: Theme.of(context).primaryTextTheme.bodyText2,
+                  style: Theme.of(context).primaryTextTheme.bodyMedium,
                 ),
               ],
             ),
@@ -421,8 +419,6 @@ class _PlatformItem extends StatelessWidget {
         return 'Cupertino';
       case TargetPlatform.linux:
         return 'Material Desktop (linux)';
-      case TargetPlatform.aurora:
-        return 'Material Desktop (aurora)';
       case TargetPlatform.macOS:
         return 'Material Desktop (macOS)';
       case TargetPlatform.windows:
@@ -442,7 +438,7 @@ class _PlatformItem extends StatelessWidget {
                 const Text('Platform mechanics'),
                  Text(
                    _platformLabel(options!.platform!),
-                   style: Theme.of(context).primaryTextTheme.bodyText2,
+                   style: Theme.of(context).primaryTextTheme.bodyMedium,
                  ),
               ],
             ),
@@ -485,8 +481,9 @@ class GalleryOptionsPage extends StatelessWidget {
   List<Widget> _enabledDiagnosticItems() {
     // Boolean showFoo options with a value of null: don't display
     // the showFoo option at all.
-    if (options == null)
+    if (options == null) {
       return const <Widget>[];
+    }
 
     return <Widget>[
       const Divider(),
@@ -520,7 +517,7 @@ class GalleryOptionsPage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     return DefaultTextStyle(
-      style: theme.primaryTextTheme.subtitle1!,
+      style: theme.primaryTextTheme.titleMedium!,
       child: ListView(
         padding: const EdgeInsets.only(bottom: 124.0),
         children: <Widget>[

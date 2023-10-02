@@ -5,12 +5,7 @@ homepage:
 
 environment:
   sdk: {{dartSdkVersionBounds}}
-{{#withPlatformChannelPluginHook}}
-  flutter: ">=3.0.0"
-{{/withPlatformChannelPluginHook}}
-{{#withFfiPluginHook}}
-  flutter: ">={{minFrameworkVersionFfiPlugin}}"
-{{/withFfiPluginHook}}
+  flutter: '>=3.3.0'
 
 dependencies:
   flutter:
@@ -23,8 +18,8 @@ dependencies:
 
 dev_dependencies:
 {{#withFfiPluginHook}}
-  ffi: ^2.0.2
-  ffigen: ^7.2.7
+  ffi: ^2.0.1
+  ffigen: ^6.1.2
 {{/withFfiPluginHook}}
   flutter_test:
     sdk: flutter
@@ -72,10 +67,6 @@ flutter:
       linux:
         ffiPlugin: true
 {{/linux}}
-{{#aurora}}
-      aurora:
-        ffiPlugin: true
-{{/aurora}}
 {{#macos}}
       macos:
         ffiPlugin: true
@@ -111,10 +102,6 @@ flutter:
       linux:
         pluginClass: {{pluginClass}}
 {{/linux}}
-{{#aurora}}
-      aurora:
-        pluginClass: {{pluginClass}}
-{{/aurora}}
 {{#macos}}
       macos:
         pluginClass: {{pluginClass}}

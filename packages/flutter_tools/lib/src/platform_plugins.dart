@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -21,6 +18,10 @@ const String kFfiPlugin = 'ffiPlugin';
 
 // Constant for 'defaultPackage' key in plugin maps.
 const String kDefaultPackage = 'default_package';
+
+/// Constant for 'sharedDarwinSource' key in plugin maps.
+/// Can be set for iOS and macOS plugins.
+const String kSharedDarwinSource = 'sharedDarwinSource';
 
 /// Constant for 'supportedVariants' key in plugin maps.
 const String kSupportedVariants = 'supportedVariants';
@@ -53,6 +54,11 @@ abstract class NativeOrDartPlugin {
 
   /// Determines whether the plugin has a method channel implementation.
   bool hasMethodChannel();
+}
+
+abstract class DarwinPlugin {
+  /// Indicates the iOS and macOS native code is shareable the subdirectory "darwin",
+  bool get sharedDarwinSource;
 }
 
 /// Contains parameters to template an Android plugin.
@@ -104,9 +110,6 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
   bool hasDart() => dartPluginClass != null;
 
   static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
     return (yaml['package'] is String && yaml[kPluginClass] is String) ||
         yaml[kDartPluginClass] is String ||
         yaml[kFfiPlugin] == true ||
@@ -155,7 +158,6 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
   late final Set<String> _supportedEmbeddings = _getSupportedEmbeddings();
 
   Set<String> _getSupportedEmbeddings() {
-    assert(pluginPath != null);
     final Set<String> supportedEmbeddings = <String>{};
     final String baseMainPath = _fileSystem.path.join(
       pluginPath,
@@ -230,7 +232,7 @@ class AndroidPlugin extends PluginPlatform implements NativeOrDartPlugin {
 ///   - the [dartPluginClass] that will be the entry point for the plugin's
 ///     Dart code
 /// is required.
-class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
+class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin, DarwinPlugin {
   const IOSPlugin({
     required this.name,
     required this.classPrefix,
@@ -238,7 +240,9 @@ class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
     this.dartPluginClass,
     bool? ffiPlugin,
     this.defaultPackage,
-  }) : ffiPlugin = ffiPlugin ?? false;
+    bool? sharedDarwinSource,
+  }) : ffiPlugin = ffiPlugin ?? false,
+       sharedDarwinSource = sharedDarwinSource ?? false;
 
   factory IOSPlugin.fromYaml(String name, YamlMap yaml) {
     assert(validate(yaml)); // TODO(zanderso): https://github.com/flutter/flutter/issues/67241
@@ -249,16 +253,15 @@ class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
       dartPluginClass: yaml[kDartPluginClass] as String?,
       ffiPlugin: yaml[kFfiPlugin] as bool?,
       defaultPackage: yaml[kDefaultPackage] as String?,
+      sharedDarwinSource: yaml[kSharedDarwinSource] as bool?,
     );
   }
 
   static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
     return yaml[kPluginClass] is String ||
         yaml[kDartPluginClass] is String ||
         yaml[kFfiPlugin] == true ||
+        yaml[kSharedDarwinSource] == true ||
         yaml[kDefaultPackage] is String;
   }
 
@@ -273,6 +276,11 @@ class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
   final String? dartPluginClass;
   final bool ffiPlugin;
   final String? defaultPackage;
+
+  /// Indicates the iOS native code is shareable with macOS in
+  /// the subdirectory "darwin", otherwise in the subdirectory "ios".
+  @override
+  final bool sharedDarwinSource;
 
   @override
   bool hasMethodChannel() => pluginClass != null;
@@ -291,6 +299,7 @@ class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
       if (pluginClass != null) 'class': pluginClass,
       if (dartPluginClass != null) kDartPluginClass : dartPluginClass,
       if (ffiPlugin) kFfiPlugin: true,
+      if (sharedDarwinSource) kSharedDarwinSource: true,
       if (defaultPackage != null) kDefaultPackage : defaultPackage,
     };
   }
@@ -301,14 +310,16 @@ class IOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
 /// The [name] of the plugin is required. Either [dartPluginClass] or
 /// [pluginClass] or [ffiPlugin] are required.
 /// [pluginClass] will be the entry point to the plugin's native code.
-class MacOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
+class MacOSPlugin extends PluginPlatform implements NativeOrDartPlugin, DarwinPlugin {
   const MacOSPlugin({
     required this.name,
     this.pluginClass,
     this.dartPluginClass,
     bool? ffiPlugin,
     this.defaultPackage,
-  }) : ffiPlugin = ffiPlugin ?? false;
+    bool? sharedDarwinSource,
+  }) : ffiPlugin = ffiPlugin ?? false,
+       sharedDarwinSource = sharedDarwinSource ?? false;
 
   factory MacOSPlugin.fromYaml(String name, YamlMap yaml) {
     assert(validate(yaml));
@@ -323,16 +334,15 @@ class MacOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
       dartPluginClass: yaml[kDartPluginClass] as String?,
       ffiPlugin: yaml[kFfiPlugin] as bool?,
       defaultPackage: yaml[kDefaultPackage] as String?,
+      sharedDarwinSource: yaml[kSharedDarwinSource] as bool?,
     );
   }
 
   static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
     return yaml[kPluginClass] is String ||
         yaml[kDartPluginClass] is String ||
         yaml[kFfiPlugin] == true ||
+        yaml[kSharedDarwinSource] == true ||
         yaml[kDefaultPackage] is String;
   }
 
@@ -343,6 +353,11 @@ class MacOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
   final String? dartPluginClass;
   final bool ffiPlugin;
   final String? defaultPackage;
+
+  /// Indicates the macOS native code is shareable with iOS in
+  /// the subdirectory "darwin", otherwise in the subdirectory "macos".
+  @override
+  final bool sharedDarwinSource;
 
   @override
   bool hasMethodChannel() => pluginClass != null;
@@ -360,6 +375,7 @@ class MacOSPlugin extends PluginPlatform implements NativeOrDartPlugin {
       if (pluginClass != null) 'class': pluginClass,
       if (dartPluginClass != null) kDartPluginClass: dartPluginClass,
       if (ffiPlugin) kFfiPlugin: true,
+      if (sharedDarwinSource) kSharedDarwinSource: true,
       if (defaultPackage != null) kDefaultPackage: defaultPackage,
     };
   }
@@ -417,10 +433,6 @@ class WindowsPlugin extends PluginPlatform
   }
 
   static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
-
     return yaml[kPluginClass] is String ||
         yaml[kDartPluginClass] is String ||
         yaml[kFfiPlugin] == true ||
@@ -492,9 +504,6 @@ class LinuxPlugin extends PluginPlatform implements NativeOrDartPlugin {
   }
 
   static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
     return yaml[kPluginClass] is String ||
         yaml[kDartPluginClass] is String ||
         yaml[kFfiPlugin] == true ||
@@ -502,76 +511,6 @@ class LinuxPlugin extends PluginPlatform implements NativeOrDartPlugin {
   }
 
   static const String kConfigKey = 'linux';
-
-  final String name;
-  final String? pluginClass;
-  final String? dartPluginClass;
-  final bool ffiPlugin;
-  final String? defaultPackage;
-
-  @override
-  bool hasMethodChannel() => pluginClass != null;
-
-  @override
-  bool hasFfi() => ffiPlugin;
-
-  @override
-  bool hasDart() => dartPluginClass != null;
-
-  @override
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      if (pluginClass != null) 'class': pluginClass,
-      if (pluginClass != null) 'filename': _filenameForCppClass(pluginClass!),
-      if (dartPluginClass != null) kDartPluginClass: dartPluginClass,
-      if (ffiPlugin) kFfiPlugin: true,
-      if (defaultPackage != null) kDefaultPackage: defaultPackage,
-    };
-  }
-}
-
-/// Contains the parameters to template a Aurora plugin.
-///
-/// The [name] of the plugin is required. Either [dartPluginClass] or [pluginClass] are required.
-/// [pluginClass] will be the entry point to the plugin's native code.
-class AuroraPlugin extends PluginPlatform implements NativeOrDartPlugin {
-  const AuroraPlugin({
-    required this.name,
-    this.pluginClass,
-    this.dartPluginClass,
-    bool? ffiPlugin,
-    this.defaultPackage,
-  })  : ffiPlugin = ffiPlugin ?? false,
-        assert(pluginClass != null || dartPluginClass != null || (ffiPlugin ?? false) || defaultPackage != null);
-
-  factory AuroraPlugin.fromYaml(String name, YamlMap yaml) {
-    assert(validate(yaml));
-    // Treat 'none' as not present. See https://github.com/flutter/flutter/issues/57497.
-    String? pluginClass = yaml[kPluginClass] as String?;
-    if (pluginClass == 'none') {
-      pluginClass = null;
-    }
-    return AuroraPlugin(
-      name: name,
-      pluginClass: pluginClass,
-      dartPluginClass: yaml[kDartPluginClass] as String?,
-      ffiPlugin: yaml[kFfiPlugin] as bool?,
-      defaultPackage: yaml[kDefaultPackage] as String?,
-    );
-  }
-
-  static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
-    return yaml[kPluginClass] is String ||
-        yaml[kDartPluginClass] is String ||
-        yaml[kFfiPlugin] == true ||
-        yaml[kDefaultPackage] is String;
-  }
-
-  static const String kConfigKey = 'aurora';
 
   final String name;
   final String? pluginClass;
@@ -614,19 +553,17 @@ class WebPlugin extends PluginPlatform {
   });
 
   factory WebPlugin.fromYaml(String name, YamlMap yaml) {
-    assert(validate(yaml));
+    if (yaml['pluginClass'] is! String) {
+      throwToolExit('The plugin `$name` is missing the required field `pluginClass` in pubspec.yaml');
+    }
+    if (yaml['fileName'] is! String) {
+      throwToolExit('The plugin `$name` is missing the required field `fileName` in pubspec.yaml');
+    }
     return WebPlugin(
       name: name,
       pluginClass: yaml['pluginClass'] as String,
       fileName: yaml['fileName'] as String,
     );
-  }
-
-  static bool validate(YamlMap yaml) {
-    if (yaml == null) {
-      return false;
-    }
-    return yaml['pluginClass'] is String && yaml['fileName'] is String;
   }
 
   static const String kConfigKey = 'web';

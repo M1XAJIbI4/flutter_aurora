@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -107,6 +104,7 @@ const String _kFlutterPluginsNameKey = 'name';
 const String _kFlutterPluginsPathKey = 'path';
 const String _kFlutterPluginsDependenciesKey = 'dependencies';
 const String _kFlutterPluginsHasNativeBuildKey = 'native_build';
+const String _kFlutterPluginsSharedDarwinSource = 'shared_darwin_source';
 
 /// Filters [plugins] to those supported by [platformKey].
 List<Map<String, Object>> _filterPluginsByPlatform(List<Plugin> plugins, String platformKey) {
@@ -122,6 +120,8 @@ List<Map<String, Object>> _filterPluginsByPlatform(List<Plugin> plugins, String 
     pluginInfo.add(<String, Object>{
       _kFlutterPluginsNameKey: plugin.name,
       _kFlutterPluginsPathKey: globals.fsUtils.escapePath(plugin.path),
+      if (platformPlugin is DarwinPlugin && (platformPlugin as DarwinPlugin).sharedDarwinSource)
+        _kFlutterPluginsSharedDarwinSource: (platformPlugin as DarwinPlugin).sharedDarwinSource,
       if (platformPlugin is NativeOrDartPlugin)
         _kFlutterPluginsHasNativeBuildKey: (platformPlugin as NativeOrDartPlugin).hasMethodChannel() || (platformPlugin as NativeOrDartPlugin).hasFfi(),
       _kFlutterPluginsDependenciesKey: <String>[...plugin.dependencies.where(pluginNames.contains)],
@@ -188,7 +188,6 @@ bool _writeFlutterPluginsList(FlutterProject project, List<Plugin> plugins) {
   final String androidKey = project.android.pluginConfigKey;
   final String macosKey = project.macos.pluginConfigKey;
   final String linuxKey = project.linux.pluginConfigKey;
-  final String auroraKey = project.aurora.pluginConfigKey;
   final String windowsKey = project.windows.pluginConfigKey;
   final String webKey = project.web.pluginConfigKey;
 
@@ -197,7 +196,6 @@ bool _writeFlutterPluginsList(FlutterProject project, List<Plugin> plugins) {
   pluginsMap[androidKey] = _filterPluginsByPlatform(plugins, androidKey);
   pluginsMap[macosKey] = _filterPluginsByPlatform(plugins, macosKey);
   pluginsMap[linuxKey] = _filterPluginsByPlatform(plugins, linuxKey);
-  pluginsMap[auroraKey] = _filterPluginsByPlatform(plugins, auroraKey);
   pluginsMap[windowsKey] = _filterPluginsByPlatform(plugins, windowsKey);
   pluginsMap[webKey] = _filterPluginsByPlatform(plugins, webKey);
 
@@ -331,7 +329,7 @@ public final class GeneratedPluginRegistrant {
   {{#supportsEmbeddingV2}}
     try {
       flutterEngine.getPlugins().add(new {{package}}.{{class}}());
-    } catch(Exception e) {
+    } catch (Exception e) {
       Log.e(TAG, "Error registering plugin {{name}}, {{package}}.{{class}}", e);
     }
   {{/supportsEmbeddingV2}}
@@ -339,7 +337,7 @@ public final class GeneratedPluginRegistrant {
     {{#supportsEmbeddingV1}}
     try {
       {{package}}.{{class}}.registerWith(shimPluginRegistry.registrarFor("{{package}}.{{class}}"));
-    } catch(Exception e) {
+    } catch (Exception e) {
       Log.e(TAG, "Error registering plugin {{name}}, {{package}}.{{class}}", e);
     }
     {{/supportsEmbeddingV1}}
@@ -363,7 +361,6 @@ List<Map<String, Object?>> _extractPlatformMaps(List<Plugin> plugins, String typ
 /// Returns the version of the Android embedding that the current
 /// [project] is using.
 AndroidEmbeddingVersion _getAndroidEmbeddingVersion(FlutterProject project) {
-  assert(project.android != null);
   return project.android.getEmbeddingVersion();
 }
 
@@ -427,7 +424,6 @@ Future<void> _writeAndroidPluginRegistrant(FlutterProject project, List<Plugin> 
         );
       }
       templateContent = _androidPluginRegistryTemplateNewEmbedding;
-      break;
     case AndroidEmbeddingVersion.v1:
       globals.printWarning(
         'This app is using a deprecated version of the Android embedding.\n'
@@ -441,13 +437,12 @@ Future<void> _writeAndroidPluginRegistrant(FlutterProject project, List<Plugin> 
         if (!supportsEmbeddingV1 && supportsEmbeddingV2) {
           throwToolExit(
             'The plugin `${plugin['name']}` requires your app to be migrated to '
-            'the Android embedding v2. Follow the steps on https://flutter.dev/go/android-project-migration '
+            'the Android embedding v2. Follow the steps on the migration doc above '
             'and re-run this command.'
           );
         }
       }
       templateContent = _androidPluginRegistryTemplateOldEmbedding;
-      break;
   }
   globals.printTrace('Generating $registryPath');
   _renderTemplateToFile(
@@ -700,92 +695,6 @@ foreach(ffi_plugin ${FLUTTER_FFI_PLUGIN_LIST})
 endforeach(ffi_plugin)
 ''';
 
-const String _auroraPluginCmakefileTemplate = r'''
-#
-# Generated file, do not edit.
-#
-set(ROOT_PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
-
-function(add_library TARGET)
-    _add_library(${TARGET} ${ARGN})
-
-    if (
-{{#methodChannelPlugins}}
-      "${TARGET}" MATCHES "^{{name}}_platform_plugin$" OR
-{{/methodChannelPlugins}}
-{{#ffiPlugins}}
-      "${TARGET}" MATCHES "^{{name}}$" OR
-{{/ffiPlugins}}
-      FALSE
-    )
-      add_custom_command(TARGET ${TARGET} POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy
-                        "$<TARGET_FILE:${TARGET}>"
-                        "${ROOT_PROJECT_BINARY_DIR}/bundle/lib/$<TARGET_FILE_NAME:${TARGET}>")
-    endif()
-endfunction()
-
-list(APPEND FLUTTER_PLATFORM_PLUGIN_LIST
-{{#methodChannelPlugins}}
-    {{name}}
-{{/methodChannelPlugins}}
-)
-
-list(APPEND FLUTTER_FFI_PLUGIN_LIST
-{{#ffiPlugins}}
-    {{name}}
-{{/ffiPlugins}}
-)
-
-foreach(PLUGIN ${FLUTTER_PLATFORM_PLUGIN_LIST})
-    add_subdirectory({{pluginsDir}}/${PLUGIN}/{{os}} plugins/${PLUGIN})
-    target_link_libraries(${BINARY_NAME} PRIVATE ${PLUGIN}_platform_plugin)
-endforeach(PLUGIN)
-
-foreach(FFI_PLUGIN ${FLUTTER_FFI_PLUGIN_LIST})
-    add_subdirectory({{pluginsDir}}/${FFI_PLUGIN}/{{os}} plugins/${FFI_PLUGIN})
-endforeach(FFI_PLUGIN)
-''';
-
-
-const String _auroraPluginRegistryHeaderTemplate = '''
-//
-//  Generated file. Do not edit.
-//
-
-// clang-format off
-
-#ifndef GENERATED_PLUGIN_REGISTRANT
-#define GENERATED_PLUGIN_REGISTRANT
-
-void RegisterPlugins();
-
-#endif /* GENERATED_PLUGIN_REGISTRANT */
-''';
-
-const String _auroraPluginRegistryImplementationTemplate = '''
-//
-//  Generated file. Do not edit.
-//
-
-// clang-format off
-
-#include <flutter/application.h>
-{{#methodChannelPlugins}}
-#include <{{name}}/{{filename}}.h>
-{{/methodChannelPlugins}}
-
-#include "generated_plugin_registrant.h"
-
-void RegisterPlugins() {
-    Application::RegisterPlugins({
-{{#methodChannelPlugins}}
-        std::make_shared<{{class}}>(),
-{{/methodChannelPlugins}}
-    });
-}
-''';
-
 const String _dartPluginRegisterWith = r'''
       try {
         {{dartClass}}.registerWith();
@@ -794,7 +703,6 @@ const String _dartPluginRegisterWith = r'''
           '`{{pluginName}}` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
-        rethrow;
       }
 ''';
 
@@ -809,7 +717,6 @@ const String _dartPluginRegistryForNonWebTemplate = '''
 // @dart = {{dartLanguageVersion}}
 
 import 'dart:io'; // flutter_ignore: dart_io_import.
-import 'package:flutter/foundation.dart' show kIsAurora;
 {{#android}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/android}}
@@ -819,9 +726,6 @@ import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{#linux}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/linux}}
-{{#aurora}}
-import 'package:{{pluginName}}/{{pluginName}}.dart';
-{{/aurora}}
 {{#macos}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/macos}}
@@ -842,10 +746,6 @@ $_dartPluginRegisterWith
       {{#ios}}
 $_dartPluginRegisterWith
       {{/ios}}
-    } else if (kIsAurora) {
-      {{#aurora}}
-$_dartPluginRegisterWith
-      {{/aurora}}
     } else if (Platform.isLinux) {
       {{#linux}}
 $_dartPluginRegisterWith
@@ -952,46 +852,6 @@ Future<void> _writePluginCmakefile(File destinationFile, Map<String, Object> tem
   );
 }
 
-Future<void> _writeAuroraPluginFiles(FlutterProject project, List<Plugin> plugins) async {
-  final List<Plugin> methodChannelPlugins = _filterMethodChannelPlugins(plugins, AuroraPlugin.kConfigKey);
-  final List<Map<String, Object?>> auroraMethodChannelPlugins = _extractPlatformMaps(methodChannelPlugins, AuroraPlugin.kConfigKey);
-  final List<Plugin> ffiPlugins = _filterFfiPlugins(plugins, AuroraPlugin.kConfigKey)..removeWhere(methodChannelPlugins.contains);
-  final List<Map<String, Object?>> auroraFfiPlugins = _extractPlatformMaps(ffiPlugins, AuroraPlugin.kConfigKey);
-  final Map<String, Object> context = <String, Object>{
-    'os': 'aurora',
-    'methodChannelPlugins': auroraMethodChannelPlugins,
-    'ffiPlugins': auroraFfiPlugins,
-    'pluginsDir': _cmakeRelativePluginSymlinkDirectoryPath(project.aurora),
-  };
-
-  await _writeAuroraPluginRegistrant(project.aurora.managedDirectory, context);
-  await _writeAuroraPluginCmakefile(project.aurora.generatedPluginCmakeFile, context, globals.templateRenderer);
-}
-
-Future<void> _writeAuroraPluginRegistrant(Directory destination, Map<String, Object> templateContext) async {
-  _renderTemplateToFile(
-    _auroraPluginRegistryHeaderTemplate,
-    templateContext,
-    destination.childFile('generated_plugin_registrant.h'),
-    globals.templateRenderer,
-  );
-  _renderTemplateToFile(
-    _auroraPluginRegistryImplementationTemplate,
-    templateContext,
-    destination.childFile('generated_plugin_registrant.cpp'),
-    globals.templateRenderer,
-  );
-}
-
-Future<void> _writeAuroraPluginCmakefile(File destinationFile, Map<String, Object> templateContext, TemplateRenderer templateRenderer) async {
-  _renderTemplateToFile(
-    _auroraPluginCmakefileTemplate,
-    templateContext,
-    destinationFile,
-    templateRenderer,
-  );
-}
-
 Future<void> _writeMacOSPluginRegistrant(FlutterProject project, List<Plugin> plugins) async {
   final List<Plugin> methodChannelPlugins = _filterMethodChannelPlugins(plugins, MacOSPlugin.kConfigKey);
   final List<Map<String, Object?>> macosMethodChannelPlugins = _extractPlatformMaps(methodChannelPlugins, MacOSPlugin.kConfigKey);
@@ -1048,9 +908,8 @@ List<Plugin> _filterPluginsByVariant(List<Plugin> plugins, String platformKey, P
     if (platformPlugin == null) {
       return false;
     }
-    assert(variant == null || platformPlugin is VariantPlatformPlugin);
-    return variant == null ||
-        (platformPlugin as VariantPlatformPlugin).supportedVariants.contains(variant);
+    assert(platformPlugin is VariantPlatformPlugin);
+    return (platformPlugin as VariantPlatformPlugin).supportedVariants.contains(variant);
   }).toList();
 }
 
@@ -1133,13 +992,6 @@ void createPluginSymlinks(FlutterProject project, {bool force = false, @visibleF
     _createPlatformPluginSymlinks(
       project.linux.pluginSymlinkDirectory,
       platformPlugins[project.linux.pluginConfigKey] as List<Object?>?,
-      force: force,
-    );
-  }
-  if (localFeatureFlags.isAuroraEnabled && project.aurora.existsSync()) {
-    _createPlatformPluginSymlinks(
-      project.aurora.pluginSymlinkDirectory,
-      platformPlugins[project.aurora.pluginConfigKey] as List<Object?>?,
       force: force,
     );
   }
@@ -1288,7 +1140,6 @@ Future<void> injectPlugins(
   bool androidPlatform = false,
   bool iosPlatform = false,
   bool linuxPlatform = false,
-  bool auroraPlatform = false,
   bool macOSPlatform = false,
   bool windowsPlatform = false,
 }) async {
@@ -1303,9 +1154,6 @@ Future<void> injectPlugins(
   }
   if (linuxPlatform) {
     await _writeLinuxPluginFiles(project, plugins);
-  }
-  if (auroraPlatform) {
-    await _writeAuroraPluginFiles(project, plugins);
   }
   if (macOSPlatform) {
     await _writeMacOSPluginRegistrant(project, plugins);
@@ -1340,13 +1188,13 @@ bool hasPlugins(FlutterProject project) {
 
 /// Resolves the platform implementation for Dart-only plugins.
 ///
-///   * If there are multiple direct pub dependencies on packages that implement the
-///     frontend plugin for the current platform, fail.
+///   * If there is only one dependency on a package that implements the
+///     frontend plugin for the current platform, use that.
 ///   * If there is a single direct dependency on a package that implements the
-///     frontend plugin for the target platform, this package is the selected implementation.
-///   * If there is no direct dependency on a package that implements the frontend
-///     plugin for the target platform, and the frontend plugin has a default implementation
-///     for the target platform the default implementation is selected.
+///     frontend plugin for the current platform, use that.
+///   * If there is no direct dependency on a package that implements the
+///     frontend plugin, but there is a default for the current platform,
+///     use that.
 ///   * Else fail.
 ///
 ///  For more details, https://flutter.dev/go/federated-plugins.
@@ -1360,15 +1208,18 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
     AndroidPlugin.kConfigKey,
     IOSPlugin.kConfigKey,
     LinuxPlugin.kConfigKey,
-    AuroraPlugin.kConfigKey,
     MacOSPlugin.kConfigKey,
     WindowsPlugin.kConfigKey,
   ];
-  final Map<String, PluginInterfaceResolution> directDependencyResolutions
-      = <String, PluginInterfaceResolution>{};
+  final Map<String, List<PluginInterfaceResolution>> possibleResolutions
+      = <String, List<PluginInterfaceResolution>>{};
   final Map<String, String> defaultImplementations = <String, String>{};
-  bool didFindError = false;
+  // Generates a key for the maps above.
+  String getResolutionKey({required String platform, required String packageName}) {
+    return '$packageName:$platform';
+  }
 
+  bool hasPubspecError = false;
   for (final Plugin plugin in plugins) {
     for (final String platform in platforms) {
       if (plugin.platforms[platform] == null &&
@@ -1407,11 +1258,12 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
               '\n'
             );
           }
-          didFindError = true;
+          hasPubspecError = true;
           continue;
         }
+        final String defaultImplementationKey = getResolutionKey(platform: platform, packageName: plugin.name);
         if (defaultImplementation != null) {
-          defaultImplementations['$platform/${plugin.name}'] = defaultImplementation;
+          defaultImplementations[defaultImplementationKey] = defaultImplementation;
           continue;
         } else {
           // An app-facing package (i.e., one with no 'implements') with an
@@ -1431,52 +1283,87 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
             minFlutterVersion.compareTo(semver.Version(2, 11, 0)) >= 0;
           if (!isDesktop || hasMinVersionForImplementsRequirement) {
             implementsPackage = plugin.name;
-            defaultImplementations['$platform/${plugin.name}'] = plugin.name;
+            defaultImplementations[defaultImplementationKey] = plugin.name;
+          } else {
+            // If it doesn't meet any of the conditions, it isn't eligible for
+            // auto-registration.
+            continue;
           }
         }
       }
+      // If there's no Dart implementation, there's nothing to register.
       if (plugin.pluginDartClassPlatforms[platform] == null ||
           plugin.pluginDartClassPlatforms[platform] == 'none') {
         continue;
       }
-      final String resolutionKey = '$platform/$implementsPackage';
-      if (directDependencyResolutions.containsKey(resolutionKey)) {
-        final PluginInterfaceResolution? currResolution = directDependencyResolutions[resolutionKey];
-        if (currResolution != null && currResolution.plugin.isDirectDependency) {
-          if (plugin.isDirectDependency) {
-            if (throwOnPluginPubspecError) {
-              globals.printError(
-                'Plugin `${plugin.name}` implements an interface for `$platform`, which was already '
-                'implemented by plugin `${currResolution.plugin.name}`.\n'
-                'To fix this issue, remove either dependency from pubspec.yaml.'
-                '\n\n'
-              );
-            }
-            didFindError = true;
-          }
-          // Use the plugin implementation added by the user as a direct dependency.
-          continue;
-        }
+
+      // If it hasn't been skipped, it's a candidate for auto-registration, so
+      // add it as a possible resolution.
+      final String resolutionKey = getResolutionKey(platform: platform, packageName: implementsPackage);
+      if (!possibleResolutions.containsKey(resolutionKey)) {
+        possibleResolutions[resolutionKey] = <PluginInterfaceResolution>[];
       }
-      directDependencyResolutions[resolutionKey] = PluginInterfaceResolution(
+      possibleResolutions[resolutionKey]!.add(PluginInterfaceResolution(
         plugin: plugin,
         platform: platform,
-      );
+      ));
     }
   }
-  if (didFindError && throwOnPluginPubspecError) {
+  if (hasPubspecError && throwOnPluginPubspecError) {
     throwToolExit('Please resolve the errors');
   }
+
+  // Now resolve all the possible resolutions to a single option for each
+  // plugin, or throw if that's not possible.
+  bool hasResolutionError = false;
   final List<PluginInterfaceResolution> finalResolution = <PluginInterfaceResolution>[];
-  for (final MapEntry<String, PluginInterfaceResolution> resolution in directDependencyResolutions.entries) {
-    if (resolution.value.plugin.isDirectDependency) {
-      finalResolution.add(resolution.value);
-    } else if (defaultImplementations.containsKey(resolution.key)) {
-      // Pick the default implementation.
-      if (defaultImplementations[resolution.key] == resolution.value.plugin.name) {
-        finalResolution.add(resolution.value);
+  for (final MapEntry<String, List<PluginInterfaceResolution>> entry in possibleResolutions.entries) {
+    final List<PluginInterfaceResolution> candidates = entry.value;
+    // If there's only one candidate, use it.
+    if (candidates.length == 1) {
+      finalResolution.add(candidates.first);
+      continue;
+    }
+    // Next, try direct dependencies of the resolving application.
+    final Iterable<PluginInterfaceResolution> directDependencies = candidates.where((PluginInterfaceResolution r) {
+      return r.plugin.isDirectDependency;
+    });
+    if (directDependencies.isNotEmpty) {
+      if (directDependencies.length > 1) {
+        globals.printError(
+          'Plugin ${entry.key} has conflicting direct dependency implementations:\n'
+          '${directDependencies.map((PluginInterfaceResolution r) => '  ${r.plugin.name}\n').join()}'
+          'To fix this issue, remove all but one of these dependencies from pubspec.yaml.\n'
+        );
+        hasResolutionError = true;
+      } else {
+        finalResolution.add(directDependencies.first);
+      }
+      continue;
+    }
+    // Next, defer to the default implementation if there is one.
+    final String? defaultPackageName = defaultImplementations[entry.key];
+    if (defaultPackageName != null) {
+      final int defaultIndex = candidates
+          .indexWhere((PluginInterfaceResolution r) => r.plugin.name == defaultPackageName);
+      if (defaultIndex != -1) {
+        finalResolution.add(candidates[defaultIndex]);
+        continue;
       }
     }
+    // Otherwise, require an explicit choice.
+    if (candidates.length > 1) {
+      globals.printError(
+        'Plugin ${entry.key} has multiple possible implementations:\n'
+        '${candidates.map((PluginInterfaceResolution r) => '  ${r.plugin.name}\n').join()}'
+        'To fix this issue, add one of these dependencies to pubspec.yaml.\n'
+      );
+      hasResolutionError = true;
+      continue;
+    }
+  }
+  if (hasResolutionError) {
+    throwToolExit('Please resolve the errors');
   }
   return finalResolution;
 }
@@ -1518,7 +1405,6 @@ Future<void> generateMainDartWithPluginRegistrant(
     AndroidPlugin.kConfigKey: <Object?>[],
     IOSPlugin.kConfigKey: <Object?>[],
     LinuxPlugin.kConfigKey: <Object?>[],
-    AuroraPlugin.kConfigKey: <Object?>[],
     MacOSPlugin.kConfigKey: <Object?>[],
     WindowsPlugin.kConfigKey: <Object?>[],
   };
