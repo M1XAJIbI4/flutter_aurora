@@ -1,9 +1,8 @@
-# Flutter SDK for ОС Аврора
+# Flutter SDK для ОС Аврора
 
 ![preview.png](documentation/data/preview.png)
 
 [Flutter SDK](https://github.com/flutter/flutter) с поддержкой платформы ОС Аврора для создания приложений Flutter.
-[![SLSA 1](https://slsa.dev/images/gh-badge-level1.svg)](https://slsa.dev)
 
 [Flutter](https://flutter.dev/) — это SDK Google для создания красивых и быстрых пользовательских интерфейсов для мобильных устройств, Интернета и настольных компьютеров на основе единой базы кода. Flutter работает с существующим кодом, используется разработчиками и организациями по всему миру, он бесплатен и имеет открытый исходный код.
 
@@ -30,7 +29,7 @@ $ flutter-aurora create --platforms=aurora --template=app
 $ flutter-aurora build aurora --release
 ```
 
-Подробнее о поддержке смотрите раздел "[Flutter CLI на ОС Аврора](documentation/cli.md)".
+Подробнее о поддержке CLI смотрите раздел "[Flutter CLI на ОС Аврора](documentation/cli.md)".
 
 ### IDE
 
@@ -43,6 +42,10 @@ $ flutter-aurora build aurora --release
 ## Отладка
 
 На данный момент изучение этого вопроса находится в очереди. Вы можете помочь, оставив сообщение в раздел [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) о встреченных вами проблем с отладкой и их решению.
+
+## Сборка Flutter Engine
+
+[Flutter Engine](https://github.com/flutter/engine) - необходимая библиотека для работы Flutter приложения. Flutter SDK уже содержит библиотеку и собирать ее отдельно не нужно. Если же необходимость собственной сборки появится, в разделе [Сборка Flutter Engine](documentation/engine.md) вы найдете описание сборки engine под `armv7hl`.
 
 ## Шаблоны
 
@@ -70,7 +73,7 @@ $ flutter-aurora create --platforms=aurora --template=<KEY> --org=<ORG_NAME> <AP
 
 ## Демонстрационное приложение
 
-Все плагины имеют общее демонстрационное приложение **Flutter example packages**. Оно предназначено для демонстрации работы как платформо-зависимых так и нет плагинов/пакетов. Подробнее вы можете узнать о приложении в репозитории "[Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins)".
+Все плагины имеют общее демонстрационное приложение **Flutter example packages**. Оно предназначено для демонстрации работы как платформо-зависимых, так и нет плагинов/пакетов. Подробнее вы можете узнать о приложении в репозитории "[Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins)".
 
 ## Wiki
 
