@@ -1941,9 +1941,9 @@ class EditableText extends StatefulWidget {
             return keyboardType;
           }
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
-        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           break;
       }
@@ -2210,9 +2210,9 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         return textEditingValue.text.isNotEmpty
             && textEditingValue.selection.isCollapsed;
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return textEditingValue.text.isNotEmpty
            && !(textEditingValue.selection.start == 0
@@ -2265,10 +2265,10 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         case TargetPlatform.iOS:
         case TargetPlatform.macOS:
         case TargetPlatform.linux:
-        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           break;
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.fuchsia:
           // Collapse the selection and hide the toolbar and handles.
           userUpdateTextEditingValue(
@@ -2365,20 +2365,20 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
     if (cause == SelectionChangedCause.toolbar) {
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.iOS:
         case TargetPlatform.fuchsia:
           break;
         case TargetPlatform.macOS:
         case TargetPlatform.linux:
-        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           hideToolbar();
       }
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
-        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           bringIntoView(textEditingValue.selection.extent);
         case TargetPlatform.macOS:
@@ -3699,10 +3699,10 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
           bringIntoView(newSelection.extent);
         }
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
         if (cause == SelectionChangedCause.drag) {
           if (oldSelection.baseOffset != newSelection.baseOffset) {
             bringIntoView(newSelection.base);
@@ -4529,6 +4529,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
     /// and mobile browsers.
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       // On mobile platforms, we don't unfocus on touch events unless they're
@@ -4547,7 +4548,6 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
             throw UnimplementedError('Unexpected pointer down event for trackpad');
         }
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         widget.focusNode.unfocus();
@@ -4627,13 +4627,13 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
                   case TargetPlatform.macOS:
                   case TargetPlatform.fuchsia:
                   case TargetPlatform.linux:
-                  case TargetPlatform.aurora:
                   case TargetPlatform.windows:
                     // Composing text is not counted in history coalescing.
                     if (!widget.controller.value.composing.isCollapsed) {
                       return false;
                     }
                   case TargetPlatform.android:
+                  case TargetPlatform.aurora:
                     // Gboard on Android puts non-CJK words in composing regions. Coalesce
                     // composing text in order to allow the saving of partial words in that
                     // case.
