@@ -938,6 +938,7 @@ class _AdaptiveAlertDialog extends AlertDialog {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         break;
       case TargetPlatform.iOS:
@@ -1467,6 +1468,7 @@ Future<T?> showAdaptiveDialog<T>({
     case TargetPlatform.android:
     case TargetPlatform.fuchsia:
     case TargetPlatform.linux:
+    case TargetPlatform.aurora:
     case TargetPlatform.windows:
       return showDialog<T>(
         context: context,

@@ -256,7 +256,6 @@ class AdaptiveTextSelectionToolbar extends StatelessWidget {
           });
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
-      case TargetPlatform.aurora:
         final List<Widget> buttons = <Widget>[];
         for (int i = 0; i < buttonItems.length; i++) {
           final ContextMenuButtonItem buttonItem = buttonItems[i];
@@ -268,6 +267,7 @@ class AdaptiveTextSelectionToolbar extends StatelessWidget {
         }
         return buttons;
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return buttonItems.map((ContextMenuButtonItem buttonItem) {
           return DesktopTextSelectionToolbarButton.text(

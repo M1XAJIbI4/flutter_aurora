@@ -534,6 +534,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
         _showHandles();
         _showToolbar(location: lastSecondaryTapDownPosition);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         if (toolbarIsVisible) {
           hideToolbar();
           return;

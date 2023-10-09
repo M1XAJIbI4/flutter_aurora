@@ -351,10 +351,10 @@ class _DropdownMenuState<T> extends State<DropdownMenu<T>> {
       case TargetPlatform.iOS:
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
-      case TargetPlatform.aurora:
         return false;
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return true;
     }

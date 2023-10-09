@@ -1071,10 +1071,10 @@ class _CupertinoTextFieldState extends State<CupertinoTextField> with Restoratio
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
-      case TargetPlatform.aurora:
         break;
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         if (cause == SelectionChangedCause.drag) {
           _editableText.hideToolbar();
