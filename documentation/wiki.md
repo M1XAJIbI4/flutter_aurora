@@ -20,6 +20,12 @@ sqflite_aurora:
     path: packages/sqflite/sqflite_aurora
 ```
 
+### > Как сделать мерж-реквест?
+
+Работа над проектом [Flutter SDK](https://gitlab.com/omprussia/flutter/flutter) либо [Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins) ведется в ветке `flutter-aurora-current`.
+Именно ее нужно менять и в нее делать мерж-реквест.
+Это сделано для стабилизации ветки `master` которая используется для установки Flutter с поддержкой ОС Аврора.
+
 ### > Когда ждать плагин `<?>`
 
 Список проверенных на совместимость и портированных плагинов вы можете найти в репозитории [Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins). Если плагин который вы ищете еще не реализован для ОС Аврора оставьте сообщение в [issue](https://gitlab.com/omprussia/flutter/flutter-plugins/-/issues) либо рассмотрите возможность создать пакет самостоятельно. Мы будем рады вашим мерж-реквестам!
