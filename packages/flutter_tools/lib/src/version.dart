@@ -151,7 +151,7 @@ abstract class FlutterVersion {
       flutterRoot: flutterRoot,
       frameworkRevision: frameworkRevision,
       // @todo set version
-      frameworkVersion: "3.13.5",
+      frameworkVersion: "3.13.5-1",
       gitTagVersion: gitTagVersion,
       fs: fs,
     );
