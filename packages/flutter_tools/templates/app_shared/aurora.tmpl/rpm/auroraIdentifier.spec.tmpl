@@ -9,6 +9,7 @@ License: Proprietary
 Source0: %{name}-%{version}.tar.zst
 
 BuildRequires: cmake
+BuildRequires: ninja
 BuildRequires: pkgconfig(flutter-embedder)
 
 %description
@@ -18,11 +19,11 @@ BuildRequires: pkgconfig(flutter-embedder)
 %autosetup
 
 %build
-%cmake -DCMAKE_BUILD_TYPE=%{_flutter_build_type}
-%make_build
+%cmake -GNinja -DCMAKE_BUILD_TYPE=%{_flutter_build_type}
+%ninja_build
 
 %install
-%make_install
+%ninja_install
 
 %files
 %{_bindir}/%{name}
