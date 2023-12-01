@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -657,10 +654,9 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
     valueIndicatorController.dispose();
     enableController.dispose();
     positionController.dispose();
-    if (overlayEntry != null) {
-      overlayEntry!.remove();
-      overlayEntry = null;
-    }
+    overlayEntry?.remove();
+    overlayEntry?.dispose();
+    overlayEntry = null;
     _focusNode?.dispose();
     super.dispose();
   }
@@ -770,7 +766,6 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
-          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             return _buildMaterialSlider(context);
           case TargetPlatform.iOS:
@@ -869,7 +864,6 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
       case TargetPlatform.fuchsia:
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
         break;
       case TargetPlatform.windows:
@@ -894,8 +888,8 @@ class _SliderState extends State<Slider> with TickerProviderStateMixin {
       // This needs to be updated when accessibility
       // guidelines are available on the material specs page
       // https://m3.material.io/components/sliders/accessibility.
-      ? math.min(MediaQuery.textScaleFactorOf(context), 1.3)
-      : MediaQuery.textScaleFactorOf(context);
+      ? MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3).textScaleFactor
+      : MediaQuery.textScalerOf(context).textScaleFactor;
 
     return Semantics(
       container: true,
@@ -1121,8 +1115,9 @@ class _RenderSlider extends RenderBox with RelayoutWhenSystemFontsChangeMixin {
       parent: _state.valueIndicatorController,
       curve: Curves.fastOutSlowIn,
     )..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.dismissed && _state.overlayEntry != null) {
-        _state.overlayEntry!.remove();
+      if (status == AnimationStatus.dismissed) {
+        _state.overlayEntry?.remove();
+        _state.overlayEntry?.dispose();
         _state.overlayEntry = null;
       }
     });
@@ -1410,7 +1405,6 @@ class _RenderSlider extends RenderBox with RelayoutWhenSystemFontsChangeMixin {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         // Matches Android implementation of material slider.
         return 0.05;
@@ -1490,6 +1484,9 @@ class _RenderSlider extends RenderBox with RelayoutWhenSystemFontsChangeMixin {
   }
 
   void _startInteraction(Offset globalPosition) {
+    if (!_state.mounted) {
+      return;
+    }
     _state.showValueIndicator();
     if (!_active && isInteractive) {
       switch (allowedInteraction) {

@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -29,14 +26,20 @@ import 'platform_plugins.dart';
 import 'plugins.dart';
 import 'project.dart';
 
-void _renderTemplateToFile(String template, Object? context, File file, TemplateRenderer templateRenderer) {
+Future<void> _renderTemplateToFile(
+  String template,
+  Object? context,
+  File file,
+  TemplateRenderer templateRenderer,
+) async {
   final String renderedTemplate = templateRenderer
     .renderString(template, context);
-  file.createSync(recursive: true);
-  file.writeAsStringSync(renderedTemplate);
+  await file.create(recursive: true);
+  await file.writeAsString(renderedTemplate);
 }
 
-Plugin? _pluginFromPackage(String name, Uri packageRoot, Set<String> appDependencies, {FileSystem? fileSystem}) {
+Future<Plugin?> _pluginFromPackage(String name, Uri packageRoot, Set<String> appDependencies,
+    {FileSystem? fileSystem}) async {
   final FileSystem fs = fileSystem ?? globals.fs;
   final File pubspecFile = fs.file(packageRoot.resolve('pubspec.yaml'));
   if (!pubspecFile.existsSync()) {
@@ -45,7 +48,7 @@ Plugin? _pluginFromPackage(String name, Uri packageRoot, Set<String> appDependen
   Object? pubspec;
 
   try {
-    pubspec = loadYaml(pubspecFile.readAsStringSync());
+    pubspec = loadYaml(await pubspecFile.readAsString());
   } on YamlException catch (err) {
     globals.printTrace('Failed to parse plugin manifest for $name: $err');
     // Do nothing, potentially not a plugin.
@@ -88,7 +91,7 @@ Future<List<Plugin>> findPlugins(FlutterProject project, { bool throwOnError = t
   );
   for (final Package package in packageConfig.packages) {
     final Uri packageRoot = package.packageUriRoot.resolve('..');
-    final Plugin? plugin = _pluginFromPackage(
+    final Plugin? plugin = await _pluginFromPackage(
       package.name,
       packageRoot,
       project.manifest.dependencies,
@@ -191,7 +194,6 @@ bool _writeFlutterPluginsList(FlutterProject project, List<Plugin> plugins) {
   final String androidKey = project.android.pluginConfigKey;
   final String macosKey = project.macos.pluginConfigKey;
   final String linuxKey = project.linux.pluginConfigKey;
-  final String auroraKey = project.aurora.pluginConfigKey;
   final String windowsKey = project.windows.pluginConfigKey;
   final String webKey = project.web.pluginConfigKey;
 
@@ -200,7 +202,6 @@ bool _writeFlutterPluginsList(FlutterProject project, List<Plugin> plugins) {
   pluginsMap[androidKey] = _filterPluginsByPlatform(plugins, androidKey);
   pluginsMap[macosKey] = _filterPluginsByPlatform(plugins, macosKey);
   pluginsMap[linuxKey] = _filterPluginsByPlatform(plugins, linuxKey);
-  pluginsMap[auroraKey] = _filterPluginsByPlatform(plugins, auroraKey);
   pluginsMap[windowsKey] = _filterPluginsByPlatform(plugins, windowsKey);
   pluginsMap[webKey] = _filterPluginsByPlatform(plugins, webKey);
 
@@ -450,7 +451,7 @@ Future<void> _writeAndroidPluginRegistrant(FlutterProject project, List<Plugin> 
       templateContent = _androidPluginRegistryTemplateOldEmbedding;
   }
   globals.printTrace('Generating $registryPath');
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     templateContent,
     templateContext,
     globals.fs.file(registryPath),
@@ -700,92 +701,6 @@ foreach(ffi_plugin ${FLUTTER_FFI_PLUGIN_LIST})
 endforeach(ffi_plugin)
 ''';
 
-const String _auroraPluginCmakefileTemplate = r'''
-#
-# Generated file, do not edit.
-#
-set(ROOT_PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
-
-function(add_library TARGET)
-    _add_library(${TARGET} ${ARGN})
-
-    if (
-{{#methodChannelPlugins}}
-      "${TARGET}" MATCHES "^{{name}}_platform_plugin$" OR
-{{/methodChannelPlugins}}
-{{#ffiPlugins}}
-      "${TARGET}" MATCHES "^{{name}}$" OR
-{{/ffiPlugins}}
-      FALSE
-    )
-      add_custom_command(TARGET ${TARGET} POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy
-                        "$<TARGET_FILE:${TARGET}>"
-                        "${ROOT_PROJECT_BINARY_DIR}/bundle/lib/$<TARGET_FILE_NAME:${TARGET}>")
-    endif()
-endfunction()
-
-list(APPEND FLUTTER_PLATFORM_PLUGIN_LIST
-{{#methodChannelPlugins}}
-    {{name}}
-{{/methodChannelPlugins}}
-)
-
-list(APPEND FLUTTER_FFI_PLUGIN_LIST
-{{#ffiPlugins}}
-    {{name}}
-{{/ffiPlugins}}
-)
-
-foreach(PLUGIN ${FLUTTER_PLATFORM_PLUGIN_LIST})
-    add_subdirectory({{pluginsDir}}/${PLUGIN}/{{os}} plugins/${PLUGIN})
-    target_link_libraries(${BINARY_NAME} PRIVATE ${PLUGIN}_platform_plugin)
-endforeach(PLUGIN)
-
-foreach(FFI_PLUGIN ${FLUTTER_FFI_PLUGIN_LIST})
-    add_subdirectory({{pluginsDir}}/${FFI_PLUGIN}/{{os}} plugins/${FFI_PLUGIN})
-endforeach(FFI_PLUGIN)
-''';
-
-
-const String _auroraPluginRegistryHeaderTemplate = '''
-//
-//  Generated file. Do not edit.
-//
-
-// clang-format off
-
-#ifndef GENERATED_PLUGIN_REGISTRANT
-#define GENERATED_PLUGIN_REGISTRANT
-
-void RegisterPlugins();
-
-#endif /* GENERATED_PLUGIN_REGISTRANT */
-''';
-
-const String _auroraPluginRegistryImplementationTemplate = '''
-//
-//  Generated file. Do not edit.
-//
-
-// clang-format off
-
-#include <flutter/application.h>
-{{#methodChannelPlugins}}
-#include <{{name}}/{{filename}}.h>
-{{/methodChannelPlugins}}
-
-#include "generated_plugin_registrant.h"
-
-void RegisterPlugins() {
-    Application::RegisterPlugins({
-{{#methodChannelPlugins}}
-        std::make_shared<{{class}}>(),
-{{/methodChannelPlugins}}
-    });
-}
-''';
-
 const String _dartPluginRegisterWith = r'''
       try {
         {{dartClass}}.registerWith();
@@ -808,7 +723,6 @@ const String _dartPluginRegistryForNonWebTemplate = '''
 // @dart = {{dartLanguageVersion}}
 
 import 'dart:io'; // flutter_ignore: dart_io_import.
-import 'package:flutter/foundation.dart' show kIsAurora;
 {{#android}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/android}}
@@ -818,9 +732,6 @@ import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{#linux}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/linux}}
-{{#aurora}}
-import 'package:{{pluginName}}/{{pluginName}}.dart';
-{{/aurora}}
 {{#macos}}
 import 'package:{{pluginName}}/{{pluginName}}.dart';
 {{/macos}}
@@ -841,10 +752,6 @@ $_dartPluginRegisterWith
       {{#ios}}
 $_dartPluginRegisterWith
       {{/ios}}
-    } else if (kIsAurora) {
-      {{#aurora}}
-$_dartPluginRegisterWith
-      {{/aurora}}
     } else if (Platform.isLinux) {
       {{#linux}}
 $_dartPluginRegisterWith
@@ -873,20 +780,20 @@ Future<void> _writeIOSPluginRegistrant(FlutterProject project, List<Plugin> plug
   };
   if (project.isModule) {
     final Directory registryDirectory = project.ios.pluginRegistrantHost;
-    _renderTemplateToFile(
+    await _renderTemplateToFile(
       _pluginRegistrantPodspecTemplate,
       context,
       registryDirectory.childFile('FlutterPluginRegistrant.podspec'),
       globals.templateRenderer,
     );
   }
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _objcPluginRegistryHeaderTemplate,
     context,
     project.ios.pluginRegistrantHeader,
     globals.templateRenderer,
   );
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _objcPluginRegistryImplementationTemplate,
     context,
     project.ios.pluginRegistrantImplementation,
@@ -928,13 +835,13 @@ Future<void> _writeLinuxPluginFiles(FlutterProject project, List<Plugin> plugins
 }
 
 Future<void> _writeLinuxPluginRegistrant(Directory destination, Map<String, Object> templateContext) async {
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _linuxPluginRegistryHeaderTemplate,
     templateContext,
     destination.childFile('generated_plugin_registrant.h'),
     globals.templateRenderer,
   );
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _linuxPluginRegistryImplementationTemplate,
     templateContext,
     destination.childFile('generated_plugin_registrant.cc'),
@@ -943,48 +850,8 @@ Future<void> _writeLinuxPluginRegistrant(Directory destination, Map<String, Obje
 }
 
 Future<void> _writePluginCmakefile(File destinationFile, Map<String, Object> templateContext, TemplateRenderer templateRenderer) async {
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _pluginCmakefileTemplate,
-    templateContext,
-    destinationFile,
-    templateRenderer,
-  );
-}
-
-Future<void> _writeAuroraPluginFiles(FlutterProject project, List<Plugin> plugins) async {
-  final List<Plugin> methodChannelPlugins = _filterMethodChannelPlugins(plugins, AuroraPlugin.kConfigKey);
-  final List<Map<String, Object?>> auroraMethodChannelPlugins = _extractPlatformMaps(methodChannelPlugins, AuroraPlugin.kConfigKey);
-  final List<Plugin> ffiPlugins = _filterFfiPlugins(plugins, AuroraPlugin.kConfigKey)..removeWhere(methodChannelPlugins.contains);
-  final List<Map<String, Object?>> auroraFfiPlugins = _extractPlatformMaps(ffiPlugins, AuroraPlugin.kConfigKey);
-  final Map<String, Object> context = <String, Object>{
-    'os': 'aurora',
-    'methodChannelPlugins': auroraMethodChannelPlugins,
-    'ffiPlugins': auroraFfiPlugins,
-    'pluginsDir': _cmakeRelativePluginSymlinkDirectoryPath(project.aurora),
-  };
-
-  await _writeAuroraPluginRegistrant(project.aurora.managedDirectory, context);
-  await _writeAuroraPluginCmakefile(project.aurora.generatedPluginCmakeFile, context, globals.templateRenderer);
-}
-
-Future<void> _writeAuroraPluginRegistrant(Directory destination, Map<String, Object> templateContext) async {
-  _renderTemplateToFile(
-    _auroraPluginRegistryHeaderTemplate,
-    templateContext,
-    destination.childFile('generated_plugin_registrant.h'),
-    globals.templateRenderer,
-  );
-  _renderTemplateToFile(
-    _auroraPluginRegistryImplementationTemplate,
-    templateContext,
-    destination.childFile('generated_plugin_registrant.cpp'),
-    globals.templateRenderer,
-  );
-}
-
-Future<void> _writeAuroraPluginCmakefile(File destinationFile, Map<String, Object> templateContext, TemplateRenderer templateRenderer) async {
-  _renderTemplateToFile(
-    _auroraPluginCmakefileTemplate,
     templateContext,
     destinationFile,
     templateRenderer,
@@ -999,7 +866,7 @@ Future<void> _writeMacOSPluginRegistrant(FlutterProject project, List<Plugin> pl
     'framework': 'FlutterMacOS',
     'methodChannelPlugins': macosMethodChannelPlugins,
   };
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _swiftPluginRegistryTemplate,
     context,
     project.macos.managedDirectory.childFile('GeneratedPluginRegistrant.swift'),
@@ -1070,13 +937,13 @@ Future<void> writeWindowsPluginFiles(FlutterProject project, List<Plugin> plugin
 }
 
 Future<void> _writeCppPluginRegistrant(Directory destination, Map<String, Object> templateContext, TemplateRenderer templateRenderer) async {
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _cppPluginRegistryHeaderTemplate,
     templateContext,
     destination.childFile('generated_plugin_registrant.h'),
     templateRenderer,
   );
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     _cppPluginRegistryImplementationTemplate,
     templateContext,
     destination.childFile('generated_plugin_registrant.cc'),
@@ -1094,7 +961,7 @@ Future<void> _writeWebPluginRegistrant(FlutterProject project, List<Plugin> plug
 
   final String template = webPlugins.isEmpty ? _noopDartPluginRegistryTemplate : _dartPluginRegistryTemplate;
 
-  _renderTemplateToFile(
+  await _renderTemplateToFile(
     template,
     context,
     pluginFile,
@@ -1109,7 +976,7 @@ Future<void> _writeWebPluginRegistrant(FlutterProject project, List<Plugin> plug
 /// be created only if missing.
 ///
 /// This uses [project.flutterPluginsDependenciesFile], so it should only be
-/// run after refreshPluginList has been run since the last plugin change.
+/// run after [refreshPluginsList] has been run since the last plugin change.
 void createPluginSymlinks(FlutterProject project, {bool force = false, @visibleForTesting FeatureFlags? featureFlagsOverride}) {
   final FeatureFlags localFeatureFlags = featureFlagsOverride ?? featureFlags;
   Map<String, Object?>? platformPlugins;
@@ -1131,13 +998,6 @@ void createPluginSymlinks(FlutterProject project, {bool force = false, @visibleF
     _createPlatformPluginSymlinks(
       project.linux.pluginSymlinkDirectory,
       platformPlugins[project.linux.pluginConfigKey] as List<Object?>?,
-      force: force,
-    );
-  }
-  if (localFeatureFlags.isAuroraEnabled && project.aurora.existsSync()) {
-    _createPlatformPluginSymlinks(
-      project.aurora.pluginSymlinkDirectory,
-      platformPlugins[project.aurora.pluginConfigKey] as List<Object?>?,
       force: force,
     );
   }
@@ -1174,6 +1034,14 @@ void handleSymlinkException(FileSystemException e, {
             'to open settings.'
           : 'You must build from a terminal run as administrator.';
       throwToolExit('Building with plugins requires symlink support.\n\n$instructions');
+    }
+    // ERROR_INVALID_FUNCTION, trying to link across drives, which is not supported
+    if (e.osError?.errorCode == 1) {
+      throwToolExit(
+        'Creating symlink from $source to $destination failed with '
+        'ERROR_INVALID_FUNCTION. Try moving your Flutter project to the same '
+        'drive as your Flutter SDK.',
+      );
     }
   }
 }
@@ -1286,7 +1154,6 @@ Future<void> injectPlugins(
   bool androidPlatform = false,
   bool iosPlatform = false,
   bool linuxPlatform = false,
-  bool auroraPlatform = false,
   bool macOSPlatform = false,
   bool windowsPlatform = false,
 }) async {
@@ -1301,9 +1168,6 @@ Future<void> injectPlugins(
   }
   if (linuxPlatform) {
     await _writeLinuxPluginFiles(project, plugins);
-  }
-  if (auroraPlatform) {
-    await _writeAuroraPluginFiles(project, plugins);
   }
   if (macOSPlatform) {
     await _writeMacOSPluginRegistrant(project, plugins);
@@ -1358,7 +1222,6 @@ List<PluginInterfaceResolution> resolvePlatformImplementation(
     AndroidPlugin.kConfigKey,
     IOSPlugin.kConfigKey,
     LinuxPlugin.kConfigKey,
-    AuroraPlugin.kConfigKey,
     MacOSPlugin.kConfigKey,
     WindowsPlugin.kConfigKey,
   ];
@@ -1556,15 +1419,14 @@ Future<void> generateMainDartWithPluginRegistrant(
     AndroidPlugin.kConfigKey: <Object?>[],
     IOSPlugin.kConfigKey: <Object?>[],
     LinuxPlugin.kConfigKey: <Object?>[],
-    AuroraPlugin.kConfigKey: <Object?>[],
     MacOSPlugin.kConfigKey: <Object?>[],
     WindowsPlugin.kConfigKey: <Object?>[],
   };
   final File newMainDart = rootProject.dartPluginRegistrant;
   if (resolutions.isEmpty) {
     try {
-      if (newMainDart.existsSync()) {
-        newMainDart.deleteSync();
+      if (await newMainDart.exists()) {
+        await newMainDart.delete();
       }
     } on FileSystemException catch (error) {
       globals.printWarning(
@@ -1580,7 +1442,7 @@ Future<void> generateMainDartWithPluginRegistrant(
     (templateContext[resolution.platform] as List<Object?>?)?.add(resolution.toMap());
   }
   try {
-    _renderTemplateToFile(
+    await _renderTemplateToFile(
       _dartPluginRegistryForNonWebTemplate,
       templateContext,
       newMainDart,

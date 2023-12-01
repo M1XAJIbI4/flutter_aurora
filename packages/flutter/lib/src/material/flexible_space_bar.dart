@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -159,6 +156,7 @@ class FlexibleSpaceBar extends StatefulWidget {
     double? minExtent,
     double? maxExtent,
     bool? isScrolledUnder,
+    bool? hasLeading,
     required double currentExtent,
     required Widget child,
   }) {
@@ -167,6 +165,7 @@ class FlexibleSpaceBar extends StatefulWidget {
       minExtent: minExtent ?? currentExtent,
       maxExtent: maxExtent ?? currentExtent,
       isScrolledUnder: isScrolledUnder,
+      hasLeading: hasLeading,
       currentExtent: currentExtent,
       child: child,
     );
@@ -185,7 +184,6 @@ class _FlexibleSpaceBarState extends State<FlexibleSpaceBar> {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         return false;
       case TargetPlatform.iOS:
@@ -295,7 +293,6 @@ class _FlexibleSpaceBarState extends State<FlexibleSpaceBar> {
             case TargetPlatform.android:
             case TargetPlatform.fuchsia:
             case TargetPlatform.linux:
-            case TargetPlatform.aurora:
             case TargetPlatform.windows:
               title = Semantics(
                 namesRoute: true,
@@ -326,7 +323,7 @@ class _FlexibleSpaceBarState extends State<FlexibleSpaceBar> {
             final bool effectiveCenterTitle = _getEffectiveCenterTitle(theme);
             final EdgeInsetsGeometry padding = widget.titlePadding ??
               EdgeInsetsDirectional.only(
-                start: effectiveCenterTitle ? 0.0 : 72.0,
+                start: effectiveCenterTitle && !(settings.hasLeading ?? false) ? 0.0 : 72.0,
                 bottom: 16.0,
               );
             final double scaleValue = Tween<double>(begin: widget.expandedTitleScale, end: 1.0).transform(t);
@@ -374,9 +371,6 @@ class FlexibleSpaceBarSettings extends InheritedWidget {
   ///
   /// Used by [Scaffold] and [SliverAppBar]. [child] must have a
   /// [FlexibleSpaceBar] widget in its tree for the settings to take affect.
-  ///
-  /// The required [toolbarOpacity], [minExtent], [maxExtent], [currentExtent],
-  /// and [child] parameters must not be null.
   const FlexibleSpaceBarSettings({
     super.key,
     required this.toolbarOpacity,
@@ -385,6 +379,7 @@ class FlexibleSpaceBarSettings extends InheritedWidget {
     required this.currentExtent,
     required super.child,
     this.isScrolledUnder,
+    this.hasLeading,
   }) : assert(minExtent >= 0),
        assert(maxExtent >= 0),
        assert(currentExtent >= 0),
@@ -418,13 +413,24 @@ class FlexibleSpaceBarSettings extends InheritedWidget {
   /// overlaps the primary scrollable's contents.
   final bool? isScrolledUnder;
 
+  /// True if the FlexibleSpaceBar has a leading widget.
+  ///
+  /// This value is used by the [FlexibleSpaceBar] to determine
+  /// if there should be a gap between the leading widget and
+  /// the title.
+  ///
+  /// Null if the caller hasn't determined if the FlexibleSpaceBar
+  /// has a leading widget.
+  final bool? hasLeading;
+
   @override
   bool updateShouldNotify(FlexibleSpaceBarSettings oldWidget) {
     return toolbarOpacity != oldWidget.toolbarOpacity
         || minExtent != oldWidget.minExtent
         || maxExtent != oldWidget.maxExtent
         || currentExtent != oldWidget.currentExtent
-        || isScrolledUnder != oldWidget.isScrolledUnder;
+        || isScrolledUnder != oldWidget.isScrolledUnder
+        || hasLeading != oldWidget.hasLeading;
   }
 }
 

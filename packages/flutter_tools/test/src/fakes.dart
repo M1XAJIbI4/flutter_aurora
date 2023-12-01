@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -256,8 +253,20 @@ class FakeStdio extends Stdio {
 class FakeStdin extends Fake implements Stdin {
   final StreamController<List<int>> controller = StreamController<List<int>>();
 
+  void Function(bool mode)? echoModeCallback;
+
+  bool _echoMode = true;
+
   @override
-  bool echoMode = true;
+  bool get echoMode => _echoMode;
+
+  @override
+  set echoMode(bool mode) {
+    _echoMode = mode;
+    if (echoModeCallback != null) {
+      echoModeCallback!(mode);
+    }
+  }
 
   @override
   bool lineMode = true;
@@ -443,23 +452,20 @@ class FakeFlutterVersion implements FlutterVersion {
 class TestFeatureFlags implements FeatureFlags {
   TestFeatureFlags({
     this.isLinuxEnabled = false,
-    this.isAuroraEnabled = false,
     this.isMacOSEnabled = false,
     this.isWebEnabled = false,
     this.isWindowsEnabled = false,
-    this.isSingleWidgetReloadEnabled = false,
     this.isAndroidEnabled = true,
     this.isIOSEnabled = true,
     this.isFuchsiaEnabled = false,
     this.areCustomDevicesEnabled = false,
     this.isFlutterWebWasmEnabled = false,
+    this.isCliAnimationEnabled = true,
+    this.isNativeAssetsEnabled = false,
   });
 
   @override
   final bool isLinuxEnabled;
-
-  @override
-  final bool isAuroraEnabled;
 
   @override
   final bool isMacOSEnabled;
@@ -469,9 +475,6 @@ class TestFeatureFlags implements FeatureFlags {
 
   @override
   final bool isWindowsEnabled;
-
-  @override
-  final bool isSingleWidgetReloadEnabled;
 
   @override
   final bool isAndroidEnabled;
@@ -489,6 +492,12 @@ class TestFeatureFlags implements FeatureFlags {
   final bool isFlutterWebWasmEnabled;
 
   @override
+  final bool isCliAnimationEnabled;
+
+  @override
+  final bool isNativeAssetsEnabled;
+
+  @override
   bool isEnabled(Feature feature) {
     switch (feature) {
       case flutterWebFeature:
@@ -499,8 +508,6 @@ class TestFeatureFlags implements FeatureFlags {
         return isMacOSEnabled;
       case flutterWindowsDesktopFeature:
         return isWindowsEnabled;
-      case singleWidgetReload:
-        return isSingleWidgetReloadEnabled;
       case flutterAndroidFeature:
         return isAndroidEnabled;
       case flutterIOSFeature:
@@ -509,6 +516,10 @@ class TestFeatureFlags implements FeatureFlags {
         return isFuchsiaEnabled;
       case flutterCustomDevicesFeature:
         return areCustomDevicesEnabled;
+      case cliAnimation:
+        return isCliAnimationEnabled;
+      case nativeAssets:
+        return isNativeAssetsEnabled;
     }
     return false;
   }

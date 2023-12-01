@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -60,10 +57,9 @@ class _MyHomePageState extends State<MyHomePage> {
         return const Text('Continue in Windows view');
       case TargetPlatform.macOS:
         return const Text('Continue in macOS view');
-      case TargetPlatform.aurora:
-        return const Text('Continue in Aurora OS view');
-      case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+        return const Text('Continue in Linux view');
+      case TargetPlatform.fuchsia:
         throw UnimplementedError('Platform not yet implemented');
     }
   }

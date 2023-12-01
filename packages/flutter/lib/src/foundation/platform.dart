@@ -1,11 +1,6 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import 'dart:io';
 
 import '_platform_io.dart'
   if (dart.library.js_util) '_platform_web.dart' as platform;
@@ -40,7 +35,7 @@ import '_platform_io.dart'
 //
 // When adding support for a new platform (e.g. Windows Phone, Raspberry Pi),
 // first create a new value on the [TargetPlatform] enum, then add a rule for
-// selecting that platform here.
+// selecting that platform in `_platform_io.dart` and `_platform_web.dart`.
 //
 // It would be incorrect to make a platform that isn't supported by
 // [TargetPlatform] default to the behavior of another platform, because doing
@@ -52,6 +47,15 @@ TargetPlatform get defaultTargetPlatform => platform.defaultTargetPlatform;
 /// The platform that user interaction should adapt to target.
 ///
 /// The [defaultTargetPlatform] getter returns the current platform.
+///
+/// When using the "flutter run" command, the "o" key will toggle between
+/// values of this enum when updating [debugDefaultTargetPlatformOverride].
+/// This lets one test how the application will work on various platforms
+/// without having to switch emulators or physical devices.
+//
+// When you add values here, make sure to also add them to
+// nextPlatform() in flutter_tools/lib/src/resident_runner.dart so that
+// the tool can support the new platform for its "o" option.
 enum TargetPlatform {
   /// Android: <https://www.android.com/>
   android,
@@ -64,9 +68,6 @@ enum TargetPlatform {
 
   /// Linux: <https://www.linux.org>
   linux,
-
-  /// Aurora: <https://auroraos.ru>
-  aurora,
 
   /// macOS: <https://www.apple.com/macos>
   macOS,
@@ -95,21 +96,3 @@ enum TargetPlatform {
 ///
 /// In general, therefore, this property should not be used in release builds.
 TargetPlatform? debugDefaultTargetPlatformOverride;
-
-/// That is true if the application run on the aurora.
-bool get kIsAurora => _kIsAurora;
-
-/// Private value if the application run on the aurora.
-bool _kIsAurora = _isAurora();
-
-/// Check is platform Aurora OS
-bool _isAurora() {
-  if (Platform.isLinux) {
-    try {
-      return File('/etc/os-release').readAsLinesSync().contains('ID=auroraos');
-    } catch (e) {
-      return false;
-    }
-  }
-  return false;
-}

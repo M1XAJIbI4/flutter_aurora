@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -47,6 +44,12 @@ enum _CheckboxType { material, adaptive }
 /// ** See code in examples/api/lib/material/checkbox/checkbox.0.dart **
 /// {@end-tool}
 ///
+/// {@tool dartpad}
+/// This example shows what the checkbox error state looks like.
+///
+/// ** See code in examples/api/lib/material/checkbox/checkbox.1.dart **
+/// {@end-tool}
+///
 /// See also:
 ///
 ///  * [CheckboxListTile], which combines this widget with a [ListTile] so that
@@ -71,8 +74,6 @@ class Checkbox extends StatefulWidget {
   ///   can only be null if [tristate] is true.
   /// * [onChanged], which is called when the value of the checkbox should
   ///   change. It can be set to null to disable the checkbox.
-  ///
-  /// The values of [tristate] and [autofocus] must not be null.
   const Checkbox({
     super.key,
     required this.value,
@@ -388,7 +389,7 @@ class Checkbox extends StatefulWidget {
   /// this is true. This is only used when [ThemeData.useMaterial3] is set to true.
   /// {@endtemplate}
   ///
-  /// Must not be null. Defaults to false.
+  /// Defaults to false.
   final bool isError;
 
   /// {@template flutter.material.checkbox.semanticLabel}
@@ -477,7 +478,6 @@ class _CheckboxState extends State<Checkbox> with TickerProviderStateMixin, Togg
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
-          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             break;
           case TargetPlatform.iOS:

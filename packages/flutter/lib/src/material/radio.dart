@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -430,7 +427,6 @@ class _RadioState<T> extends State<Radio<T>> with TickerProviderStateMixin, Togg
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
-          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             break;
           case TargetPlatform.iOS:
@@ -524,7 +520,6 @@ class _RadioState<T> extends State<Radio<T>> with TickerProviderStateMixin, Togg
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         accessibilitySelected = null;
       case TargetPlatform.iOS:

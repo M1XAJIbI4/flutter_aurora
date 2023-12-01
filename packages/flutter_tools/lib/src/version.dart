@@ -150,8 +150,7 @@ abstract class FlutterVersion {
       clock: clock,
       flutterRoot: flutterRoot,
       frameworkRevision: frameworkRevision,
-      // @todo set version
-      frameworkVersion: "3.13.5-1",
+      frameworkVersion: frameworkVersion,
       gitTagVersion: gitTagVersion,
       fs: fs,
     );
@@ -279,6 +278,8 @@ abstract class FlutterVersion {
       // Don't perform the update check if fetching the latest local commit failed.
       localFrameworkCommitDate = DateTime.parse(_gitCommitDate(workingDirectory: flutterRoot));
     } on VersionCheckError {
+      return;
+    } on FormatException {
       return;
     }
     final DateTime? latestFlutterCommitDate = await _getLatestAvailableFlutterDate();
@@ -533,7 +534,13 @@ class _FlutterVersionFromFile extends FlutterVersion {
   final String devToolsVersion;
 
   @override
-  void ensureVersionFile() {}
+  void ensureVersionFile() {
+    _ensureLegacyVersionFile(
+      fs: fs,
+      flutterRoot: flutterRoot,
+      frameworkVersion: frameworkVersion,
+    );
+  }
 }
 
 class _FlutterVersionGit extends FlutterVersion {
@@ -600,16 +607,28 @@ class _FlutterVersionGit extends FlutterVersion {
 
   @override
   void ensureVersionFile() {
-    final File legacyVersionFile = fs.file(fs.path.join(flutterRoot, 'version'));
-    if (!legacyVersionFile.existsSync()) {
-      legacyVersionFile.writeAsStringSync(frameworkVersion);
-    }
+    _ensureLegacyVersionFile(
+      fs: fs,
+      flutterRoot: flutterRoot,
+      frameworkVersion: frameworkVersion,
+    );
 
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
     final File newVersionFile = FlutterVersion.getVersionFile(fs, flutterRoot);
     if (!newVersionFile.existsSync()) {
       newVersionFile.writeAsStringSync(encoder.convert(toJson()));
     }
+  }
+}
+
+void _ensureLegacyVersionFile({
+  required FileSystem fs,
+  required String flutterRoot,
+  required String frameworkVersion,
+}) {
+  final File legacyVersionFile = fs.file(fs.path.join(flutterRoot, 'version'));
+  if (!legacyVersionFile.existsSync()) {
+    legacyVersionFile.writeAsStringSync(frameworkVersion);
   }
 }
 
@@ -690,6 +709,7 @@ class VersionUpstreamValidator {
   static final List<String> _standardRemotes = <String>[
     'https://github.com/flutter/flutter.git',
     'git@github.com:flutter/flutter.git',
+    'ssh://git@github.com/flutter/flutter.git',
   ];
 
   // Strips ".git" suffix from a given string, preferably an url.

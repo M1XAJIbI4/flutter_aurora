@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -70,6 +67,13 @@ enum _SwitchType { material, adaptive }
 /// [Switch.thumbIcon] property.
 ///
 /// ** See code in examples/api/lib/material/switch/switch.2.dart **
+/// {@end-tool}
+///
+/// {@tool dartpad}
+/// This example shows how to use the ambient [CupertinoThemeData] to style all
+/// widgets which would otherwise use iOS defaults.
+///
+/// ** See code in examples/api/lib/material/switch/switch.3.dart **
 /// {@end-tool}
 ///
 /// See also:
@@ -174,8 +178,6 @@ class Switch extends StatelessWidget {
         _switchType = _SwitchType.adaptive;
 
   /// Whether this switch is on or off.
-  ///
-  /// This property must not be null.
   final bool value;
 
   /// Called when the user toggles the switch on or off.
@@ -636,7 +638,6 @@ class Switch extends StatelessWidget {
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
-          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             return _buildMaterialSwitch(context);
           case TargetPlatform.iOS:
@@ -709,7 +710,7 @@ class _MaterialSwitch extends StatefulWidget {
   final MaterialStateProperty<Color?>? overlayColor;
   final double? splashRadius;
   final FocusNode? focusNode;
-  final Function(bool)? onFocusChange;
+  final ValueChanged<bool>? onFocusChange;
   final bool autofocus;
   final Size size;
 

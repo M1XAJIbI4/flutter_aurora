@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -32,7 +29,6 @@ const List<String> _kAvailablePlatforms = <String>[
   'linux',
   'macos',
   'web',
-  'aurora',
 ];
 
 /// A list of all possible create platforms, even those that may not be enabled
@@ -44,7 +40,6 @@ const List<String> kAllCreatePlatforms = <String>[
   'linux',
   'macos',
   'web',
-  'aurora',
 ];
 
 const String _kDefaultPlatformArgumentHelp =
@@ -357,12 +352,12 @@ abstract class CreateBase extends FlutterCommand {
     String? gradleVersion,
     bool withPlatformChannelPluginHook = false,
     bool withFfiPluginHook = false,
+    bool withFfiPackage = false,
     bool withEmptyMain = false,
     bool ios = false,
     bool android = false,
     bool web = false,
     bool linux = false,
-    bool aurora = false,
     bool macos = false,
     bool windows = false,
     bool implementationTests = false,
@@ -405,9 +400,11 @@ abstract class CreateBase extends FlutterCommand {
       'pluginClassCapitalSnakeCase': pluginClassCapitalSnakeCase,
       'pluginDartClass': pluginDartClass,
       'pluginProjectUUID': const Uuid().v4().toUpperCase(),
+      'withFfi': withFfiPluginHook || withFfiPackage,
+      'withFfiPackage': withFfiPackage,
       'withFfiPluginHook': withFfiPluginHook,
       'withPlatformChannelPluginHook': withPlatformChannelPluginHook,
-      'withPluginHook': withFfiPluginHook || withPlatformChannelPluginHook,
+      'withPluginHook': withFfiPluginHook || withFfiPackage || withPlatformChannelPluginHook,
       'withEmptyMain': withEmptyMain,
       'androidLanguage': androidLanguage,
       'iosLanguage': iosLanguage,
@@ -419,16 +416,15 @@ abstract class CreateBase extends FlutterCommand {
       'android': android,
       'web': web,
       'linux': linux,
-      'aurora': aurora,
       'macos': macos,
       'windows': windows,
       'year': DateTime.now().year,
       'dartSdkVersionBounds': dartSdkVersionBounds,
       'implementationTests': implementationTests,
       'agpVersion': agpVersion,
+      'agpVersionForModule': gradle.templateAndroidGradlePluginVersionForModule,
       'kotlinVersion': kotlinVersion,
       'gradleVersion': gradleVersion,
-      'gradleVersionForModule': gradle.templateDefaultGradleVersionForModule,
       'compileSdkVersion': gradle.compileSdkVersion,
       'minSdkVersion': gradle.minSdkVersion,
       'ndkVersion': gradle.ndkVersion,
@@ -522,7 +518,6 @@ abstract class CreateBase extends FlutterCommand {
     final bool androidPlatform = templateContext['android'] as bool? ?? false;
     final bool iosPlatform = templateContext['ios'] as bool? ?? false;
     final bool linuxPlatform = templateContext['linux'] as bool? ?? false;
-    final bool auroraPlatform = templateContext['aurora'] as bool? ?? false;
     final bool macOSPlatform = templateContext['macos'] as bool? ?? false;
     final bool windowsPlatform = templateContext['windows'] as bool? ?? false;
     final bool webPlatform = templateContext['web'] as bool? ?? false;
@@ -560,9 +555,6 @@ abstract class CreateBase extends FlutterCommand {
     }
     if (linuxPlatform) {
       platformsForMigrateConfig.add(SupportedPlatform.linux);
-    }
-    if (auroraPlatform) {
-      platformsForMigrateConfig.add(SupportedPlatform.aurora);
     }
     if (macOSPlatform) {
       platformsForMigrateConfig.add(SupportedPlatform.macos);
@@ -795,12 +787,38 @@ bool isValidPackageName(String name) {
       !_keywords.contains(name);
 }
 
+/// Returns a potential valid name from the given [name].
+///
+/// If a valid name cannot be found, returns `null`.
+@visibleForTesting
+String? potentialValidPackageName(String name){
+  String newName = name.toLowerCase();
+  if (newName.startsWith(RegExp(r'[0-9]'))) {
+    newName = '_$newName';
+  }
+  newName = newName.replaceAll('-', '_');
+  if (isValidPackageName(newName)) {
+    return newName;
+  } else {
+    return null;
+  }
+}
+
 // Return null if the project name is legal. Return a validation message if
 // we should disallow the project name.
 String? _validateProjectName(String projectName) {
   if (!isValidPackageName(projectName)) {
-    return '"$projectName" is not a valid Dart package name.\n\n'
-        'See https://dart.dev/tools/pub/pubspec#name for more information.';
+    final String? potentialValidName = potentialValidPackageName(projectName);
+
+    return <String>[
+      '"$projectName" is not a valid Dart package name.',
+      '\n\n',
+      'The name should be all lowercase, with underscores to separate words, "just_like_this".',
+      'Use only basic Latin letters and Arabic digits: [a-z0-9_].',
+      "Also, make sure the name is a valid Dart identifier—that it doesn't start with digits and isn't a reserved word.\n",
+      'See https://dart.dev/tools/pub/pubspec#name for more information.',
+      if (potentialValidName != null) '\nTry "$potentialValidName" instead.',
+    ].join();
   }
   if (_packageDependencies.contains(projectName)) {
     return "Invalid project name: '$projectName' - this will conflict with Flutter "

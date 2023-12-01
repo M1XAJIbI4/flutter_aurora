@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -112,11 +109,12 @@ class RangeSlider extends StatefulWidget {
   /// Creates a Material Design range slider.
   ///
   /// The range slider widget itself does not maintain any state. Instead, when
-  /// the state of the slider changes, the widget calls the [onChanged] callback.
-  /// Most widgets that use a range slider will listen for the [onChanged] callback
-  /// and rebuild the slider with new [values] to update the visual appearance of
-  /// the slider. To know when the value starts to change, or when it is done
-  /// changing, set the optional callbacks [onChangeStart] and/or [onChangeEnd].
+  /// the state of the slider changes, the widget calls the [onChanged]
+  /// callback. Most widgets that use a range slider will listen for the
+  /// [onChanged] callback and rebuild the slider with new [values] to update
+  /// the visual appearance of the slider. To know when the value starts to
+  /// change, or when it is done changing, set the optional callbacks
+  /// [onChangeStart] and/or [onChangeEnd].
   ///
   /// * [values], which determines currently selected values for this range
   ///   slider.
@@ -131,11 +129,15 @@ class RangeSlider extends StatefulWidget {
   /// [inactiveColor] properties, although more fine-grained control of the
   /// appearance is achieved using a [SliderThemeData].
   ///
-  /// The [values], [min], [max] must not be null. The [min] must be less than
-  /// or equal to the [max]. [values].start must be less than or equal to
-  /// [values].end. [values].start and [values].end must be greater than or
-  /// equal to the [min] and less than or equal to the [max]. The [divisions]
-  /// must be null or greater than 0.
+  /// The [min] must be less than or equal to the [max].
+  ///
+  /// The [RangeValues.start] attribute of the [values] parameter must be less
+  /// than or equal to its [RangeValues.end] attribute. The [RangeValues.start]
+  /// and [RangeValues.end] attributes of the [values] parameter must be greater
+  /// than or equal to the [min] parameter and less than or equal to the [max]
+  /// parameter.
+  ///
+  /// The [divisions] parameter must be null or greater than zero.
   RangeSlider({
     super.key,
     required this.values,
@@ -487,10 +489,9 @@ class _RangeSliderState extends State<RangeSlider> with TickerProviderStateMixin
     enableController.dispose();
     startPositionController.dispose();
     endPositionController.dispose();
-    if (overlayEntry != null) {
-      overlayEntry!.remove();
-      overlayEntry = null;
-    }
+    overlayEntry?.remove();
+    overlayEntry?.dispose();
+    overlayEntry = null;
     super.dispose();
   }
 
@@ -845,8 +846,9 @@ class _RenderRangeSlider extends RenderBox with RelayoutWhenSystemFontsChangeMix
       parent: _state.valueIndicatorController,
       curve: Curves.fastOutSlowIn,
     )..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.dismissed && _state.overlayEntry != null) {
-        _state.overlayEntry!.remove();
+      if (status == AnimationStatus.dismissed) {
+        _state.overlayEntry?.remove();
+        _state.overlayEntry?.dispose();
         _state.overlayEntry = null;
       }
     });
@@ -898,8 +900,8 @@ class _RenderRangeSlider extends RenderBox with RelayoutWhenSystemFontsChangeMix
   late TapGestureRecognizer _tap;
   bool _active = false;
   late RangeValues _newValues;
-  late Offset _startThumbCenter;
-  late Offset _endThumbCenter;
+  Offset _startThumbCenter = Offset.zero;
+  Offset _endThumbCenter = Offset.zero;
   Rect? overlayStartRect;
   Rect? overlayEndRect;
 
@@ -1118,7 +1120,6 @@ class _RenderRangeSlider extends RenderBox with RelayoutWhenSystemFontsChangeMix
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         // Matches Android implementation of material slider.

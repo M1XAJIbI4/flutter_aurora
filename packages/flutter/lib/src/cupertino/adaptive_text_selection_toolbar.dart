@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -97,6 +94,9 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
     required VoidCallback? onCut,
     required VoidCallback? onPaste,
     required VoidCallback? onSelectAll,
+    required VoidCallback? onLookUp,
+    required VoidCallback? onSearchWeb,
+    required VoidCallback? onShare,
     required VoidCallback? onLiveTextInput,
     required this.anchors,
   }) : children = null,
@@ -106,6 +106,9 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
          onCut: onCut,
          onPaste: onPaste,
          onSelectAll: onSelectAll,
+         onLookUp: onLookUp,
+         onSearchWeb: onSearchWeb,
+         onShare: onShare,
          onLiveTextInput: onLiveTextInput
        );
 
@@ -190,7 +193,6 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
           );
         });
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.macOS:
         return buttonItems.map((ContextMenuButtonItem buttonItem) {
@@ -221,7 +223,6 @@ class CupertinoAdaptiveTextSelectionToolbar extends StatelessWidget {
           children: resultChildren,
         );
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       case TargetPlatform.macOS:
         return CupertinoDesktopTextSelectionToolbar(

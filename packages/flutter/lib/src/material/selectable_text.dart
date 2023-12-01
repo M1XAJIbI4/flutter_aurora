@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -97,7 +94,6 @@ class _SelectableTextSelectionGestureDetectorBuilder extends TextSelectionGestur
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
-        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           renderEditable.selectPosition(cause: SelectionChangedCause.tap);
       }
@@ -178,9 +174,9 @@ class SelectableText extends StatefulWidget {
   /// closest enclosing [DefaultTextStyle].
   ///
 
-  /// The [showCursor], [autofocus], [dragStartBehavior], [selectionHeightStyle],
-  /// [selectionWidthStyle] and [data] parameters must not be null. If specified,
-  /// the [maxLines] argument must be greater than zero.
+  /// If the [showCursor], [autofocus], [dragStartBehavior],
+  /// [selectionHeightStyle], [selectionWidthStyle] and [data] arguments are
+  /// specified, the [maxLines] argument must be greater than zero.
   const SelectableText(
     String this.data, {
     super.key,
@@ -189,7 +185,13 @@ class SelectableText extends StatefulWidget {
     this.strutStyle,
     this.textAlign,
     this.textDirection,
+    @Deprecated(
+      'Use textScaler instead. '
+      'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+      'This feature was deprecated after v3.12.0-2.0.pre.',
+    )
     this.textScaleFactor,
+    this.textScaler,
     this.showCursor = false,
     this.autofocus = false,
     @Deprecated(
@@ -222,14 +224,16 @@ class SelectableText extends StatefulWidget {
           (maxLines == null) || (minLines == null) || (maxLines >= minLines),
           "minLines can't be greater than maxLines",
         ),
+        assert(
+          textScaler == null || textScaleFactor == null,
+          'textScaleFactor is deprecated and cannot be specified when textScaler is specified.',
+        ),
         textSpan = null;
 
   /// Creates a selectable text widget with a [TextSpan].
   ///
-  /// The [textSpan] parameter must not be null and only contain [TextSpan] in
-  /// [textSpan].children. Other type of [InlineSpan] is not allowed.
-  ///
-  /// The [autofocus] and [dragStartBehavior] arguments must not be null.
+  /// The [TextSpan.children] attribute of the [textSpan] parameter must only
+  /// contain [TextSpan]s. Other types of [InlineSpan] are not allowed.
   const SelectableText.rich(
     TextSpan this.textSpan, {
     super.key,
@@ -238,7 +242,13 @@ class SelectableText extends StatefulWidget {
     this.strutStyle,
     this.textAlign,
     this.textDirection,
+    @Deprecated(
+      'Use textScaler instead. '
+      'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+      'This feature was deprecated after v3.12.0-2.0.pre.',
+    )
     this.textScaleFactor,
+    this.textScaler,
     this.showCursor = false,
     this.autofocus = false,
     @Deprecated(
@@ -270,6 +280,10 @@ class SelectableText extends StatefulWidget {
     assert(
       (maxLines == null) || (minLines == null) || (maxLines >= minLines),
       "minLines can't be greater than maxLines",
+    ),
+    assert(
+      textScaler == null || textScaleFactor == null,
+      'textScaleFactor is deprecated and cannot be specified when textScaler is specified.',
     ),
     data = null;
 
@@ -326,7 +340,15 @@ class SelectableText extends StatefulWidget {
   final TextDirection? textDirection;
 
   /// {@macro flutter.widgets.editableText.textScaleFactor}
+  @Deprecated(
+    'Use textScaler instead. '
+    'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+    'This feature was deprecated after v3.12.0-2.0.pre.',
+  )
   final double? textScaleFactor;
+
+  /// {@macro flutter.painting.textPainter.textScaler}
+  final TextScaler? textScaler;
 
   /// {@macro flutter.widgets.editableText.autofocus}
   final bool autofocus;
@@ -461,6 +483,7 @@ class SelectableText extends StatefulWidget {
     properties.add(EnumProperty<TextAlign>('textAlign', textAlign, defaultValue: null));
     properties.add(EnumProperty<TextDirection>('textDirection', textDirection, defaultValue: null));
     properties.add(DoubleProperty('textScaleFactor', textScaleFactor, defaultValue: null));
+    properties.add(DiagnosticsProperty<TextScaler>('textScaler', textScaler, defaultValue: null));
     properties.add(DoubleProperty('cursorWidth', cursorWidth, defaultValue: 2.0));
     properties.add(DoubleProperty('cursorHeight', cursorHeight, defaultValue: null));
     properties.add(DiagnosticsProperty<Radius>('cursorRadius', cursorRadius, defaultValue: null));
@@ -513,6 +536,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
     super.didUpdateWidget(oldWidget);
     if (widget.data != oldWidget.data || widget.textSpan != oldWidget.textSpan) {
       _controller.removeListener(_onControllerChanged);
+      _controller.dispose();
       _controller = _TextSpanEditingController(
           textSpan: widget.textSpan ?? TextSpan(text: widget.data),
       );
@@ -563,7 +587,6 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
       // Do nothing.
     }
@@ -662,7 +685,6 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
         selectionColor = selectionStyle.selectionColor ?? theme.colorScheme.primary.withOpacity(0.40);
 
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         forcePressEnabled = false;
         textSelectionControls ??= desktopTextSelectionHandleControls;
@@ -677,6 +699,10 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
     if (effectiveTextStyle == null || effectiveTextStyle.inherit) {
       effectiveTextStyle = defaultTextStyle.style.merge(widget.style ?? _controller._textSpan.style);
     }
+    final TextScaler? effectiveScaler = widget.textScaler ?? switch (widget.textScaleFactor) {
+      null => null,
+      final double textScaleFactor => TextScaler.linear(textScaleFactor),
+    };
     final Widget child = RepaintBoundary(
       child: EditableText(
         key: editableTextKey,
@@ -692,7 +718,7 @@ class _SelectableTextState extends State<SelectableText> implements TextSelectio
         strutStyle: widget.strutStyle ?? const StrutStyle(),
         textAlign: widget.textAlign ?? defaultTextStyle.textAlign ?? TextAlign.start,
         textDirection: widget.textDirection,
-        textScaleFactor: widget.textScaleFactor,
+        textScaler: effectiveScaler,
         autofocus: widget.autofocus,
         forceLine: false,
         minLines: widget.minLines,

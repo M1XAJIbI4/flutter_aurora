@@ -1,83 +1,123 @@
-# Flutter SDK для ОС Аврора
+<a href="https://flutter.dev/">
+  <h1 align="center">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://storage.googleapis.com/cms-storage-bucket/6e19fee6b47b36ca613f.png">
+      <img alt="Flutter" src="https://storage.googleapis.com/cms-storage-bucket/c823e53b3a1a7b0d36a9.png">
+    </picture>
+  </h1>
+</a>
 
-![preview.png](documentation/data/preview.png)
+[![Build Status - Cirrus][]][Build status]
+[![Discord badge][]][Discord instructions]
+[![Twitter handle][]][Twitter badge]
+[![codecov](https://codecov.io/gh/flutter/flutter/branch/master/graph/badge.svg?token=11yDrJU2M2)](https://codecov.io/gh/flutter/flutter)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5631/badge)](https://bestpractices.coreinfrastructure.org/projects/5631)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/flutter/flutter/badge)](https://deps.dev/project/github/flutter%2Fflutter)
+[![SLSA 1](https://slsa.dev/images/gh-badge-level1.svg)](https://slsa.dev)
 
-[Flutter SDK](https://github.com/flutter/flutter) с поддержкой платформы ОС Аврора для создания приложений Flutter.
+Flutter is Google's SDK for crafting beautiful, fast user experiences for
+mobile, web, and desktop from a single codebase. Flutter works with existing
+code, is used by developers and organizations around the world, and is free and
+open source.
 
-[Flutter](https://flutter.dev/) — это SDK Google для создания красивых и быстрых пользовательских интерфейсов для мобильных устройств, Интернета и настольных компьютеров на основе единой базы кода. Flutter работает с существующим кодом, используется разработчиками и организациями по всему миру, он бесплатен и имеет открытый исходный код.
+## Documentation
 
-Flutter SDK для ОС Аврора не состоит в [`upstream`](https://en.wikipedia.org/wiki/Upstream_(software_development)), и платформа ОС Аврора не доступна в официальной сборке Flutter. Поэтому установка происходит отличным от основного метода установки.
+* [Install Flutter](https://flutter.dev/get-started/)
+* [Flutter documentation](https://docs.flutter.dev/)
+* [Development wiki](https://github.com/flutter/flutter/wiki)
+* [Contributing to Flutter](https://github.com/flutter/flutter/blob/master/CONTRIBUTING.md)
 
-## Установка
+For announcements about new releases, follow the
+[flutter-announce@googlegroups.com](https://groups.google.com/forum/#!forum/flutter-announce)
+mailing list. Our documentation also tracks [breaking
+changes](https://docs.flutter.dev/release/breaking-changes) across releases.
 
-* [Установка на Linux](documentation/install_linux.md)
-* [Установка на Windows (WSL2)](documentation/install_wsl2.md)
+## Terms of service
 
-## Использование
+The Flutter tool may occasionally download resources from Google servers. By
+downloading or using the Flutter SDK, you agree to the Google Terms of Service:
+https://policies.google.com/terms
 
-При установке Flutter SDK для ОС Аврора во избежание коллизий с основной версией Flutter исходная CLI команда `flutter` меняется на `flutter-aurora`. Поддерживается только интерфейс командной строки. Сборка требует права суперпользователя так как зависит от [Аврора Platform SDK](https://developer.auroraos.ru/doc/software_development/psdk).
+For example, when installed from GitHub (as opposed to from a prepackaged
+archive), the Flutter tool will download the Dart SDK from Google servers
+immediately when first run, as it is used to execute the `flutter` tool itself.
+This will also occur when Flutter is upgraded (e.g. by running the `flutter
+upgrade` command).
 
-```shell
-# Проверка установленных инструментов
-flutter-aurora doctor
+## About Flutter
 
-# Создание нового проекта
-flutter-aurora create --platforms=aurora --template=app <NAME>
+We think Flutter will help you create beautiful, fast apps, with a productive,
+extensible and open development model, whether you're targeting iOS or Android,
+web, Windows, macOS, Linux or embedding it as the UI toolkit for a platform of
+your choice.
 
-# Сборка приложения
-flutter-aurora build aurora --release
-```
+### Beautiful user experiences
 
-Подробнее о поддержке CLI смотрите раздел "[Flutter CLI на ОС Аврора](documentation/cli.md)".
+We want to enable designers to deliver their full creative vision without being
+forced to water it down due to limitations of the underlying framework.
+Flutter's [layered architecture] gives you control over every pixel on the
+screen and its powerful compositing capabilities let you overlay and animate
+graphics, video, text, and controls without limitation. Flutter includes a full
+[set of widgets][widget catalog] that deliver pixel-perfect experiences whether
+you're building for iOS ([Cupertino]) or other platforms ([Material]), along with
+support for customizing or creating entirely new visual components.
 
-### IDE
+<p align="center"><img src="https://github.com/flutter/website/blob/main/src/assets/images/docs/homepage/reflectly-hero-600px.png?raw=true" alt="Reflectly hero image"></p>
 
-На данный момент специальной поддержки Flutter для ОС Аврора не ведется. Поддержка Flutter доступна в IntelliJ IDEA Community & Visual Studio Code стандартными для Flutter и Dart плагинами.
+### Fast results
 
-## Тестирование
+Flutter is fast. It's powered by the same hardware-accelerated 2D graphics
+library that underpins Chrome and Android: [Skia]. We architected Flutter to
+support glitch-free, jank-free graphics at the native speed of your device.
+Flutter code is powered by the world-class [Dart platform], which enables
+compilation to 32-bit and 64-bit ARM machine code for iOS and Android, as well
+as JavaScript for the web and Intel x64 for desktop devices.
 
-Тестирование проектов Flutter описано в документации "[Testing Flutter apps](https://docs.flutter.dev/testing/overview)". Примеры тестов можно получить при создании шаблона проекта для платформы ОС Аврора.
+<p align="center"><img src="https://github.com/flutter/website/blob/main/src/assets/images/docs/homepage/dart-diagram-small.png?raw=true" alt="Dart diagram"></p>
 
-## Отладка
+### Productive development
 
-На данный момент изучение этого вопроса находится в очереди. Вы можете помочь, оставив сообщение в раздел [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) о встреченных вами проблем с отладкой и их решению.
+Flutter offers [stateful hot reload][Hot reload], allowing you to make changes to your code
+and see the results instantly without restarting your app or losing its state.
 
-## Сборка Flutter Engine
+[![Hot reload animation][]][Hot reload]
 
-[Flutter Engine](https://github.com/flutter/engine) - необходимая библиотека для работы Flutter приложения. Flutter SDK уже содержит библиотеку и собирать ее отдельно не нужно. Если же необходимость собственной сборки появится, в разделе [Сборка Flutter Engine](documentation/engine.md) вы найдете описание сборки engine под `armv7hl`.
+### Extensible and open model
 
-## Шаблоны
+Flutter works with any development tool (or none at all), and also includes
+editor plug-ins for both [Visual Studio Code] and [IntelliJ / Android Studio].
+Flutter provides [tens of thousands of packages][Flutter packages] to speed your
+development, regardless of your target platform. And accessing other native code
+is easy, with support for both FFI ([on Android][Android FFI], [on iOS][iOS FFI],
+[on macOS][macOS FFI], and [on Windows][Windows FFI]) as well as
+[platform-specific APIs][platform channels].
 
-Flutter SDK позволяет создавать стартовые шаблоны для проектов на основе которых легко начать нужный вам проект:
+Flutter is a fully open-source project, and we welcome contributions.
+Information on how to get started can be found in our
+[contributor guide](CONTRIBUTING.md).
 
-```shell
-flutter-aurora create --platforms=aurora --template=<KEY> --org=<ORG_NAME> <APPNAME>
-```
-
-- `<KEY>` - Тип шаблона, их три: `app` - приложение, `plugin` - плагин, `plugin_ffi` - плагин FFI.
-- `<ORG_NAME>` - Название организации, написавшей это приложение. 
-- `<APPNAME>` - Имя этого приложения в нижнем регистре без пробелов и символов. 
-
-Всего можно отметить пять видов возможных проектов на Flutter для ОС Аврора:
-
-- [Приложение](documentation/application.md);
-- [Dart package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/dart_package.md);
-- [Plugin package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/plugin_package.md);
-- [Qt plugin package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/qt_plugin_package.md);
-- [FFI Plugin package](https://gitlab.com/omprussia/flutter/flutter-plugins/-/blob/master/documentation/ffi_plugin_package.md).
-
-## Плагины для ОС Аврора
-
-Мы находимся в процессе создания необходимых плагинов для разработки всевозможных приложений пользователей. Все доступные на данный момент плагины вы можете найти в репозитории "[Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins)". Если плагин который вы ищете еще не реализован для ОС Аврора оставьте сообщение в [issue](https://gitlab.com/omprussia/flutter/flutter-plugins/-/issues) либо рассмотрите возможность создать пакет самостоятельно.
-
-## Демонстрационное приложение
-
-Все плагины имеют общее демонстрационное приложение **Flutter example packages**. Оно предназначено для демонстрации работы как платформо-зависимых, так и нет плагинов/пакетов. Подробнее вы можете узнать о приложении в репозитории "[Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins)".
-
-## Wiki
-
-В [Wiki](documentation/wiki.md) собраны популярные вопросы о Flutter для ОС Аврора и ответы на них. Все вопросы и предложения приветствуем, оставляете сообщения в [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) будем разбирать каждый из них по возможности. Спасибо.
-
-## Вклад
-
-Этот проект поддерживается сообществом, и мы будем рады вашему вкладу и активности, оставляйте ваши вопросы, отзывы в [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) либо вашу работу в [мерж-реквесты](https://gitlab.com/omprussia/flutter/flutter/-/merge_requests). Вместе мы сделаем Flutter для платформы ОС Аврора доступнее для всех желающих.
+[flutter.dev]: https://flutter.dev
+[Build Status - Cirrus]: https://api.cirrus-ci.com/github/flutter/flutter.svg
+[Build status]: https://cirrus-ci.com/github/flutter/flutter/master
+[Discord instructions]: https://github.com/flutter/flutter/wiki/Chat
+[Discord badge]: https://img.shields.io/discord/608014603317936148?logo=discord
+[Twitter handle]: https://img.shields.io/twitter/follow/flutterdev.svg?style=social&label=Follow
+[Twitter badge]: https://twitter.com/intent/follow?screen_name=flutterdev
+[layered architecture]: https://docs.flutter.dev/resources/inside-flutter
+[architectural overview]: https://docs.flutter.dev/resources/architectural-overview
+[widget catalog]: https://flutter.dev/widgets/
+[Cupertino]: https://docs.flutter.dev/development/ui/widgets/cupertino
+[Material]: https://docs.flutter.dev/development/ui/widgets/material
+[Skia]: https://skia.org/
+[Dart platform]: https://dart.dev/
+[Hot reload animation]: https://github.com/flutter/website/blob/main/src/assets/images/docs/tools/android-studio/hot-reload.gif?raw=true
+[Hot reload]: https://docs.flutter.dev/development/tools/hot-reload
+[Visual Studio Code]: https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter
+[IntelliJ / Android Studio]: https://plugins.jetbrains.com/plugin/9212-flutter
+[Flutter packages]: https://pub.dev/flutter
+[Android FFI]: https://docs.flutter.dev/development/platform-integration/android/c-interop
+[iOS FFI]: https://docs.flutter.dev/development/platform-integration/ios/c-interop
+[macOS FFI]: https://docs.flutter.dev/development/platform-integration/macos/c-interop
+[Windows FFI]: https://docs.flutter.dev/development/platform-integration/windows/building#integrating-with-windows
+[platform channels]: https://docs.flutter.dev/development/platform-integration/platform-channels
+[interop example]: https://github.com/flutter/flutter/tree/master/examples/platform_channel

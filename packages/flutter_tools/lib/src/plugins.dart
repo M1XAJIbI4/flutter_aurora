@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -129,11 +126,6 @@ class Plugin {
           LinuxPlugin.fromYaml(name, platformsYaml[LinuxPlugin.kConfigKey] as YamlMap);
     }
 
-    if (_providesImplementationForPlatform(platformsYaml, AuroraPlugin.kConfigKey)) {
-      platforms[AuroraPlugin.kConfigKey] =
-          AuroraPlugin.fromYaml(name, platformsYaml[AuroraPlugin.kConfigKey] as YamlMap);
-    }
-
     if (_providesImplementationForPlatform(platformsYaml, MacOSPlugin.kConfigKey)) {
       platforms[MacOSPlugin.kConfigKey] =
           MacOSPlugin.fromYaml(name, platformsYaml[MacOSPlugin.kConfigKey] as YamlMap);
@@ -156,7 +148,6 @@ class Plugin {
       AndroidPlugin.kConfigKey,
       IOSPlugin.kConfigKey,
       LinuxPlugin.kConfigKey,
-      AuroraPlugin.kConfigKey,
       MacOSPlugin.kConfigKey,
       WindowsPlugin.kConfigKey,
     ];
@@ -316,9 +307,6 @@ class Plugin {
     }
     if (isInvalid(LinuxPlugin.kConfigKey, LinuxPlugin.validate)) {
       errors.add('Invalid "linux" plugin specification.');
-    }
-    if (isInvalid(AuroraPlugin.kConfigKey, AuroraPlugin.validate)) {
-      errors.add('Invalid "aurora" plugin specification.');
     }
     if (isInvalid(MacOSPlugin.kConfigKey, MacOSPlugin.validate)) {
       errors.add('Invalid "macos" plugin specification.');

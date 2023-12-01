@@ -1,12 +1,9 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import 'package:flutter/foundation.dart' show ValueListenable, defaultTargetPlatform;
-import 'package:flutter/gestures.dart' show PointerDeviceKind, kSecondaryButton;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -101,10 +98,6 @@ void main() {
       ),
     );
   }
-
-  test('TextSelectionOverlay.fadeDuration exist', () async {
-    expect(TextSelectionOverlay.fadeDuration, SelectionOverlay.fadeDuration);
-  });
 
   testWidgets('a series of taps all call onTaps', (WidgetTester tester) async {
     await pumpGestureDetector(tester);
@@ -635,7 +628,6 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(renderEditable.selectPositionAtCalled, isTrue);
         expect(renderEditable.lastCause, SelectionChangedCause.tap);
@@ -667,7 +659,6 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
-      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(renderEditable.selectPositionAtCalled, isTrue);
         expect(renderEditable.lastCause, SelectionChangedCause.tap);

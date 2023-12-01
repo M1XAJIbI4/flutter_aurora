@@ -17,10 +17,10 @@ dependencies:
   plugin_platform_interface: ^2.0.2
 
 dev_dependencies:
-{{#withFfiPluginHook}}
-  ffi: ^2.0.1
-  ffigen: ^6.1.2
-{{/withFfiPluginHook}}
+{{#withFfi}}
+  ffi: ^2.0.2
+  ffigen: ^9.0.0
+{{/withFfi}}
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
@@ -67,10 +67,6 @@ flutter:
       linux:
         ffiPlugin: true
 {{/linux}}
-{{#aurora}}
-      aurora:
-        ffiPlugin: true
-{{/aurora}}
 {{#macos}}
       macos:
         ffiPlugin: true
@@ -106,10 +102,6 @@ flutter:
       linux:
         pluginClass: {{pluginClass}}
 {{/linux}}
-{{#aurora}}
-      aurora:
-        pluginClass: {{pluginClass}}
-{{/aurora}}
 {{#macos}}
       macos:
         pluginClass: {{pluginClass}}

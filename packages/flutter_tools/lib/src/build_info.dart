@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -26,6 +23,7 @@ class BuildInfo {
     this.mode,
     this.flavor, {
     this.trackWidgetCreation = false,
+    this.frontendServerStarterPath,
     List<String>? extraFrontEndOptions,
     List<String>? extraGenSnapshotOptions,
     List<String>? fileSystemRoots,
@@ -49,6 +47,7 @@ class BuildInfo {
     this.packageConfig = PackageConfig.empty,
     this.initializeFromDill,
     this.assumeInitializeFromDillUpToDate = false,
+    this.buildNativeAssets = true,
   }) : extraFrontEndOptions = extraFrontEndOptions ?? const <String>[],
        extraGenSnapshotOptions = extraGenSnapshotOptions ?? const <String>[],
        fileSystemRoots = fileSystemRoots ?? const <String>[],
@@ -84,6 +83,10 @@ class BuildInfo {
 
   /// Whether the build should track widget creation locations.
   final bool trackWidgetCreation;
+
+  /// If provided, the frontend server will be started in JIT mode from this
+  /// file.
+  final String? frontendServerStarterPath;
 
   /// Extra command-line options for front-end.
   final List<String> extraFrontEndOptions;
@@ -186,6 +189,9 @@ class BuildInfo {
   /// and skips the check and potential invalidation of files.
   final bool assumeInitializeFromDillUpToDate;
 
+  /// If set, builds native assets with `build.dart` from all packages.
+  final bool buildNativeAssets;
+
   static const BuildInfo debug = BuildInfo(BuildMode.debug, null, trackWidgetCreation: true, treeShakeIcons: false);
   static const BuildInfo profile = BuildInfo(BuildMode.profile, null, treeShakeIcons: kIconTreeShakerEnabledDefault);
   static const BuildInfo jitRelease = BuildInfo(BuildMode.jitRelease, null, treeShakeIcons: kIconTreeShakerEnabledDefault);
@@ -240,6 +246,8 @@ class BuildInfo {
       if (dartDefines.isNotEmpty)
         kDartDefines: encodeDartDefines(dartDefines),
       kDartObfuscation: dartObfuscation.toString(),
+      if (frontendServerStarterPath != null)
+        kFrontendServerStarterPath: frontendServerStarterPath!,
       if (extraFrontEndOptions.isNotEmpty)
         kExtraFrontEndOptions: extraFrontEndOptions.join(','),
       if (extraGenSnapshotOptions.isNotEmpty)
@@ -277,6 +285,8 @@ class BuildInfo {
       if (dartDefines.isNotEmpty)
         'DART_DEFINES': encodeDartDefines(dartDefines),
       'DART_OBFUSCATION': dartObfuscation.toString(),
+      if (frontendServerStarterPath != null)
+        'FRONTEND_SERVER_STARTER_PATH': frontendServerStarterPath!,
       if (extraFrontEndOptions.isNotEmpty)
         'EXTRA_FRONT_END_OPTIONS': extraFrontEndOptions.join(','),
       if (extraGenSnapshotOptions.isNotEmpty)
@@ -313,6 +323,8 @@ class BuildInfo {
       if (dartDefines.isNotEmpty)
         '-Pdart-defines=${encodeDartDefines(dartDefines)}',
       '-Pdart-obfuscation=$dartObfuscation',
+      if (frontendServerStarterPath != null)
+        '-Pfrontend-server-starter-path=$frontendServerStarterPath',
       if (extraFrontEndOptions.isNotEmpty)
         '-Pextra-front-end-options=${extraFrontEndOptions.join(',')}',
       if (extraGenSnapshotOptions.isNotEmpty)
@@ -534,7 +546,6 @@ enum TargetPlatform {
   darwin,
   linux_x64,
   linux_arm64,
-  aurora_arm,
   windows_x64,
   fuchsia_arm64,
   fuchsia_x64,
@@ -555,8 +566,6 @@ enum TargetPlatform {
         return 'arm64';
       case TargetPlatform.fuchsia_x64:
         return 'x64';
-      case TargetPlatform.aurora_arm:
-        return 'arm';
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
       case TargetPlatform.android_arm64:
@@ -576,7 +585,6 @@ enum TargetPlatform {
   String get simpleName {
     switch (this) {
       case TargetPlatform.linux_x64:
-      case TargetPlatform.aurora_arm:
       case TargetPlatform.darwin:
       case TargetPlatform.windows_x64:
         return 'x64';
@@ -654,7 +662,7 @@ List<DarwinArch> defaultIOSArchsForEnvironment(
   // Handle single-arch local engines.
   final LocalEngineInfo? localEngineInfo = artifacts.localEngineInfo;
   if (localEngineInfo != null) {
-    final String localEngineName = localEngineInfo.localEngineName;
+    final String localEngineName = localEngineInfo.localTargetName;
     if (localEngineName.contains('_arm64')) {
       return <DarwinArch>[ DarwinArch.arm64 ];
     }
@@ -677,7 +685,7 @@ List<DarwinArch> defaultMacOSArchsForEnvironment(Artifacts artifacts) {
   // Handle single-arch local engines.
   final LocalEngineInfo? localEngineInfo = artifacts.localEngineInfo;
   if (localEngineInfo != null) {
-    if (localEngineInfo.localEngineName.contains('_arm64')) {
+    if (localEngineInfo.localTargetName.contains('_arm64')) {
       return <DarwinArch>[ DarwinArch.arm64 ];
     }
     return <DarwinArch>[ DarwinArch.x86_64 ];
@@ -737,8 +745,6 @@ String getNameForTargetPlatform(TargetPlatform platform, {DarwinArch? darwinArch
       return 'linux-x64';
     case TargetPlatform.linux_arm64:
       return 'linux-arm64';
-    case TargetPlatform.aurora_arm:
-      return 'aurora-arm';
     case TargetPlatform.windows_x64:
       return 'windows-x64';
     case TargetPlatform.fuchsia_arm64:
@@ -782,12 +788,12 @@ TargetPlatform getTargetPlatformForName(String platform) {
       return TargetPlatform.linux_x64;
    case 'linux-arm64':
       return TargetPlatform.linux_arm64;
-    case 'aurora-arm':
-      return TargetPlatform.aurora_arm;
     case 'windows-x64':
       return TargetPlatform.windows_x64;
     case 'web-javascript':
       return TargetPlatform.web_javascript;
+    case 'flutter-tester':
+      return TargetPlatform.tester;
   }
   throw Exception('Unsupported platform name "$platform"');
 }
@@ -882,21 +888,10 @@ String getLinuxBuildDirectory([TargetPlatform? targetPlatform]) {
   return globals.fs.path.join(getBuildDirectory(), subDirs);
 }
 
-/// Return the name for the build mode, or "any" if null.
-String getNameForBuildMode(BuildMode buildMode) {
-  return buildMode.name;
-}
-
-/// Returns the Aurora build output directory.
-String getAuroraBuildDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
-  final String arch = getNameForTargetPlatform(targetPlatform);
-  final String buildMode = getNameForBuildMode(buildInfo.mode);
-  return globals.fs.path.join(getBuildDirectory(), 'aurora/$arch/$buildMode');
-}
-
 /// Returns the Windows build output directory.
-String getWindowsBuildDirectory() {
-  return globals.fs.path.join(getBuildDirectory(), 'windows');
+String getWindowsBuildDirectory(TargetPlatform targetPlatform) {
+  final String arch = targetPlatform.simpleName;
+  return globals.fs.path.join(getBuildDirectory(), 'windows', arch);
 }
 
 /// Returns the Fuchsia build output directory.
@@ -920,6 +915,9 @@ const String kTargetFile = 'TargetFile';
 
 /// Whether to enable or disable track widget creation.
 const String kTrackWidgetCreation = 'TrackWidgetCreation';
+
+/// If provided, the frontend server will be started in JIT mode from this file.
+const String kFrontendServerStarterPath = 'FrontendServerStarterPath';
 
 /// Additional configuration passed to the dart front end.
 ///
