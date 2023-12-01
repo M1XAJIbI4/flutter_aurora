@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -694,6 +697,7 @@ class TooltipState extends State<Tooltip> with SingleTickerProviderStateMixin {
     return switch (Theme.of(context).platform) {
       TargetPlatform.macOS ||
       TargetPlatform.linux ||
+      TargetPlatform.aurora ||
       TargetPlatform.windows => 24.0,
       TargetPlatform.android ||
       TargetPlatform.fuchsia ||
@@ -705,6 +709,7 @@ class TooltipState extends State<Tooltip> with SingleTickerProviderStateMixin {
     return switch (Theme.of(context).platform) {
       TargetPlatform.macOS ||
       TargetPlatform.linux ||
+      TargetPlatform.aurora ||
       TargetPlatform.windows => const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       TargetPlatform.android ||
       TargetPlatform.fuchsia ||
@@ -716,6 +721,7 @@ class TooltipState extends State<Tooltip> with SingleTickerProviderStateMixin {
     return switch (platform) {
       TargetPlatform.macOS ||
       TargetPlatform.linux ||
+      TargetPlatform.aurora ||
       TargetPlatform.windows => 12.0,
       TargetPlatform.android ||
       TargetPlatform.fuchsia ||

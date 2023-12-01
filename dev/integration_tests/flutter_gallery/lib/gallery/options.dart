@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -420,6 +423,8 @@ class _PlatformItem extends StatelessWidget {
         return 'Cupertino';
       case TargetPlatform.linux:
         return 'Material Desktop (linux)';
+      case TargetPlatform.aurora:
+        return 'Material Desktop (aurora)';
       case TargetPlatform.macOS:
         return 'Material Desktop (macOS)';
       case TargetPlatform.windows:

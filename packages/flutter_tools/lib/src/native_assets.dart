@@ -357,6 +357,7 @@ Future<Uri?> dryRunNativeAssets({
         nativeAssetsYaml = null;
       }
     case build_info.TargetPlatform.linux_arm64:
+    case build_info.TargetPlatform.aurora_arm:
     case build_info.TargetPlatform.linux_x64:
       nativeAssetsYaml = await dryRunNativeAssetsLinux(
         projectUri: projectUri,
@@ -412,6 +413,7 @@ Future<Uri?> dryRunNativeAssetsMultipeOSes({
         buildRunner,
       ),
     if (targetPlatforms.contains(build_info.TargetPlatform.linux_arm64) ||
+        targetPlatforms.contains(build_info.TargetPlatform.aurora_arm) ||
         targetPlatforms.contains(build_info.TargetPlatform.linux_x64) ||
         (targetPlatforms.contains(build_info.TargetPlatform.tester) && OS.current == OS.linux))
       ...await dryRunNativeAssetsLinuxInternal(
@@ -521,7 +523,8 @@ Future<(Uri? nativeAssetsYaml, List<Uri> dependencies)> buildNativeAssetsSingleA
   Uri? yamlParentDirectory,
   required FileSystem fileSystem,
 }) async {
-  final Target target = targetPlatform != null ? _getNativeTarget(targetPlatform) : Target.current;
+  // final Target target = targetPlatform != null ? _getNativeTarget(targetPlatform) : Target.current;
+  final Target target = Target.current;
   final OS targetOS = target.os;
   final Uri buildUri = nativeAssetsBuildUri(projectUri, targetOS);
   final Directory buildDir = fileSystem.directory(buildUri);
@@ -619,6 +622,7 @@ Target _getNativeTarget(build_info.TargetPlatform targetPlatform) {
     case build_info.TargetPlatform.windows_x64:
       return Target.windowsX64;
     case build_info.TargetPlatform.android:
+    case build_info.TargetPlatform.aurora_arm:
     case build_info.TargetPlatform.ios:
     case build_info.TargetPlatform.darwin:
     case build_info.TargetPlatform.fuchsia_arm64:

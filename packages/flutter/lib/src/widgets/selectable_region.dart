@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -370,6 +373,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
         break;
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         return;
@@ -449,6 +453,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         // From observation, these platforms reset their tap count to 0 when
         // the number of consecutive taps exceeds the max consecutive tap supported.
         // For example on Debian Linux with GTK, when going past a triple click,
@@ -502,6 +507,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
         hideToolbar();
         switch (defaultTargetPlatform) {
           case TargetPlatform.android:
+          case TargetPlatform.aurora:
           case TargetPlatform.fuchsia:
           case TargetPlatform.iOS:
             // On mobile platforms the selection is set on tap up.
@@ -545,6 +551,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
       case 1:
         switch (defaultTargetPlatform) {
           case TargetPlatform.android:
+          case TargetPlatform.aurora:
           case TargetPlatform.fuchsia:
           case TargetPlatform.iOS:
             _collapseSelectionAt(offset: details.globalPosition);
@@ -633,6 +640,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
         _showHandles();
         _showToolbar(location: lastSecondaryTapDownPosition);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         if (toolbarIsVisible) {
           hideToolbar();
           return;
@@ -1185,6 +1193,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
           case TargetPlatform.iOS:
             hideToolbar(false);
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.macOS:
           case TargetPlatform.windows:
             hideToolbar();
@@ -1197,6 +1206,7 @@ class SelectableRegionState extends State<SelectableRegion> with TextSelectionDe
           case TargetPlatform.fuchsia:
             selectAll(SelectionChangedCause.toolbar);
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.macOS:
           case TargetPlatform.windows:
             selectAll();

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -1991,6 +1994,7 @@ class EditableText extends StatefulWidget {
             return keyboardType;
           }
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
         case TargetPlatform.windows:
@@ -2268,6 +2272,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         return textEditingValue.text.isNotEmpty
             && textEditingValue.selection.isCollapsed;
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
       case TargetPlatform.windows:
@@ -2357,6 +2362,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
         case TargetPlatform.windows:
           break;
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.fuchsia:
           // Collapse the selection and hide the toolbar and handles.
           userUpdateTextEditingValue(
@@ -2453,6 +2459,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
     if (cause == SelectionChangedCause.toolbar) {
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.iOS:
         case TargetPlatform.fuchsia:
           break;
@@ -2463,6 +2470,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
       }
       switch (defaultTargetPlatform) {
         case TargetPlatform.android:
+        case TargetPlatform.aurora:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
         case TargetPlatform.windows:
@@ -3856,6 +3864,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
       case TargetPlatform.windows:
       case TargetPlatform.fuchsia:
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
         if (cause == SelectionChangedCause.drag) {
           if (oldSelection.baseOffset != newSelection.baseOffset) {
             bringIntoView(newSelection.base);
@@ -4689,6 +4698,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
     /// and mobile browsers.
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+      case TargetPlatform.aurora:
       case TargetPlatform.iOS:
       case TargetPlatform.fuchsia:
       // On mobile platforms, we don't unfocus on touch events unless they're
@@ -4798,6 +4808,7 @@ class EditableTextState extends State<EditableText> with AutomaticKeepAliveClien
                       return false;
                     }
                   case TargetPlatform.android:
+                  case TargetPlatform.aurora:
                     // Gboard on Android puts non-CJK words in composing regions. Coalesce
                     // composing text in order to allow the saving of partial words in that
                     // case.

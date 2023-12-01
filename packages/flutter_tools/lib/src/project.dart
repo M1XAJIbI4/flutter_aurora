@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -35,6 +38,7 @@ enum SupportedPlatform {
   android,
   ios,
   linux,
+  aurora,
   macos,
   web,
   windows,
@@ -199,6 +203,9 @@ class FlutterProject {
   /// The Linux sub project of this project.
   late final LinuxProject linux = LinuxProject.fromFlutter(this);
 
+  /// The Aurora OS sub project of this project.
+  late final AuroraProject aurora = AuroraProject.fromFlutter(this);
+
   /// The Windows sub project of this project.
   late final WindowsProject windows = WindowsProject.fromFlutter(this);
 
@@ -280,6 +287,9 @@ class FlutterProject {
     if (linux.existsSync()) {
       platforms.add(SupportedPlatform.linux);
     }
+    if (aurora.existsSync()) {
+      platforms.add(SupportedPlatform.aurora);
+    }
     if (windows.existsSync()) {
       platforms.add(SupportedPlatform.windows);
     }
@@ -335,6 +345,7 @@ class FlutterProject {
       // TODO(stuartmorgan): Revisit the conditions here once the plans for handling
       // desktop in existing projects are in place.
       linuxPlatform: featureFlags.isLinuxEnabled && linux.existsSync(),
+      auroraPlatform: featureFlags.isAuroraEnabled && aurora.existsSync(),
       macOSPlatform: featureFlags.isMacOSEnabled && macos.existsSync(),
       windowsPlatform: featureFlags.isWindowsEnabled && windows.existsSync(),
       webPlatform: featureFlags.isWebEnabled && web.existsSync(),
@@ -348,6 +359,7 @@ class FlutterProject {
     bool androidPlatform = false,
     bool iosPlatform = false,
     bool linuxPlatform = false,
+    bool auroraPlatform = false,
     bool macOSPlatform = false,
     bool windowsPlatform = false,
     bool webPlatform = false,
@@ -366,6 +378,9 @@ class FlutterProject {
     if (linuxPlatform) {
       await linux.ensureReadyForPlatformSpecificTooling();
     }
+    if (auroraPlatform) {
+      await aurora.ensureReadyForPlatformSpecificTooling();
+    }
     if (macOSPlatform) {
       await macos.ensureReadyForPlatformSpecificTooling();
     }
@@ -380,6 +395,7 @@ class FlutterProject {
       androidPlatform: androidPlatform,
       iosPlatform: iosPlatform,
       linuxPlatform: linuxPlatform,
+      auroraPlatform: auroraPlatform,
       macOSPlatform: macOSPlatform,
       windowsPlatform: windowsPlatform,
     );

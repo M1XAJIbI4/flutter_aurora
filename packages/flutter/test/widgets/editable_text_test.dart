@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -6675,6 +6678,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -6847,6 +6851,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -7665,6 +7670,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -7705,6 +7711,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -7812,6 +7819,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -7852,6 +7860,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -7968,6 +7977,7 @@ void main() {
 
       // These platforms go to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -8008,6 +8018,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -8156,6 +8167,7 @@ void main() {
 
       // Linux extends to the line start/end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selectionAfterHome,
           equals(
@@ -8505,6 +8517,7 @@ void main() {
 
       // These platforms select to the line start.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -8559,6 +8572,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -8690,6 +8704,7 @@ void main() {
 
       // These platforms select to the line end.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(
           selection,
@@ -8744,6 +8759,7 @@ void main() {
 
       // Linux does nothing at a wordwrap with subsequent presses.
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         expect(
           selection,
           equals(
@@ -11923,6 +11939,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection.baseOffset, 17);
         expect(controller.selection.extentOffset, 15);
@@ -14130,6 +14147,7 @@ void main() {
         // Composing changes are ignored on all other platforms.
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
         case TargetPlatform.iOS:
         case TargetPlatform.macOS:
@@ -14187,6 +14205,7 @@ void main() {
         // Composing changes are ignored on all other platforms.
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
         case TargetPlatform.iOS:
         case TargetPlatform.macOS:

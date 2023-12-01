@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -540,6 +543,7 @@ void main() {
       case TargetPlatform.fuchsia:
       case TargetPlatform.iOS:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(log, isEmpty);
@@ -2495,6 +2499,7 @@ void main() {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           alt = false;
           control = true;
@@ -2610,6 +2615,7 @@ void main() {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           meta = false;
           alt = true;
@@ -2704,6 +2710,7 @@ void main() {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           meta = false;
           alt = true;
@@ -3019,6 +3026,7 @@ void main() {
         expect(regionState.selectionOverlay?.startHandleLayerLink, isNotNull);
         expect(regionState.selectionOverlay?.endHandleLayerLink, isNotNull);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         expect(regionState.selectionOverlay, isNotNull);
@@ -3072,6 +3080,7 @@ void main() {
         expect(regionState.selectionOverlay?.startHandleLayerLink, isNotNull);
         expect(regionState.selectionOverlay?.endHandleLayerLink, isNotNull);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
         // Test doesn't run these platforms.

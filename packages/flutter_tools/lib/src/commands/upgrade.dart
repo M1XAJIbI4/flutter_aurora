@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -261,13 +264,11 @@ class UpgradeCommandRunner {
       // Fetch upstream branch's commits and tags
       await globals.processUtils.run(
         <String>['git', 'fetch', '--tags'],
-        throwOnError: true,
         workingDirectory: workingDirectory,
       );
       // Get the latest commit revision of the upstream
       final RunResult result = await globals.processUtils.run(
           <String>['git', 'rev-parse', '--verify', kGitTrackingUpstream],
-          throwOnError: true,
           workingDirectory: workingDirectory,
       );
       revision = result.stdout.trim();
@@ -301,6 +302,7 @@ class UpgradeCommandRunner {
         'for instructions.'
       );
     }
+    // @todo ?
     return FlutterVersion.fromRevision(
       flutterRoot: workingDirectory!,
       frameworkRevision: revision,

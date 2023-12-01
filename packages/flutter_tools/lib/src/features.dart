@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -22,6 +25,9 @@ abstract class FeatureFlags {
 
   /// Whether flutter desktop for linux is enabled.
   bool get isLinuxEnabled => false;
+
+  /// Whether flutter for aurora is enabled.
+  bool get isAuroraEnabled => true;
 
   /// Whether flutter desktop for macOS is enabled.
   bool get isMacOSEnabled => false;
@@ -63,6 +69,7 @@ abstract class FeatureFlags {
 const List<Feature> allFeatures = <Feature>[
   flutterWebFeature,
   flutterLinuxDesktopFeature,
+  flutterAuroraFeature,
   flutterMacOSDesktopFeature,
   flutterWindowsDesktopFeature,
   flutterAndroidFeature,
@@ -169,6 +176,25 @@ const Feature nativeAssets = Feature(
   environmentOverride: 'FLUTTER_NATIVE_ASSETS',
   master: FeatureChannelSetting(
     available: true,
+  ),
+);
+
+/// The [Feature] for Aurora devices.
+const Feature flutterAuroraFeature = Feature(
+  name: 'Flutter for Aurora',
+  configSetting: 'enable-aurora',
+  environmentOverride: 'FLUTTER_AURORA',
+  master: FeatureChannelSetting(
+    available: true,
+    enabledByDefault: true,
+  ),
+  beta: FeatureChannelSetting(
+    available: true,
+    enabledByDefault: true,
+  ),
+  stable: FeatureChannelSetting(
+    available: true,
+    enabledByDefault: true,
   ),
 );
 

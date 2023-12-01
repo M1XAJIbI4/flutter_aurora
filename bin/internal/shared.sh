@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+
 # Copyright 2014 The Flutter Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
@@ -114,7 +117,7 @@ function _wait_for_lock () {
 function upgrade_flutter () (
   mkdir -p "$FLUTTER_ROOT/bin/cache"
 
-  local revision="$(cd "$FLUTTER_ROOT"; git rev-parse HEAD)"
+  local revision="12fccda598477eddd19f93040a1dba24f915b9be" # tag: 3.13.5
   local compilekey="$revision:$FLUTTER_TOOL_ARGS"
 
   # Invalidate cache if:

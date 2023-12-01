@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -203,6 +206,7 @@ class KernelSnapshot extends Target {
       case TargetPlatform.darwin:
       case TargetPlatform.windows_x64:
       case TargetPlatform.linux_x64:
+      case TargetPlatform.aurora_arm:
         forceLinkPlatform = true;
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
@@ -228,7 +232,7 @@ class KernelSnapshot extends Target {
         'android',
       TargetPlatform.darwin => 'macos',
       TargetPlatform.ios => 'ios',
-      TargetPlatform.linux_arm64 || TargetPlatform.linux_x64 => 'linux',
+      TargetPlatform.linux_arm64 || TargetPlatform.linux_x64 || TargetPlatform.aurora_arm => 'linux',
       TargetPlatform.windows_x64 => 'windows',
       TargetPlatform.tester || TargetPlatform.web_javascript => null,
     };

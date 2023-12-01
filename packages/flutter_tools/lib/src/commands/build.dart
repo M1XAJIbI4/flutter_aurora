@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -17,6 +20,7 @@ import '../runner/flutter_command.dart';
 import 'build_aar.dart';
 import 'build_apk.dart';
 import 'build_appbundle.dart';
+import 'build_aurora.dart';
 import 'build_bundle.dart';
 import 'build_ios.dart';
 import 'build_ios_framework.dart';
@@ -62,6 +66,11 @@ class BuildCommand extends FlutterCommand {
     ));
     _addSubcommand(BuildMacosCommand(logger: logger, verboseHelp: verboseHelp));
     _addSubcommand(BuildLinuxCommand(
+      logger: logger,
+      operatingSystemUtils: osUtils,
+      verboseHelp: verboseHelp
+    ));
+    _addSubcommand(BuildAuroraCommand(
       logger: logger,
       operatingSystemUtils: osUtils,
       verboseHelp: verboseHelp

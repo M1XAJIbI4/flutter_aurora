@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -749,6 +752,7 @@ class TextSelectionOverlay {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         newSelection = TextSelection(
           baseOffset: _selection.baseOffset,
@@ -843,6 +847,7 @@ class TextSelectionOverlay {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         newSelection = TextSelection(
           baseOffset: position.offset,
@@ -1226,6 +1231,7 @@ class SelectionOverlay {
           case TargetPlatform.fuchsia:
           case TargetPlatform.iOS:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.macOS:
           case TargetPlatform.windows:
             break;
@@ -1939,6 +1945,7 @@ class TextSelectionGestureDetectorBuilder {
         editableText.showMagnifier(positionToShow);
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
     }
@@ -1952,6 +1959,7 @@ class TextSelectionGestureDetectorBuilder {
         editableText.hideMagnifier();
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.macOS:
       case TargetPlatform.windows:
     }
@@ -2211,6 +2219,7 @@ class TextSelectionGestureDetectorBuilder {
         // precise position.
         renderEditable.selectPosition(cause: SelectionChangedCause.tap);
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         editableText.hideToolbar();
         if (isShiftPressedValid) {
@@ -2283,6 +2292,7 @@ class TextSelectionGestureDetectorBuilder {
       final bool isShiftPressedValid = _isShiftPressed && renderEditable.selection?.baseOffset != null;
       switch (defaultTargetPlatform) {
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.macOS:
         case TargetPlatform.windows:
           break;
@@ -2406,6 +2416,7 @@ class TextSelectionGestureDetectorBuilder {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           renderEditable.selectWord(cause: SelectionChangedCause.longPress);
       }
@@ -2456,6 +2467,7 @@ class TextSelectionGestureDetectorBuilder {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           renderEditable.selectWordsInRange(
             from: details.globalPosition - details.offsetFromOrigin - editableOffset - scrollableOffset,
@@ -2508,6 +2520,7 @@ class TextSelectionGestureDetectorBuilder {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         if (!renderEditable.hasFocus) {
           renderEditable.selectPosition(cause: SelectionChangedCause.tap);
@@ -2634,6 +2647,7 @@ class TextSelectionGestureDetectorBuilder {
         case TargetPlatform.windows:
           _selectParagraphsInRange(from: details.globalPosition, cause: SelectionChangedCause.tap);
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
           _selectLinesInRange(from: details.globalPosition, cause: SelectionChangedCause.tap);
       }
     }
@@ -2678,6 +2692,7 @@ class TextSelectionGestureDetectorBuilder {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           _extendSelection(details.globalPosition, SelectionChangedCause.drag);
       }
@@ -2732,6 +2747,7 @@ class TextSelectionGestureDetectorBuilder {
             case null:
           }
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.macOS:
         case TargetPlatform.windows:
           renderEditable.selectPositionAt(
@@ -2814,6 +2830,7 @@ class TextSelectionGestureDetectorBuilder {
             }
             return;
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
             return _selectLinesInRange(
               from: dragStartGlobalPosition - editableOffset - scrollableOffset,
               to: details.globalPosition,
@@ -2894,6 +2911,7 @@ class TextSelectionGestureDetectorBuilder {
           return;
         case TargetPlatform.macOS:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           return renderEditable.selectPositionAt(
             from: dragStartGlobalPosition - editableOffset - scrollableOffset,
@@ -3136,6 +3154,7 @@ class _TextSelectionGestureDetectorState extends State<TextSelectionGestureDetec
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
         // From observation, these platform's reset their tap count to 0 when
         // the number of consecutive taps exceeds 3. For example on Debian Linux
         // with GTK, when going past a triple click, on the fourth click the
@@ -3285,6 +3304,7 @@ class _TextSelectionGestureDetectorState extends State<TextSelectionGestureDetec
             },
           );
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.macOS:
         case TargetPlatform.windows:
           gestures[TapAndPanGestureRecognizer] = GestureRecognizerFactoryWithHandlers<TapAndPanGestureRecognizer>(

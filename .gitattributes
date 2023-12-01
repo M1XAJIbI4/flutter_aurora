@@ -32,3 +32,11 @@
 *.jar    binary
 *.png    binary
 *.zip    binary
+
+bin/cache/artifacts/aurora/arm/platform-sdk/* filter=lfs diff=lfs merge=lfs
+bin/cache/artifacts/aurora/arm/platform-sdk/compatibility/* filter=lfs diff=lfs merge=lfs
+bin/cache/artifacts/aurora/arm/device/* filter=lfs diff=lfs merge=lfs
+bin/cache/artifacts/aurora/arm/device/compatibility/* filter=lfs diff=lfs merge=lfs
+bin/cache/artifacts/engine/aurora-arm/* filter=lfs diff=lfs merge=lfs
+bin/cache/artifacts/engine/aurora-arm-profile/* filter=lfs diff=lfs merge=lfs
+bin/cache/artifacts/engine/aurora-arm-release/* filter=lfs diff=lfs merge=lfs

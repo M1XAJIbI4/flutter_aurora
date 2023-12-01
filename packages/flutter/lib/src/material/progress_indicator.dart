@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -771,6 +774,7 @@ class _CircularProgressIndicatorState extends State<CircularProgressIndicator> w
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             if (widget.value != null) {
               return _buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0);

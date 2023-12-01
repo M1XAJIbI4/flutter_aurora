@@ -218,6 +218,7 @@ abstract class ProcessUtils {
     bool allowReentrantFlutter = false,
     String prefix = '',
     bool trace = false,
+    bool treatStderrAsStdout = false,
     RegExp? filter,
     RegExp? stdoutErrorMatcher,
     StringConverter? mapFunction,
@@ -442,6 +443,7 @@ class _DefaultProcessUtils implements ProcessUtils {
     bool allowReentrantFlutter = false,
     String prefix = '',
     bool trace = false,
+    bool treatStderrAsStdout = false,
     RegExp? filter,
     RegExp? stdoutErrorMatcher,
     StringConverter? mapFunction,
@@ -483,7 +485,12 @@ class _DefaultProcessUtils implements ProcessUtils {
           mappedLine = mapFunction(line);
         }
         if (mappedLine != null) {
-          _logger.printError('$prefix$mappedLine', wrap: false);
+          final String message = '$prefix$mappedLine';
+          if (treatStderrAsStdout) {
+            _logger.printStatus(message, wrap: false);
+          } else {
+            _logger.printError(message, wrap: false);
+          }
         }
       });
 

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -2300,6 +2303,7 @@ void main() {
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             expect(find.byType(CupertinoButton), findsNWidgets(6));
         }
@@ -2557,6 +2561,7 @@ void main() {
           case TargetPlatform.android:
           case TargetPlatform.fuchsia:
           case TargetPlatform.linux:
+          case TargetPlatform.aurora:
           case TargetPlatform.windows:
             matchToolbarButtons = findsNWidgets(4);
         }
@@ -5048,6 +5053,7 @@ void main() {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           matchToolbarButtons = findsNWidgets(4);
       }
@@ -6702,6 +6708,7 @@ void main() {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
         case TargetPlatform.linux:
+        case TargetPlatform.aurora:
         case TargetPlatform.windows:
           expect(controller.selection.baseOffset, toOffset);
           expect(controller.selection.extentOffset, testValue.length);
@@ -8398,6 +8405,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection.baseOffset, 35);
     }
@@ -8874,6 +8882,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection, const TextSelection.collapsed(offset: 8));
         expect(find.text('Cut'), findsNothing);
@@ -8898,6 +8907,7 @@ void main() {
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
       case TargetPlatform.linux:
+      case TargetPlatform.aurora:
       case TargetPlatform.windows:
         expect(controller.selection, const TextSelection.collapsed(offset: 8));
         expect(find.text('Cut'), findsNothing);
