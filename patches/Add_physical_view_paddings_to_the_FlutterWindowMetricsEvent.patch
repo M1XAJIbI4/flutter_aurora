@@ -1,0 +1,70 @@
+Subject: [PATCH] Add physical view paddings to the FlutterWindowMetricsEvent
+
+diff --git a/src/flutter/shell/platform/embedder/embedder.cc b/src/flutter/shell/platform/embedder/embedder.cc
+index 972390e7c3..8d5586a94e 100644
+--- a/src/flutter/shell/platform/embedder/embedder.cc
++++ b/src/flutter/shell/platform/embedder/embedder.cc
+@@ -2141,6 +2141,14 @@ FlutterEngineResult FlutterEngineSendWindowMetricsEvent(
+       SAFE_ACCESS(flutter_metrics, physical_view_inset_bottom, 0.0);
+   metrics.physical_view_inset_left =
+       SAFE_ACCESS(flutter_metrics, physical_view_inset_left, 0.0);
++  metrics.physical_padding_top =
++      SAFE_ACCESS(flutter_metrics, physical_view_padding_top, 0.0);
++  metrics.physical_padding_right =
++      SAFE_ACCESS(flutter_metrics, physical_view_padding_right, 0.0);
++  metrics.physical_padding_bottom =
++      SAFE_ACCESS(flutter_metrics, physical_view_padding_bottom, 0.0);
++  metrics.physical_padding_left =
++      SAFE_ACCESS(flutter_metrics, physical_view_padding_left, 0.0);
+   metrics.display_id = SAFE_ACCESS(flutter_metrics, display_id, 0);
+
+   if (metrics.device_pixel_ratio <= 0.0) {
+@@ -2163,7 +2171,25 @@ FlutterEngineResult FlutterEngineSendWindowMetricsEvent(
+       metrics.physical_view_inset_bottom > metrics.physical_height ||
+       metrics.physical_view_inset_left > metrics.physical_width) {
+     return LOG_EMBEDDER_ERROR(kInvalidArguments,
+-                              "Physical view insets are invalid. They cannot "
++                              "Physical view paddings are invalid. They cannot "
++                              "be greater than physical height or width.");
++  }
++
++  if (metrics.physical_padding_top < 0 ||
++      metrics.physical_padding_right < 0 ||
++      metrics.physical_padding_bottom < 0 ||
++      metrics.physical_padding_left < 0) {
++    return LOG_EMBEDDER_ERROR(
++        kInvalidArguments,
++        "Physical view insets are invalid. They must be non-negative.");
++  }
++
++  if (metrics.physical_padding_top > metrics.physical_height ||
++      metrics.physical_padding_right > metrics.physical_width ||
++      metrics.physical_padding_bottom > metrics.physical_height ||
++      metrics.physical_padding_left > metrics.physical_width) {
++    return LOG_EMBEDDER_ERROR(kInvalidArguments,
++                              "Physical view paddings are invalid. They cannot "
+                               "be greater than physical height or width.");
+   }
+
+diff --git a/src/flutter/shell/platform/embedder/embedder.h b/src/flutter/shell/platform/embedder/embedder.h
+index cfef518dcf..1691fc3f3c 100644
+--- a/src/flutter/shell/platform/embedder/embedder.h
++++ b/src/flutter/shell/platform/embedder/embedder.h
+@@ -851,6 +851,14 @@ typedef struct {
+   double physical_view_inset_bottom;
+   /// Left inset of window.
+   double physical_view_inset_left;
++  /// Top padding of window.
++  double physical_view_padding_top;
++  /// Right padding of window.
++  double physical_view_padding_right;
++  /// Bottom padding of window.
++  double physical_view_padding_bottom;
++  /// Left padding of window.
++  double physical_view_padding_left;
+   /// The identifier of the display the view is rendering on.
+   FlutterEngineDisplayId display_id;
+ } FlutterWindowMetricsEvent;
+--
+2.34.1
+
