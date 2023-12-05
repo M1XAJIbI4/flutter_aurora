@@ -45,8 +45,10 @@ class MaterialButton extends StatelessWidget {
   /// To create a custom Material button consider using [TextButton],
   /// [ElevatedButton], or [OutlinedButton].
   ///
-  /// The [elevation], [hoverElevation], [focusElevation], [highlightElevation],
-  /// and [disabledElevation] arguments must be non-negative, if specified.
+  /// The [autofocus] and [clipBehavior] arguments must not be null.
+  /// Additionally,  [elevation], [hoverElevation], [focusElevation],
+  /// [highlightElevation], and [disabledElevation] must be non-negative, if
+  /// specified.
   const MaterialButton({
     super.key,
     required this.onPressed,
@@ -336,7 +338,7 @@ class MaterialButton extends StatelessWidget {
 
   /// {@macro flutter.material.Material.clipBehavior}
   ///
-  /// Defaults to [Clip.none].
+  /// Defaults to [Clip.none], and must not be null.
   final Clip clipBehavior;
 
   /// {@macro flutter.widgets.Focus.focusNode}
@@ -438,3 +440,17 @@ class MaterialButton extends StatelessWidget {
     properties.add(DiagnosticsProperty<MaterialTapTargetSize>('materialTapTargetSize', materialTapTargetSize, defaultValue: null));
   }
 }
+
+/// The distinguished type of [MaterialButton].
+///
+/// This class is deprecated and will be removed in a future release.
+///
+/// This mixin only exists to give the "label and icon" button widgets a distinct
+/// type for the sake of [ButtonTheme].
+@Deprecated(
+  'This was used to differentiate types of FlatButton, RaisedButton, and OutlineButton in ButtonTheme. '
+  'These buttons have been replaced with TextButton, ElevatedButton, and OutlinedButton, each of which have their own respective themes now. '
+  'Use one of these button classes instead. '
+  'This feature was deprecated after v2.11.0-0.0.pre.',
+)
+mixin MaterialButtonWithIconMixin { }

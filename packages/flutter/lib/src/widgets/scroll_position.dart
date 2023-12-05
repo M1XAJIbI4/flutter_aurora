@@ -178,6 +178,8 @@ enum ScrollPositionAlignmentPolicy {
 abstract class ScrollPosition extends ViewportOffset with ScrollMetrics {
   /// Creates an object that determines which portion of the content is visible
   /// in a scroll view.
+  ///
+  /// The [physics], [context], and [keepScrollOffset] parameters must not be null.
   ScrollPosition({
     required this.physics,
     required this.context,
@@ -810,32 +812,14 @@ abstract class ScrollPosition extends ViewportOffset with ScrollMetrics {
     double target;
     switch (_applyAxisDirectionToAlignmentPolicy(alignmentPolicy)) {
       case ScrollPositionAlignmentPolicy.explicit:
-        target = viewport.getOffsetToReveal(
-          object,
-          alignment,
-          rect: targetRect,
-          axis: axis,
-        ).offset;
-        target = clampDouble(target, minScrollExtent, maxScrollExtent);
+        target = clampDouble(viewport.getOffsetToReveal(object, alignment, rect: targetRect).offset, minScrollExtent, maxScrollExtent);
       case ScrollPositionAlignmentPolicy.keepVisibleAtEnd:
-        target = viewport.getOffsetToReveal(
-          object,
-          1.0, // Aligns to end
-          rect: targetRect,
-          axis: axis,
-        ).offset;
-        target = clampDouble(target, minScrollExtent, maxScrollExtent);
+        target = clampDouble(viewport.getOffsetToReveal(object, 1.0, rect: targetRect).offset, minScrollExtent, maxScrollExtent);
         if (target < pixels) {
           target = pixels;
         }
       case ScrollPositionAlignmentPolicy.keepVisibleAtStart:
-        target = viewport.getOffsetToReveal(
-          object,
-          0.0, // Aligns to start
-          rect: targetRect,
-          axis: axis,
-        ).offset;
-        target = clampDouble(target, minScrollExtent, maxScrollExtent);
+        target = clampDouble(viewport.getOffsetToReveal(object, 0.0, rect: targetRect).offset, minScrollExtent, maxScrollExtent);
         if (target > pixels) {
           target = pixels;
         }

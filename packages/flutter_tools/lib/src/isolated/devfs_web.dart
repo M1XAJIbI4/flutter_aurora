@@ -295,6 +295,7 @@ class WebAssetServer implements AssetReader {
         server,
         PackageUriMapper(packageConfig),
         digestProvider,
+        server.basePath,
         packageConfig.toPackageUri(
           globals.fs.file(entrypoint).absolute.uri,
         ),
@@ -346,7 +347,6 @@ class WebAssetServer implements AssetReader {
   ///
   /// It should have no leading or trailing slashes.
   @visibleForTesting
-  @override
   String basePath;
 
   // handle requests for JavaScript source, dart sources maps, or asset files.

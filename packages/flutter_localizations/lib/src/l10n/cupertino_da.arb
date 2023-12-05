@@ -22,9 +22,5 @@
   "tabSemanticsLabel": "Fane $tabIndex af $tabCount",
   "modalBarrierDismissLabel": "Afvis",
   "searchTextFieldPlaceholderLabel": "Søg",
-  "noSpellCheckReplacementsLabel": "Der blev ikke fundet nogen erstatninger",
-  "menuDismissLabel": "Luk menu",
-  "lookUpButtonLabel": "Look Up",
-  "searchWebButtonLabel": "Search Web",
-  "shareButtonLabel": "Share..."
+  "noSpellCheckReplacementsLabel": "No Replacements Found"
 }

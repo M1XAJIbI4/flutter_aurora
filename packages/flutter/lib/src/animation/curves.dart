@@ -127,6 +127,8 @@ class _Linear extends Curve {
 /// {@animation 464 192 https://flutter.github.io/assets-for-api-docs/assets/animation/curve_sawtooth.mp4}
 class SawTooth extends Curve {
   /// Creates a sawtooth curve.
+  ///
+  /// The [count] argument must not be null.
   const SawTooth(this.count);
 
   /// The number of repetitions of the sawtooth pattern in the unit interval.
@@ -155,6 +157,8 @@ class SawTooth extends Curve {
 /// {@animation 464 192 https://flutter.github.io/assets-for-api-docs/assets/animation/curve_interval.mp4}
 class Interval extends Curve {
   /// Creates an interval curve.
+  ///
+  /// The arguments must not be null.
   const Interval(this.begin, this.end, { this.curve = Curves.linear });
 
   /// The largest value for which this interval is 0.0.
@@ -198,6 +202,8 @@ class Interval extends Curve {
 /// {@animation 464 192 https://flutter.github.io/assets-for-api-docs/assets/animation/curve_threshold.mp4}
 class Threshold extends Curve {
   /// Creates a threshold curve.
+  ///
+  /// The [threshold] argument must not be null.
   const Threshold(this.threshold);
 
   /// The value before which the curve is 0.0 and after which the curve is 1.0.
@@ -296,6 +302,8 @@ class Cubic extends Curve {
   ///
   /// Rather than creating a new instance, consider using one of the common
   /// cubic curves in [Curves].
+  ///
+  /// The [a] (x1), [b] (y1), [c] (x2) and [d] (y2) arguments must not be null.
   const Cubic(this.a, this.b, this.c, this.d);
 
   /// The x coordinate of the first control point.
@@ -591,6 +599,8 @@ abstract class Curve2D extends ParametricCurve<Offset> {
 ///  * [Curve2D], a parametric curve that maps a double parameter to a 2D location.
 class Curve2DSample {
   /// Creates an object that holds a sample; used with [Curve2D] subclasses.
+  ///
+  /// All arguments must not be null.
   const Curve2DSample(this.t, this.value);
 
   /// The parametric location of this sample point along the curve.
@@ -649,7 +659,8 @@ class CatmullRomSpline extends Curve2D {
   /// control point. The default is chosen so that the slope of the line at the
   /// ends matches that of the first or last line segment in the control points.
   ///
-  /// The `controlPoints` list must contain at least four control points to
+  /// The `tension` and `controlPoints` arguments must not be null, and the
+  /// `controlPoints` list must contain at least four control points to
   /// interpolate.
   ///
   /// The internal curve data structures are lazily computed the first time
@@ -694,27 +705,6 @@ class CatmullRomSpline extends Curve2D {
     Offset? startHandle,
     Offset? endHandle,
   }) {
-    assert(
-      startHandle == null || startHandle.isFinite,
-      'The provided startHandle of CatmullRomSpline must be finite. The '
-      'startHandle given was $startHandle.'
-    );
-    assert(
-      endHandle == null || endHandle.isFinite,
-      'The provided endHandle of CatmullRomSpline must be finite. The endHandle '
-      'given was $endHandle.'
-    );
-    assert(() {
-      for (int index = 0; index < controlPoints.length; index++) {
-        if (!controlPoints[index].isFinite) {
-          throw FlutterError(
-            'The provided CatmullRomSpline control point at index $index is not '
-            'finite. The control point given was ${controlPoints[index]}.'
-          );
-        }
-      }
-      return true;
-    }());
     // If not specified, select the first and last control points (which are
     // handles: they are not intersected by the resulting curve) so that they
     // extend the first and last segments, respectively.
@@ -848,6 +838,8 @@ class CatmullRomCurve extends Curve {
   /// The internal curve data structures are lazily computed the first time
   /// [transform] is called. If you would rather pre-compute the curve, use
   /// [CatmullRomCurve.precompute] instead.
+  ///
+  /// All of the arguments must not be null.
   ///
   /// See also:
   ///
@@ -1131,6 +1123,8 @@ class CatmullRomCurve extends Curve {
 ///  * [CurvedAnimation], which can take a separate curve and reverse curve.
 class FlippedCurve extends Curve {
   /// Creates a flipped curve.
+  ///
+  /// The [curve] argument must not be null.
   const FlippedCurve(this.curve);
 
   /// The curve that is being flipped.
@@ -1360,7 +1354,6 @@ class ElasticInOutCurve extends Curve {
 ///
 ///  * [Curve], the interface implemented by the constants available from the
 ///    [Curves] class.
-///  * [Easing], for the Material animation curves.
 abstract final class Curves {
   /// A linear animation curve.
   ///
@@ -1748,7 +1741,7 @@ abstract final class Curves {
   ///
   /// See also:
   ///
-  ///  * [Easing.legacy], the name for this curve in the Material specification.
+  ///  * [standardEasing], the name for this curve in the Material specification.
   static const Cubic fastOutSlowIn = Cubic(0.4, 0.0, 0.2, 1.0);
 
   /// A cubic animation curve that starts quickly, slows down, and then ends

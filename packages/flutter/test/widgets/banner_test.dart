@@ -6,7 +6,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 
 class TestCanvas implements Canvas {
   final List<Invocation> invocations = <Invocation>[];
@@ -246,7 +247,7 @@ void main() {
     expect(rotateCommand.positionalArguments[0], equals(math.pi / 4.0));
   });
 
-  testWidgetsWithLeakTracking('Banner widget', (WidgetTester tester) async {
+  testWidgets('Banner widget', (WidgetTester tester) async {
     debugDisableShadows = false;
     await tester.pumpWidget(
       const Directionality(
@@ -266,7 +267,7 @@ void main() {
     debugDisableShadows = true;
   });
 
-  testWidgetsWithLeakTracking('Banner widget in MaterialApp', (WidgetTester tester) async {
+  testWidgets('Banner widget in MaterialApp', (WidgetTester tester) async {
     debugDisableShadows = false;
     await tester.pumpWidget(const MaterialApp(home: Placeholder()));
     expect(find.byType(CheckedModeBanner), paints

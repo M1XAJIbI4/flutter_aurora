@@ -4,12 +4,12 @@
 
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [SnackBar].
+/// Flutter code sample for [SnackBar] with Material 3 specifications.
 
 void main() => runApp(const SnackBarExampleApp());
 
-/// A Material 3 [SnackBar] demonstrating an optional icon, in either floating
-/// or fixed format.
+// A Material 3 [SnackBar] demonstrating an optional icon, in either floating
+// or fixed format.
 class SnackBarExampleApp extends StatelessWidget {
   const SnackBarExampleApp({super.key});
 

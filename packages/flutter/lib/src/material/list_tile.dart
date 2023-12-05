@@ -801,7 +801,8 @@ class ListTile extends StatelessWidget {
       subtitleStyle = subtitleTextStyle
         ?? tileTheme.subtitleTextStyle
         ?? defaults.subtitleTextStyle!;
-      final Color? subtitleColor = effectiveColor;
+      final Color? subtitleColor = effectiveColor
+        ?? (theme.useMaterial3 ? null : theme.textTheme.bodySmall!.color);
       subtitleStyle = subtitleStyle.copyWith(
         color: subtitleColor,
         fontSize: _isDenseLayout(theme, tileTheme) ? 12.0 : null,
@@ -1532,8 +1533,7 @@ class _LisTileDefaultsM2 extends ListTileThemeData {
   }
 
   @override
-  TextStyle? get subtitleTextStyle => _textTheme.bodyMedium!
-    .copyWith(color: _textTheme.bodySmall!.color);
+  TextStyle? get subtitleTextStyle => _textTheme.bodyMedium;
 
   @override
   TextStyle? get leadingAndTrailingTextStyle => _textTheme.bodyMedium;

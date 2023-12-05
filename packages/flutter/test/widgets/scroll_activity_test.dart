@@ -6,7 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 List<Widget> children(int n) {
   return List<Widget>.generate(n, (int i) {
@@ -15,9 +14,8 @@ List<Widget> children(int n) {
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Scrolling with list view changes, leaving the overscroll', (WidgetTester tester) async {
+  testWidgets('Scrolling with list view changes, leaving the overscroll', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     await tester.pumpWidget(MaterialApp(home: ListView(controller: controller, children: children(30))));
     final double thirty = controller.position.maxScrollExtent;
     controller.jumpTo(thirty);
@@ -30,9 +28,8 @@ void main() {
     expect(controller.position.pixels, thirty + 100.0); // and ends up at the end
   });
 
-  testWidgetsWithLeakTracking('Scrolling with list view changes, remaining overscrolled', (WidgetTester tester) async {
+  testWidgets('Scrolling with list view changes, remaining overscrolled', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     await tester.pumpWidget(MaterialApp(home: ListView(controller: controller, children: children(30))));
     final double thirty = controller.position.maxScrollExtent;
     controller.jumpTo(thirty);
@@ -45,7 +42,7 @@ void main() {
     expect(controller.position.pixels, thirty + 100.0); // and ends up at the end
   });
 
-  testWidgetsWithLeakTracking('Ability to keep a PageView at the end manually (issue 62209)', (WidgetTester tester) async {
+  testWidgets('Ability to keep a PageView at the end manually (issue 62209)', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: PageView62209()));
     expect(find.text('Page 1'), findsOneWidget);
     expect(find.text('Page 100'), findsNothing);
@@ -132,9 +129,8 @@ void main() {
     expect(find.text('Page 9'), findsOneWidget);
   });
 
-  testWidgetsWithLeakTracking('Pointer is not ignored during trackpad scrolling.', (WidgetTester tester) async {
+  testWidgets('Pointer is not ignored during trackpad scrolling.', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     int? lastTapped;
     int? lastHovered;
     await tester.pumpWidget(MaterialApp(

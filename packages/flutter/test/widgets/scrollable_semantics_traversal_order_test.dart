@@ -5,16 +5,12 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import 'semantics_tester.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('Traversal Order of SliverList', (WidgetTester tester) async {
+  testWidgets('Traversal Order of SliverList', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
-
-    final ScrollController controller = ScrollController(initialScrollOffset: 3000.0);
-    addTearDown(controller.dispose);
 
     final List<Widget> listChildren = List<Widget>.generate(30, (int i) {
       return SizedBox(
@@ -42,7 +38,7 @@ void main() {
           child: MediaQuery(
             data: const MediaQueryData(),
             child: CustomScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 3000.0),
               semanticChildCount: 30,
               slivers: <Widget>[
                 SliverList(
@@ -186,11 +182,8 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Traversal Order of SliverFixedExtentList', (WidgetTester tester) async {
+  testWidgets('Traversal Order of SliverFixedExtentList', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
-
-    final ScrollController controller = ScrollController(initialScrollOffset: 3000.0);
-    addTearDown(controller.dispose);
 
     final List<Widget> listChildren = List<Widget>.generate(30, (int i) {
       return SizedBox(
@@ -218,7 +211,7 @@ void main() {
           child: MediaQuery(
             data: const MediaQueryData(),
             child: CustomScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 3000.0),
               slivers: <Widget>[
                 SliverFixedExtentList(
                   itemExtent: 200.0,
@@ -328,11 +321,8 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Traversal Order of SliverGrid', (WidgetTester tester) async {
+  testWidgets('Traversal Order of SliverGrid', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
-
-    final ScrollController controller = ScrollController(initialScrollOffset: 1600.0);
-    addTearDown(controller.dispose);
 
     final List<Widget> listChildren = List<Widget>.generate(30, (int i) {
       return SizedBox(
@@ -348,7 +338,7 @@ void main() {
           child: MediaQuery(
             data: const MediaQueryData(),
             child: CustomScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 1600.0),
               slivers: <Widget>[
                 SliverGrid.count(
                   crossAxisCount: 2,
@@ -459,11 +449,8 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Traversal Order of List of individual slivers', (WidgetTester tester) async {
+  testWidgets('Traversal Order of List of individual slivers', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
-
-    final ScrollController controller = ScrollController(initialScrollOffset: 3000.0);
-    addTearDown(controller.dispose);
 
     final List<Widget> listChildren = List<Widget>.generate(30, (int i) {
       return SliverToBoxAdapter(
@@ -493,7 +480,7 @@ void main() {
           child: MediaQuery(
             data: const MediaQueryData(),
             child: CustomScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 3000.0),
               slivers: listChildren,
             ),
           ),
@@ -598,11 +585,8 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Traversal Order of in a SingleChildScrollView', (WidgetTester tester) async {
+  testWidgets('Traversal Order of in a SingleChildScrollView', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
-
-    final ScrollController controller = ScrollController(initialScrollOffset: 3000.0);
-    addTearDown(controller.dispose);
 
     final List<Widget> listChildren = List<Widget>.generate(30, (int i) {
       return SizedBox(
@@ -630,7 +614,7 @@ void main() {
           child: MediaQuery(
             data: const MediaQueryData(),
             child: SingleChildScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 3000.0),
               child: Column(
                 children: listChildren,
               ),
@@ -687,7 +671,7 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Traversal Order with center child', (WidgetTester tester) async {
+  testWidgets('Traversal Order with center child', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(Semantics(

@@ -57,9 +57,6 @@ class Evaluation {
   }
 }
 
-// Examples can assume:
-// typedef HomePage = Placeholder;
-
 /// An accessibility guideline describes a recommendation an application should
 /// meet to be considered accessible.
 ///
@@ -134,10 +131,11 @@ class MinimumTapTargetGuideline extends AccessibilityGuideline {
   @override
   FutureOr<Evaluation> evaluate(WidgetTester tester) {
     Evaluation result = const Evaluation.pass();
-    for (final RenderView view in tester.binding.renderViews) {
+    for (final FlutterView view in tester.platformDispatcher.views) {
       result += _traverse(
-        view.flutterView,
-        view.owner!.semanticsOwner!.rootSemanticsNode!,
+        view,
+        // TODO(pdblasi-google): Get the specific semantics root for this view when available
+        tester.binding.pipelineOwner.semanticsOwner!.rootSemanticsNode!,
       );
     }
 
@@ -241,8 +239,10 @@ class LabeledTapTargetGuideline extends AccessibilityGuideline {
   FutureOr<Evaluation> evaluate(WidgetTester tester) {
     Evaluation result = const Evaluation.pass();
 
-    for (final RenderView view in tester.binding.renderViews) {
-      result += _traverse(view.owner!.semanticsOwner!.rootSemanticsNode!);
+    // TODO(pdblasi-google): Use view to retrieve the appropriate root semantics node when available.
+    // ignore: unused_local_variable
+    for (final FlutterView view in tester.platformDispatcher.views) {
+      result += _traverse(tester.binding.pipelineOwner.semanticsOwner!.rootSemanticsNode!);
     }
 
     return result;
@@ -318,7 +318,9 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
   @override
   Future<Evaluation> evaluate(WidgetTester tester) async {
     Evaluation result = const Evaluation.pass();
-    for (final RenderView renderView in tester.binding.renderViews) {
+    for (final FlutterView view in tester.platformDispatcher.views) {
+      // TODO(pdblasi): This renderView will need to be retrieved from view when available.
+      final RenderView renderView = tester.binding.renderView;
       final OffsetLayer layer = renderView.debugLayer! as OffsetLayer;
       final SemanticsNode root = renderView.owner!.semanticsOwner!.rootSemanticsNode!;
 
@@ -327,15 +329,13 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
         () async {
           // Needs to be the same pixel ratio otherwise our dimensions won't match
           // the last transform layer.
-          final double ratio = 1 / renderView.flutterView.devicePixelRatio;
+          final double ratio = 1 / view.devicePixelRatio;
           image = await layer.toImage(renderView.paintBounds, pixelRatio: ratio);
-          final ByteData? data = await image.toByteData();
-          image.dispose();
-          return data;
+          return image.toByteData();
         },
       );
 
-      result += await _evaluateNode(root, tester, image, byteData!, renderView);
+      result += await _evaluateNode(root, tester, image, byteData!, view);
     }
 
     return result;
@@ -346,7 +346,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
     WidgetTester tester,
     ui.Image image,
     ByteData byteData,
-    RenderView renderView,
+    FlutterView view,
   ) async {
     Evaluation result = const Evaluation.pass();
 
@@ -368,7 +368,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
       return true;
     });
     for (final SemanticsNode child in children) {
-      result += await _evaluateNode(child, tester, image, byteData, renderView);
+      result += await _evaluateNode(child, tester, image, byteData, view);
     }
     if (shouldSkipNode(data)) {
       return result;
@@ -376,7 +376,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
     final String text = data.label.isEmpty ? data.value : data.label;
     final Iterable<Element> elements = find.text(text).hitTestable().evaluate();
     for (final Element element in elements) {
-      result += await _evaluateElement(node, element, tester, image, byteData, renderView);
+      result += await _evaluateElement(node, element, tester, image, byteData, view);
     }
     return result;
   }
@@ -387,7 +387,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
     WidgetTester tester,
     ui.Image image,
     ByteData byteData,
-    RenderView renderView,
+    FlutterView view,
   ) async {
     // Look up inherited text properties to determine text size and weight.
     late bool isBold;
@@ -408,7 +408,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
     // not included in renderBox.getTransformTo(null). Manually multiply the
     // root transform to the global transform.
     final Matrix4 rootTransform = Matrix4.identity();
-    renderView.applyPaintTransform(renderView.child!, rootTransform);
+    tester.binding.renderView.applyPaintTransform(tester.binding.renderView.child!, rootTransform);
     rootTransform.multiply(globalTransform);
     screenBounds = MatrixUtils.transformRect(rootTransform, renderBox.paintBounds);
     Rect nodeBounds = node.rect;
@@ -443,7 +443,7 @@ class MinimumTextContrastGuideline extends AccessibilityGuideline {
       throw StateError('Unexpected widget type: ${widget.runtimeType}');
     }
 
-    if (isNodeOffScreen(paintBoundsWithOffset, renderView.flutterView)) {
+    if (isNodeOffScreen(paintBoundsWithOffset, view)) {
       return const Evaluation.pass();
     }
 
@@ -562,7 +562,9 @@ class CustomMinimumContrastGuideline extends AccessibilityGuideline {
     Evaluation result = const Evaluation.pass();
     for (final Element element in elements) {
       final FlutterView view = tester.viewOf(find.byElementPredicate((Element e) => e == element));
-      final RenderView renderView = tester.binding.renderViews.firstWhere((RenderView r) => r.flutterView == view);
+
+      // TODO(pdblasi): Obtain this renderView from view when possible.
+      final RenderView renderView = tester.binding.renderView;
       final OffsetLayer layer = renderView.debugLayer! as OffsetLayer;
 
       late final ui.Image image;

@@ -197,51 +197,51 @@ class CupertinoSearchTextField extends StatefulWidget {
 
   /// Sets the padding insets for the text and placeholder.
   ///
-  /// Defaults to padding that replicates the `UISearchTextField` look. The
-  /// inset values were determined using the comparison tool in
-  /// https://github.com/flutter/platform_tests/.
+  /// Cannot be null. Defaults to padding that replicates the
+  /// `UISearchTextField` look. The inset values were determined using the
+  /// comparison tool in https://github.com/flutter/platform_tests/.
   final EdgeInsetsGeometry padding;
 
   /// Sets the color for the suffix and prefix icons.
   ///
-  /// Defaults to [CupertinoColors.secondaryLabel].
+  /// Cannot be null. Defaults to [CupertinoColors.secondaryLabel].
   final Color itemColor;
 
   /// Sets the base icon size for the suffix and prefix icons.
   ///
-  /// The size of the icon is scaled using the accessibility font scale
-  /// settings. Defaults to `20.0`.
+  /// Cannot be null. The size of the icon is scaled using the accessibility
+  /// font scale settings. Defaults to `20.0`.
   final double itemSize;
 
   /// Sets the padding insets for the suffix.
   ///
-  /// Defaults to padding that replicates the `UISearchTextField` suffix look.
-  /// The inset values were determined using the comparison tool in
-  /// https://github.com/flutter/platform_tests/.
+  /// Cannot be null. Defaults to padding that replicates the
+  /// `UISearchTextField` suffix look. The inset values were determined using
+  /// the comparison tool in https://github.com/flutter/platform_tests/.
   final EdgeInsetsGeometry prefixInsets;
 
   /// Sets a prefix widget.
   ///
-  /// Defaults to an [Icon] widget with the [CupertinoIcons.search] icon.
+  /// Cannot be null. Defaults to an [Icon] widget with the [CupertinoIcons.search] icon.
   final Widget prefixIcon;
 
   /// Sets the padding insets for the prefix.
   ///
-  /// Defaults to padding that replicates the `UISearchTextField` prefix look.
-  /// The inset values were determined using the comparison tool in
-  /// https://github.com/flutter/platform_tests/.
+  /// Cannot be null. Defaults to padding that replicates the
+  /// `UISearchTextField` prefix look. The inset values were determined using
+  /// the comparison tool in https://github.com/flutter/platform_tests/.
   final EdgeInsetsGeometry suffixInsets;
 
   /// Sets the suffix widget's icon.
   ///
-  /// Defaults to the X-Mark [CupertinoIcons.xmark_circle_fill]. "To change the
-  /// functionality of the suffix icon, provide a custom onSuffixTap callback
-  /// and specify an intuitive suffixIcon.
+  /// Cannot be null. Defaults to the X-Mark [CupertinoIcons.xmark_circle_fill].
+  /// "To change the functionality of the suffix icon, provide a custom
+  /// onSuffixTap callback and specify an intuitive suffixIcon.
   final Icon suffixIcon;
 
   /// Dictates when the X-Mark (suffix) should be visible.
   ///
-  /// Defaults to only on when editing.
+  /// Cannot be null. Defaults to only on when editing.
   final OverlayVisibilityMode suffixMode;
 
   /// Sets the X-Mark (suffix) action.
@@ -400,7 +400,8 @@ class _CupertinoSearchTextFieldState extends State<CupertinoSearchTextField>
 
     // The icon size will be scaled by a factor of the accessibility text scale,
     // to follow the behavior of `UISearchTextField`.
-    final double scaledIconSize = MediaQuery.textScalerOf(context).textScaleFactor * widget.itemSize;
+    final double scaledIconSize =
+        MediaQuery.textScaleFactorOf(context) * widget.itemSize;
 
     // If decoration was not provided, create a decoration with the provided
     // background color and border radius.
@@ -444,7 +445,7 @@ class _CupertinoSearchTextFieldState extends State<CupertinoSearchTextField>
       suffix: suffix,
       keyboardType: widget.keyboardType,
       onTap: widget.onTap,
-      enabled: widget.enabled ?? true,
+      enabled: widget.enabled,
       suffixMode: widget.suffixMode,
       placeholder: placeholder,
       placeholderStyle: placeholderStyle,

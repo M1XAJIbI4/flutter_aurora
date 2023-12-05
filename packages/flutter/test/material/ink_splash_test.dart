@@ -4,11 +4,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 
 void main() {
   // Regression test for https://github.com/flutter/flutter/issues/21506.
-  testWidgetsWithLeakTracking('InkSplash receives textDirection', (WidgetTester tester) async {
+  testWidgets('InkSplash receives textDirection', (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Button Border Test')),
@@ -26,7 +27,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgetsWithLeakTracking('InkWell with NoSplash splashFactory paints nothing', (WidgetTester tester) async {
+  testWidgets('InkWell with NoSplash splashFactory paints nothing', (WidgetTester tester) async {
     Widget buildFrame({ InteractiveInkFeatureFactory? splashFactory }) {
       return MaterialApp(
         theme: ThemeData(useMaterial3: false),

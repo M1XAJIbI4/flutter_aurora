@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/material.dart';
+// Examples of LinearBorder and LinearBorderEdge.
 
-/// Examples for [LinearBorder] and [LinearBorderEdge].
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const ExampleApp());
@@ -18,8 +18,7 @@ class ExampleApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.light(useMaterial3: true),
       home: const Directionality(
-        // TRY THIS: Switch to TextDirection.rtl to see how the borders change.
-        textDirection: TextDirection.ltr,
+        textDirection: TextDirection.ltr, // Or try rtl.
         child: Home(),
       ),
     );

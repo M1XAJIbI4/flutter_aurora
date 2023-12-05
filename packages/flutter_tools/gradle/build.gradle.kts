@@ -3,8 +3,12 @@
 // found in the LICENSE file.
 
 plugins {
-    `java-gradle-plugin`
-    `groovy`
+    `groovy-gradle-plugin`
+}
+
+repositories {
+    google()
+    mavenCentral()
 }
 
 
@@ -17,10 +21,6 @@ gradlePlugin {
         create("flutterPlugin") {
             id = "dev.flutter.flutter-gradle-plugin"
             implementationClass = "FlutterPlugin"
-        }
-        create("flutterAppPluginLoaderPlugin") {
-            id = "dev.flutter.flutter-plugin-loader"
-            implementationClass = "FlutterAppPluginLoaderPlugin"
         }
     }
 }

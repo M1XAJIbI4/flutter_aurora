@@ -76,9 +76,8 @@ abstract interface class ChipAttributes {
 
   /// The style to be applied to the chip's label.
   ///
-  /// If this is null and [ThemeData.useMaterial3] is true, then
-  /// [TextTheme.labelLarge] is used. Otherwise, [TextTheme.bodyLarge]
-  /// is used.
+  /// The default label style is [TextTheme.bodyLarge] from the overall
+  /// theme's [ThemeData.textTheme].
   //
   /// This only has an effect on widgets that respect the [DefaultTextStyle],
   /// such as [Text].
@@ -96,17 +95,12 @@ abstract interface class ChipAttributes {
   /// The color and weight of the chip's outline.
   ///
   /// Defaults to the border side in the ambient [ChipThemeData]. If the theme
-  /// border side resolves to null and [ThemeData.useMaterial3] is true, then
-  /// [BorderSide] with a [ColorScheme.outline] color is used when the chip is
-  /// enabled, and [BorderSide] with a [ColorScheme.onSurface] color with an
-  /// opacity of 0.12 is used when the chip is disabled. Otherwise, it defaults
-  /// to null.
+  /// border side resolves to null, the default is the border side of [shape].
   ///
   /// This value is combined with [shape] to create a shape decorated with an
-  /// outline. To omit the outline entirely, pass [BorderSide.none] to [side].
-  ///
-  /// If it is a [MaterialStateBorderSide], [MaterialStateProperty.resolve] is
-  /// used for the following [MaterialState]s:
+  /// outline. If it is a [MaterialStateBorderSide],
+  /// [MaterialStateProperty.resolve] is used for the following
+  /// [MaterialState]s:
   ///
   ///  * [MaterialState.disabled].
   ///  * [MaterialState.selected].
@@ -118,15 +112,12 @@ abstract interface class ChipAttributes {
   /// The [OutlinedBorder] to draw around the chip.
   ///
   /// Defaults to the shape in the ambient [ChipThemeData]. If the theme
-  /// shape resolves to null and [ThemeData.useMaterial3] is true, then
-  /// [RoundedRectangleBorder] with a circular border radius of 8.0 is used.
-  /// Otherwise, [StadiumBorder] is used.
+  /// shape resolves to null, the default is [StadiumBorder].
   ///
   /// This shape is combined with [side] to create a shape decorated with an
-  /// outline. To omit the outline entirely, pass [BorderSide.none] to [side].
-  ///
-  /// If it is a [MaterialStateOutlinedBorder], [MaterialStateProperty.resolve]
-  /// is used for the following [MaterialState]s:
+  /// outline. If it is a [MaterialStateOutlinedBorder],
+  /// [MaterialStateProperty.resolve] is used for the following
+  /// [MaterialState]s:
   ///
   ///  * [MaterialState.disabled].
   ///  * [MaterialState.selected].
@@ -137,7 +128,7 @@ abstract interface class ChipAttributes {
 
   /// {@macro flutter.material.Material.clipBehavior}
   ///
-  /// Defaults to [Clip.none].
+  /// Defaults to [Clip.none], and must not be null.
   Clip get clipBehavior;
 
   /// {@macro flutter.widgets.Focus.focusNode}
@@ -147,8 +138,6 @@ abstract interface class ChipAttributes {
   bool get autofocus;
 
   /// The color that fills the chip, in all [MaterialState]s.
-  ///
-  /// Defaults to null.
   ///
   /// Resolves in the following states:
   ///  * [MaterialState.selected].
@@ -162,9 +151,7 @@ abstract interface class ChipAttributes {
 
   /// The padding between the contents of the chip and the outside [shape].
   ///
-  /// If this is null and [ThemeData.useMaterial3] is true, then
-  /// a padding of 8.0 logical pixels on all sides is used. Otherwise,
-  /// it defaults to a padding of 4.0 logical pixels on all sides.
+  /// Defaults to 4 logical pixels on all sides.
   EdgeInsetsGeometry? get padding;
 
   /// Defines how compact the chip's layout will be.
@@ -203,25 +190,18 @@ abstract interface class ChipAttributes {
 
   /// Color of the chip's shadow when the elevation is greater than 0.
   ///
-  /// If this is null and [ThemeData.useMaterial3] is true, then
-  /// [Colors.transparent] color is used. Otherwise, it defaults to null.
+  /// The default is null.
   Color? get shadowColor;
 
   /// Color of the chip's surface tint overlay when its elevation is
   /// greater than 0.
   ///
-  /// If this is null and [ThemeData.useMaterial3] is true, then
-  /// [ColorScheme.surfaceTint] color is used. Otherwise, it defaults
-  /// to null.
+  /// The default is null.
   Color? get surfaceTintColor;
 
   /// Theme used for all icons in the chip.
   ///
-  /// If this is null and [ThemeData.useMaterial3] is true, then [IconThemeData]
-  /// with a [ColorScheme.primary] color and a size of 18.0 is used when
-  /// the chip is enabled, and [IconThemeData] with a [ColorScheme.onSurface]
-  /// color and a size of 18.0 is used when the chip is disabled. Otherwise,
-  /// it defaults to null.
+  /// The default is null.
   IconThemeData? get iconTheme;
 }
 
@@ -279,6 +259,16 @@ abstract interface class DeletableChipAttributes {
   /// If null, the default [MaterialLocalizations.deleteButtonTooltip] will be
   /// used.
   String? get deleteButtonTooltipMessage;
+
+  /// Whether to use a tooltip on the chip's delete button showing the
+  /// [deleteButtonTooltipMessage].
+  ///
+  /// Defaults to true.
+  @Deprecated(
+    'Migrate to deleteButtonTooltipMessage. '
+    'This feature was deprecated after v2.10.0-0.3.pre.'
+  )
+  bool get useDeleteButtonTooltip;
 }
 
 /// An interface for Material Design chips that can have check marks.
@@ -333,7 +323,7 @@ abstract interface class SelectableChipAttributes {
   /// If [onSelected] is not null, this value will be used to determine if the
   /// select check mark will be shown or not.
   ///
-  /// Defaults to false.
+  /// Must not be null. Defaults to false.
   bool get selected;
 
   /// Called when the chip should change between selected and de-selected
@@ -447,7 +437,7 @@ abstract interface class DisabledChipAttributes {
   /// For classes which don't have this as a constructor argument, [isEnabled]
   /// returns true if their user action callback is set.
   ///
-  /// Defaults to true.
+  /// Defaults to true. Cannot be null.
   bool get isEnabled;
 
   /// The color used for the chip's background to indicate that it is not
@@ -561,6 +551,7 @@ abstract interface class TappableChipAttributes {
 class Chip extends StatelessWidget implements ChipAttributes, DeletableChipAttributes {
   /// Creates a Material Design chip.
   ///
+  /// The [label], [autofocus], and [clipBehavior] arguments must not be null.
   /// The [elevation] must be null or non-negative.
   const Chip({
     super.key,
@@ -586,6 +577,11 @@ class Chip extends StatelessWidget implements ChipAttributes, DeletableChipAttri
     this.shadowColor,
     this.surfaceTintColor,
     this.iconTheme,
+    @Deprecated(
+      'Migrate to deleteButtonTooltipMessage. '
+      'This feature was deprecated after v2.10.0-0.3.pre.'
+    )
+    this.useDeleteButtonTooltip = true,
   }) : assert(elevation == null || elevation >= 0.0);
 
   @override
@@ -632,6 +628,12 @@ class Chip extends StatelessWidget implements ChipAttributes, DeletableChipAttri
   final Color? surfaceTintColor;
   @override
   final IconThemeData? iconTheme;
+  @override
+  @Deprecated(
+    'Migrate to deleteButtonTooltipMessage. '
+    'This feature was deprecated after v2.10.0-0.3.pre.'
+  )
+  final bool useDeleteButtonTooltip;
 
   @override
   Widget build(BuildContext context) {
@@ -644,6 +646,7 @@ class Chip extends StatelessWidget implements ChipAttributes, DeletableChipAttri
       deleteIcon: deleteIcon,
       onDeleted: onDeleted,
       deleteIconColor: deleteIconColor,
+      useDeleteButtonTooltip: useDeleteButtonTooltip,
       deleteButtonTooltipMessage: deleteButtonTooltipMessage,
       tapEnabled: false,
       side: side,
@@ -706,8 +709,10 @@ class RawChip extends StatefulWidget
   /// The [onPressed] and [onSelected] callbacks must not both be specified at
   /// the same time.
   ///
-  /// The [pressElevation] and [elevation] must be null or non-negative.
-  /// Typically, [pressElevation] is greater than [elevation].
+  /// The [label], [isEnabled], [selected], [autofocus], and [clipBehavior]
+  /// arguments must not be null. The [pressElevation] and [elevation] must be
+  /// null or non-negative. Typically, [pressElevation] is greater than
+  /// [elevation].
   const RawChip({
     super.key,
     this.defaultProperties,
@@ -743,9 +748,14 @@ class RawChip extends StatefulWidget
     this.surfaceTintColor,
     this.iconTheme,
     this.selectedShadowColor,
-    this.showCheckmark,
+    this.showCheckmark = true,
     this.checkmarkColor,
     this.avatarBorder = const CircleBorder(),
+    @Deprecated(
+      'Migrate to deleteButtonTooltipMessage. '
+      'This feature was deprecated after v2.10.0-0.3.pre.'
+    )
+    this.useDeleteButtonTooltip = true,
   }) : assert(pressElevation == null || pressElevation >= 0.0),
        assert(elevation == null || elevation >= 0.0),
        deleteIcon = deleteIcon ?? _kDefaultDeleteIcon;
@@ -825,6 +835,12 @@ class RawChip extends StatefulWidget
   final Color? checkmarkColor;
   @override
   final ShapeBorder avatarBorder;
+  @override
+  @Deprecated(
+    'Migrate to deleteButtonTooltipMessage. '
+    'This feature was deprecated after v2.10.0-0.3.pre.'
+  )
+  final bool useDeleteButtonTooltip;
 
   /// If set, this indicates that the chip should be disabled if all of the
   /// tap callbacks ([onSelected], [onPressed]) are null.
@@ -976,21 +992,13 @@ class _RawChipState extends State<RawChip> with MaterialStateMixin, TickerProvid
 
   OutlinedBorder _getShape(ThemeData theme, ChipThemeData chipTheme, ChipThemeData chipDefaults) {
     final BorderSide? resolvedSide = MaterialStateProperty.resolveAs<BorderSide?>(widget.side, materialStates)
-      ?? MaterialStateProperty.resolveAs<BorderSide?>(chipTheme.side, materialStates);
+      ?? MaterialStateProperty.resolveAs<BorderSide?>(chipTheme.side, materialStates)
+      ?? MaterialStateProperty.resolveAs<BorderSide?>(chipDefaults.side, materialStates);
     final OutlinedBorder resolvedShape = MaterialStateProperty.resolveAs<OutlinedBorder?>(widget.shape, materialStates)
       ?? MaterialStateProperty.resolveAs<OutlinedBorder?>(chipTheme.shape, materialStates)
       ?? MaterialStateProperty.resolveAs<OutlinedBorder?>(chipDefaults.shape, materialStates)
-      // TODO(tahatesser): Remove this fallback when Material 2 is deprecated.
       ?? const StadiumBorder();
-    // If the side is provided, shape uses the provided side.
-    if (resolvedSide != null) {
-      return resolvedShape.copyWith(side: resolvedSide);
-    }
-    // If the side is not provided and the shape's side is not [BorderSide.none],
-    // then the shape's side is used. Otherwise, the default side is used.
-    return resolvedShape.side != BorderSide.none
-      ? resolvedShape
-      : resolvedShape.copyWith(side: chipDefaults.side);
+    return resolvedShape.copyWith(side: resolvedSide);
   }
 
   Color? resolveColor({
@@ -1123,8 +1131,9 @@ class _RawChipState extends State<RawChip> with MaterialStateMixin, TickerProvid
       container: true,
       button: true,
       child: _wrapWithTooltip(
-        tooltip: widget.deleteButtonTooltipMessage
-          ?? MaterialLocalizations.of(context).deleteButtonTooltip,
+        tooltip: widget.useDeleteButtonTooltip
+          ? widget.deleteButtonTooltipMessage ?? MaterialLocalizations.of(context).deleteButtonTooltip
+          : null,
         enabled: widget.onDeleted != null,
         child: InkWell(
           // Radius should be slightly less than the full size of the chip.
@@ -1160,7 +1169,7 @@ class _RawChipState extends State<RawChip> with MaterialStateMixin, TickerProvid
     final EdgeInsetsGeometry defaultLabelPadding = EdgeInsets.lerp(
       const EdgeInsets.symmetric(horizontal: 8.0),
       const EdgeInsets.symmetric(horizontal: 4.0),
-      clampDouble(MediaQuery.textScalerOf(context).textScaleFactor - 1.0, 0.0, 1.0),
+      clampDouble(MediaQuery.textScaleFactorOf(context) - 1.0, 0.0, 1.0),
     )!;
 
     final ThemeData theme = Theme.of(context);
@@ -1754,7 +1763,6 @@ class _RenderChip extends RenderBox with SlottedContainerRenderObjectMixin<_Chip
     }
     final bool hitIsOnDeleteIcon = deleteIcon != null && _hitIsOnDeleteIcon(
       padding: theme.padding,
-      labelPadding: theme.labelPadding,
       tapPosition: position,
       chipSize: size,
       deleteButtonSize: deleteIcon!.size,
@@ -2034,8 +2042,6 @@ class _RenderChip extends RenderBox with SlottedContainerRenderObjectMixin<_Chip
     }
   }
 
-  final LayerHandle<OpacityLayer> _avatarOpacityLayerHandler = LayerHandle<OpacityLayer>();
-
   void _paintAvatar(PaintingContext context, Offset offset) {
     void paintWithOverlay(PaintingContext context, Offset offset) {
       context.paintChild(avatar!, _boxParentData(avatar!).offset + offset);
@@ -2043,15 +2049,13 @@ class _RenderChip extends RenderBox with SlottedContainerRenderObjectMixin<_Chip
     }
 
     if (!theme.showAvatar && avatarDrawerAnimation.isDismissed) {
-      _avatarOpacityLayerHandler.layer = null;
       return;
     }
     final Color disabledColor = _disabledColor;
     final int disabledColorAlpha = disabledColor.alpha;
     if (needsCompositing) {
-       _avatarOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha, paintWithOverlay, oldLayer: _avatarOpacityLayerHandler.layer);
+      context.pushLayer(OpacityLayer(alpha: disabledColorAlpha), paintWithOverlay, offset);
     } else {
-      _avatarOpacityLayerHandler.layer = null;
       if (disabledColorAlpha != 0xff) {
         context.canvas.saveLayer(
           _boxRect(avatar).shift(offset).inflate(20.0),
@@ -2065,26 +2069,21 @@ class _RenderChip extends RenderBox with SlottedContainerRenderObjectMixin<_Chip
     }
   }
 
-  final LayerHandle<OpacityLayer> _childOpacityLayerHandler = LayerHandle<OpacityLayer>();
-
   void _paintChild(PaintingContext context, Offset offset, RenderBox? child, bool? isEnabled) {
     if (child == null) {
-      _childOpacityLayerHandler.layer = null;
       return;
     }
     final int disabledColorAlpha = _disabledColor.alpha;
     if (!enableAnimation.isCompleted) {
       if (needsCompositing) {
-        _childOpacityLayerHandler.layer = context.pushOpacity(
-          offset,
-          disabledColorAlpha,
+        context.pushLayer(
+          OpacityLayer(alpha: disabledColorAlpha),
           (PaintingContext context, Offset offset) {
             context.paintChild(child, _boxParentData(child).offset + offset);
           },
-          oldLayer: _childOpacityLayerHandler.layer,
+          offset,
         );
       } else {
-        _childOpacityLayerHandler.layer = null;
         final Rect childRect = _boxRect(child).shift(offset);
         context.canvas.saveLayer(childRect.inflate(20.0), Paint()..color = _disabledColor);
         context.paintChild(child, _boxParentData(child).offset + offset);
@@ -2093,13 +2092,6 @@ class _RenderChip extends RenderBox with SlottedContainerRenderObjectMixin<_Chip
     } else {
       context.paintChild(child, _boxParentData(child).offset + offset);
     }
-  }
-
-  @override
-  void dispose() {
-    _childOpacityLayerHandler.layer = null;
-    _avatarOpacityLayerHandler.layer = null;
-    super.dispose();
   }
 
   @override
@@ -2194,7 +2186,6 @@ class _UnconstrainedInkSplashFactory extends InteractiveInkFeatureFactory {
 
 bool _hitIsOnDeleteIcon({
   required EdgeInsetsGeometry padding,
-  required EdgeInsetsGeometry labelPadding,
   required Offset tapPosition,
   required Size chipSize,
   required Size deleteButtonSize,
@@ -2206,10 +2197,10 @@ bool _hitIsOnDeleteIcon({
   final Size deflatedSize = resolvedPadding.deflateSize(chipSize);
   final Offset adjustedPosition = tapPosition - Offset(resolvedPadding.left, resolvedPadding.top);
   // The delete button hit area should be at least the width of the delete
-  // button and right label padding, but, if there's room, up to 24 pixels
-  // from the center of the delete icon (corresponding to part of a 48x48 square
-  // that Material would prefer for touch targets), but no more than approximately
-  // half of the overall size of the chip when the chip is small.
+  // button, but, if there's room, up to 24 pixels from the center of the delete
+  // icon (corresponding to part of a 48x48 square that Material would prefer
+  // for touch targets), but no more than approximately half of the overall size
+  // of the chip when the chip is small.
   //
   // This isn't affected by materialTapTargetSize because it only applies to the
   // width of the tappable region within the chip, not outside of the chip,
@@ -2220,7 +2211,7 @@ bool _hitIsOnDeleteIcon({
   // chip will still hit the chip, not the delete button.
   final double accessibleDeleteButtonWidth = math.min(
     deflatedSize.width * 0.499,
-    math.min(labelPadding.resolve(textDirection).right + deleteButtonSize.width, 24.0 + deleteButtonSize.width / 2.0),
+    math.max(deleteButtonSize.width, 24.0 + deleteButtonSize.width / 2.0),
   );
   switch (textDirection) {
     case TextDirection.ltr:
@@ -2292,7 +2283,7 @@ class _ChipDefaultsM3 extends ChipThemeData {
   EdgeInsetsGeometry? get labelPadding => EdgeInsets.lerp(
     const EdgeInsets.symmetric(horizontal: 8.0),
     const EdgeInsets.symmetric(horizontal: 4.0),
-    clampDouble(MediaQuery.textScalerOf(context).textScaleFactor - 1.0, 0.0, 1.0),
+    clampDouble(MediaQuery.textScaleFactorOf(context) - 1.0, 0.0, 1.0),
   )!;
 }
 

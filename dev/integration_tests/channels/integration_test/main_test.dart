@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:channels/main.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -13,6 +14,9 @@ String getStatus(WidgetTester tester) => tester.widget<Text>(statusField).data!;
 
 void main() {
   testWidgets('step through', (WidgetTester tester) async {
+    // TODO(goderbauer): Remove this once https://github.com/flutter/flutter/issues/116663 is diagnosed.
+    debugPrintHitTestResults = true;
+
     await tester.pumpWidget(const TestApp());
     await tester.pumpAndSettle();
 
@@ -32,6 +36,9 @@ void main() {
         await tester.pumpAndSettle();
       }
     }
+
+    // TODO(goderbauer): Remove this once https://github.com/flutter/flutter/issues/116663 is diagnosed.
+    debugPrintHitTestResults = false;
 
     final String status = getStatus(tester);
     if (status != 'complete') {

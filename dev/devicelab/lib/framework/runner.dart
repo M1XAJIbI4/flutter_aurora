@@ -35,25 +35,23 @@ Future<void> runTasks(
   String? deviceId,
   String? gitBranch,
   String? localEngine,
-  String? localEngineHost,
   String? localEngineSrcPath,
   String? luciBuilder,
   String? resultsPath,
   List<String>? taskArgs,
   bool useEmulator = false,
   @visibleForTesting Map<String, String>? isolateParams,
-  @visibleForTesting void Function(String) print = print,
+  @visibleForTesting Function(String) print = print,
   @visibleForTesting List<String>? logs,
 }) async {
   for (final String taskName in taskNames) {
     TaskResult result = TaskResult.success(null);
-    int failureCount = 0;
-    while (failureCount <= Cocoon.retryNumber) {
+    int retry = 0;
+    while (retry <= Cocoon.retryNumber) {
       result = await rerunTask(
         taskName,
         deviceId: deviceId,
         localEngine: localEngine,
-        localEngineHost: localEngineHost,
         localEngineSrcPath: localEngineSrcPath,
         terminateStrayDartProcesses: terminateStrayDartProcesses,
         silent: silent,
@@ -66,14 +64,11 @@ Future<void> runTasks(
       );
 
       if (!result.succeeded) {
-        failureCount += 1;
-        if (exitOnFirstTestFailure) {
-          break;
-        }
+        retry += 1;
       } else {
         section('Flaky status for "$taskName"');
-        if (failureCount > 0) {
-          print('Total ${failureCount+1} executions: $failureCount failures and 1 false positive.');
+        if (retry > 0) {
+          print('Total ${retry+1} executions: $retry failures and 1 false positive.');
           print('flaky: true');
           // TODO(ianh): stop ignoring this failure. We should set exitCode=1, and quit
           // if exitOnFirstTestFailure is true.
@@ -87,7 +82,7 @@ Future<void> runTasks(
 
     if (!result.succeeded) {
       section('Flaky status for "$taskName"');
-      print('Consistently failed across all $failureCount executions.');
+      print('Consistently failed across all $retry executions.');
       print('flaky: false');
       exitCode = 1;
       if (exitOnFirstTestFailure) {
@@ -104,7 +99,6 @@ Future<TaskResult> rerunTask(
   String taskName, {
   String? deviceId,
   String? localEngine,
-  String? localEngineHost,
   String? localEngineSrcPath,
   bool terminateStrayDartProcesses = false,
   bool silent = false,
@@ -120,7 +114,6 @@ Future<TaskResult> rerunTask(
     taskName,
     deviceId: deviceId,
     localEngine: localEngine,
-    localEngineHost: localEngineHost,
     localEngineSrcPath: localEngineSrcPath,
     terminateStrayDartProcesses: terminateStrayDartProcesses,
     silent: silent,
@@ -160,7 +153,6 @@ Future<TaskResult> runTask(
   bool terminateStrayDartProcesses = false,
   bool silent = false,
   String? localEngine,
-  String? localEngineHost,
   String? localWebSdk,
   String? localEngineSrcPath,
   String? deviceId,
@@ -190,7 +182,6 @@ Future<TaskResult> runTask(
       '--enable-vm-service=0', // zero causes the system to choose a free port
       '--no-pause-isolates-on-exit',
       if (localEngine != null) '-DlocalEngine=$localEngine',
-      if (localEngineHost != null) '-DlocalEngineHost=$localEngineHost',
       if (localWebSdk != null) '-DlocalWebSdk=$localWebSdk',
       if (localEngineSrcPath != null) '-DlocalEngineSrcPath=$localEngineSrcPath',
       taskExecutable,

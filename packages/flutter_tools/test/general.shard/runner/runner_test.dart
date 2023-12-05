@@ -326,7 +326,7 @@ void main() {
         expect(globals.analytics.shouldShowMessage, true);
 
         await runner.run(
-          <String>['--disable-analytics'],
+          <String>['--disable-telemetry'],
           () => <FlutterCommand>[],
           // This flutterVersion disables crash reporting.
           flutterVersion: '[user-branch]/',
@@ -343,7 +343,7 @@ void main() {
     );
 
     testUsingContext(
-      'runner enabling analytics with flag',
+      'runner enabling telemetry with flag',
       () async {
         io.setExitFunctionForTests((int exitCode) {});
 
@@ -351,7 +351,7 @@ void main() {
         expect(globals.analytics.shouldShowMessage, false);
 
         await runner.run(
-          <String>['--enable-analytics'],
+          <String>['--enable-telemetry'],
           () => <FlutterCommand>[],
           // This flutterVersion disables crash reporting.
           flutterVersion: '[user-branch]/',
@@ -377,8 +377,8 @@ void main() {
 
         final int exitCode = await runner.run(
           <String>[
-            '--disable-analytics',
-            '--enable-analytics',
+            '--disable-telemetry',
+            '--enable-telemetry',
           ],
           () => <FlutterCommand>[],
           // This flutterVersion disables crash reporting.
@@ -538,7 +538,7 @@ class WaitingCrashReporter implements CrashReporter {
 }
 
 /// A fake [Analytics] that will be used to test
-/// the --disable-analytics flag
+/// the --disable-telemetry flag
 class FakeAnalytics extends Fake implements Analytics {
 
   FakeAnalytics({bool fakeTelemetryStatusOverride = true})

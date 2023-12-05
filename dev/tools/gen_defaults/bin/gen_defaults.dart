@@ -37,7 +37,6 @@ import 'package:gen_defaults/input_chip_template.dart';
 import 'package:gen_defaults/input_decorator_template.dart';
 import 'package:gen_defaults/list_tile_template.dart';
 import 'package:gen_defaults/menu_template.dart';
-import 'package:gen_defaults/motion_template.dart';
 import 'package:gen_defaults/navigation_bar_template.dart';
 import 'package:gen_defaults/navigation_drawer_template.dart';
 import 'package:gen_defaults/navigation_rail_template.dart';
@@ -132,7 +131,6 @@ Future<void> main(List<String> args) async {
   ListTileTemplate('LisTile', '$materialLib/list_tile.dart', tokens).updateFile();
   InputDecoratorTemplate('InputDecorator', '$materialLib/input_decorator.dart', tokens).updateFile();
   MenuTemplate('Menu', '$materialLib/menu_anchor.dart', tokens).updateFile();
-  MotionTemplate('Motion', '$materialLib/motion.dart', tokens, tokenLogger).updateFile();
   NavigationBarTemplate('NavigationBar', '$materialLib/navigation_bar.dart', tokens).updateFile();
   NavigationDrawerTemplate('NavigationDrawer', '$materialLib/navigation_drawer.dart', tokens).updateFile();
   NavigationRailTemplate('NavigationRail', '$materialLib/navigation_rail.dart', tokens).updateFile();

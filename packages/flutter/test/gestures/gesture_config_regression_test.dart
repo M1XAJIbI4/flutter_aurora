@@ -6,12 +6,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../foundation/leak_tracking.dart';
 
 class TestResult {
   bool dragStarted = false;
   bool dragUpdate = false;
-  bool dragEnd = false;
 }
 
 class NestedScrollableCase extends StatelessWidget {
@@ -78,9 +78,7 @@ class NestedDraggableCase extends StatelessWidget {
                     onDragUpdate: (DragUpdateDetails details){
                       testResult.dragUpdate = true;
                     },
-                    onDragEnd: (_) {
-                      testResult.dragEnd = true;
-                    },
+                    onDragEnd: (_) {},
                   ),
                 );
               },
@@ -137,6 +135,5 @@ void main() {
 
    expect(result.dragStarted, true);
    expect(result.dragUpdate, true);
-   expect(result.dragEnd, true);
   });
 }

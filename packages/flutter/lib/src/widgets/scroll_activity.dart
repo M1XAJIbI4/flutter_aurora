@@ -63,8 +63,6 @@ abstract class ScrollActivity {
   ScrollActivityDelegate get delegate => _delegate;
   ScrollActivityDelegate _delegate;
 
-  bool _isDisposed = false;
-
   /// Updates the activity's link to the [ScrollActivityDelegate].
   ///
   /// This should only be called when an activity is being moved from a defunct
@@ -136,9 +134,7 @@ abstract class ScrollActivity {
 
   /// Called when the scroll view stops performing this activity.
   @mustCallSuper
-  void dispose() {
-    _isDisposed = true;
-  }
+  void dispose() { }
 
   @override
   String toString() => describeIdentity(this);
@@ -230,6 +226,8 @@ class HoldScrollActivity extends ScrollActivity implements ScrollHoldController 
 class ScrollDragController implements Drag {
   /// Creates an object that scrolls a scroll view as the user drags their
   /// finger across the screen.
+  ///
+  /// The [delegate] and `details` arguments must not be null.
   ScrollDragController({
     required ScrollActivityDelegate delegate,
     required DragStartDetails details,
@@ -523,6 +521,8 @@ class DragScrollActivity extends ScrollActivity {
 ///    animation parameters.
 class BallisticScrollActivity extends ScrollActivity {
   /// Creates an activity that animates a scroll view based on a [simulation].
+  ///
+  /// The [delegate], [simulation], and [vsync] arguments must not be null.
   BallisticScrollActivity(
     super.delegate,
     Simulation simulation,
@@ -535,7 +535,7 @@ class BallisticScrollActivity extends ScrollActivity {
     )
       ..addListener(_tick)
       ..animateWith(simulation)
-       .whenComplete(_end); // won't trigger if we dispose _controller before it completes.
+       .whenComplete(_end); // won't trigger if we dispose _controller first
   }
 
   late AnimationController _controller;
@@ -569,11 +569,7 @@ class BallisticScrollActivity extends ScrollActivity {
   }
 
   void _end() {
-    // Check if the activity was disposed before going ballistic because _end might be called
-    // if _controller is disposed just after completion.
-    if (!_isDisposed) {
-      delegate.goBallistic(0.0);
-    }
+    delegate.goBallistic(0.0);
   }
 
   @override
@@ -614,6 +610,8 @@ class BallisticScrollActivity extends ScrollActivity {
 class DrivenScrollActivity extends ScrollActivity {
   /// Creates an activity that animates a scroll view based on animation
   /// parameters.
+  ///
+  /// All of the parameters must be non-null.
   DrivenScrollActivity(
     super.delegate, {
     required double from,
@@ -630,7 +628,7 @@ class DrivenScrollActivity extends ScrollActivity {
     )
       ..addListener(_tick)
       ..animateTo(to, duration: duration, curve: curve)
-       .whenComplete(_end); // won't trigger if we dispose _controller before it completes.
+       .whenComplete(_end); // won't trigger if we dispose _controller first
   }
 
   late final Completer<void> _completer;
@@ -650,11 +648,7 @@ class DrivenScrollActivity extends ScrollActivity {
   }
 
   void _end() {
-    // Check if the activity was disposed before going ballistic because _end might be called
-    // if _controller is disposed just after completion.
-    if (!_isDisposed) {
-      delegate.goBallistic(velocity);
-    }
+    delegate.goBallistic(velocity);
   }
 
   @override

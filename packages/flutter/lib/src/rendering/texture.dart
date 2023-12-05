@@ -29,9 +29,9 @@ import 'object.dart';
 ///
 /// See also:
 ///
-///  * [TextureRegistry](/javadoc/io/flutter/view/TextureRegistry.html)
+///  * <https://api.flutter.dev/javadoc/io/flutter/view/TextureRegistry.html>
 ///    for how to create and manage backend textures on Android.
-///  * [TextureRegistry Protocol](/ios-embedder/protocol_flutter_texture_registry-p.html)
+///  * <https://api.flutter.dev/objcdoc/Protocols/FlutterTextureRegistry.html>
 ///    for how to create and manage backend textures on iOS.
 class TextureBox extends RenderBox {
   /// Creates a box backed by the texture identified by [textureId], and use

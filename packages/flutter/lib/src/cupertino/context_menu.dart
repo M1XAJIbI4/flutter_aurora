@@ -6,13 +6,12 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart' show kMinFlingVelocity;
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter/widgets.dart';
 
 import 'colors.dart';
-import 'localizations.dart';
 
 // The scale of the child at the time that the CupertinoContextMenu opens.
 // This value was eyeballed from a physical device running iOS 13.1.2.
@@ -132,7 +131,9 @@ enum _ContextMenuLocation {
 class CupertinoContextMenu extends StatefulWidget {
   /// Create a context menu.
   ///
-  /// The [actions] parameter cannot be empty.
+  /// [actions] is required and cannot be null or empty.
+  ///
+  /// [child] is required and cannot be null.
   CupertinoContextMenu({
     super.key,
     required this.actions,
@@ -151,7 +152,9 @@ class CupertinoContextMenu extends StatefulWidget {
   /// Use instead of the default constructor when it is needed to have a more
   /// custom animation.
   ///
-  /// The [actions] parameter cannot be empty.
+  /// [actions] is required and cannot be null or empty.
+  ///
+  /// [builder] is required.
   CupertinoContextMenu.builder({
     super.key,
     required this.actions,
@@ -385,7 +388,7 @@ class CupertinoContextMenu extends StatefulWidget {
   ///
   /// These actions are typically [CupertinoContextMenuAction]s.
   ///
-  /// This parameter must not be empty.
+  /// This parameter cannot be null or empty.
   final List<Widget> actions;
 
   /// If true, clicking on the [CupertinoContextMenuAction]s will
@@ -476,7 +479,6 @@ class _CupertinoContextMenuState extends State<CupertinoContextMenu> with Ticker
   OverlayEntry? _lastOverlayEntry;
   _ContextMenuRoute<void>? _route;
   final double _midpoint = CupertinoContextMenu.animationOpensAt / 2;
-  late final TapGestureRecognizer _tapGestureRecognizer;
 
   @override
   void initState() {
@@ -487,20 +489,13 @@ class _CupertinoContextMenuState extends State<CupertinoContextMenu> with Ticker
       upperBound: CupertinoContextMenu.animationOpensAt,
     );
     _openController.addStatusListener(_onDecoyAnimationStatusChange);
-    _tapGestureRecognizer = TapGestureRecognizer()
-      ..onTapCancel = _onTapCancel
-      ..onTapDown = _onTapDown
-      ..onTapUp = _onTapUp
-      ..onTap = _onTap;
   }
 
   void _listenerCallback() {
     if (_openController.status != AnimationStatus.reverse &&
-        _openController.value >= _midpoint) {
-      if (widget.enableHapticFeedback) {
-        HapticFeedback.heavyImpact();
-      }
-      _tapGestureRecognizer.resolve(GestureDisposition.accepted);
+        _openController.value >= _midpoint &&
+        widget.enableHapticFeedback) {
+      HapticFeedback.heavyImpact();
       _openController.removeListener(_listenerCallback);
     }
   }
@@ -540,7 +535,7 @@ class _CupertinoContextMenuState extends State<CupertinoContextMenu> with Ticker
 
     _route = _ContextMenuRoute<void>(
       actions: widget.actions,
-      barrierLabel: CupertinoLocalizations.of(context).menuDismissLabel,
+      barrierLabel: 'Dismiss',
       filter: ui.ImageFilter.blur(
         sigmaX: 5.0,
         sigmaY: 5.0,
@@ -568,7 +563,6 @@ class _CupertinoContextMenuState extends State<CupertinoContextMenu> with Ticker
           });
         }
         _lastOverlayEntry?.remove();
-        _lastOverlayEntry?.dispose();
         _lastOverlayEntry = null;
 
       case AnimationStatus.completed:
@@ -582,7 +576,6 @@ class _CupertinoContextMenuState extends State<CupertinoContextMenu> with Ticker
         // one frame.
         SchedulerBinding.instance.addPostFrameCallback((Duration _) {
           _lastOverlayEntry?.remove();
-          _lastOverlayEntry?.dispose();
           _lastOverlayEntry = null;
           _openController.reset();
         });
@@ -669,8 +662,11 @@ class _CupertinoContextMenuState extends State<CupertinoContextMenu> with Ticker
   Widget build(BuildContext context) {
     return MouseRegion(
       cursor: kIsWeb ? SystemMouseCursors.click : MouseCursor.defer,
-      child: Listener(
-        onPointerDown: _tapGestureRecognizer.addPointer,
+      child: GestureDetector(
+        onTapCancel: _onTapCancel,
+        onTapDown: _onTapDown,
+        onTapUp: _onTapUp,
+        onTap: _onTap,
         child: TickerMode(
           enabled: !_childHidden,
           child: Visibility.maintain(

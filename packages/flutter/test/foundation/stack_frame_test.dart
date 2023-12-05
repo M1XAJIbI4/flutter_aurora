@@ -99,10 +99,6 @@ void main() {
       ),
     );
   });
-
-  test('Parses to null for wrong format.', () {
-    expect(StackFrame.fromStackTraceLine('wrong stack trace format'), null);
-  });
 }
 
 const String stackString = '''

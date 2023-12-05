@@ -16,7 +16,6 @@ class NewGalleryPerfTest extends PerfTest {
     String dartDefine = '',
     super.enableImpeller,
     super.timeoutSeconds,
-    super.forceOpenGLES,
   }) : super(
     galleryDir.path,
     'test_driver/transitions_perf.dart',

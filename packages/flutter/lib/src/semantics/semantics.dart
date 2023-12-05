@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import 'dart:math' as math;
-import 'dart:ui' show Offset, Rect, SemanticsAction, SemanticsFlag, SemanticsUpdate, SemanticsUpdateBuilder, StringAttribute, TextDirection;
+import 'dart:ui' as ui;
+import 'dart:ui' show Offset, Rect, SemanticsAction, SemanticsFlag, StringAttribute, TextDirection;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -51,7 +52,7 @@ typedef SemanticsActionHandler = void Function(Object? args);
 /// Signature for a function that receives a semantics update and returns no result.
 ///
 /// Used by [SemanticsOwner.onSemanticsUpdate].
-typedef SemanticsUpdateCallback = void Function(SemanticsUpdate update);
+typedef SemanticsUpdateCallback = void Function(ui.SemanticsUpdate update);
 
 /// Signature for the [SemanticsConfiguration.childConfigurationsDelegate].
 ///
@@ -211,7 +212,7 @@ class ChildSemanticsConfigurationsResultBuilder {
 class CustomSemanticsAction {
   /// Creates a new [CustomSemanticsAction].
   ///
-  /// The [label] must not be empty.
+  /// The [label] must not be null or the empty string.
   const CustomSemanticsAction({required String this.label})
     : assert(label != ''),
       hint = null,
@@ -220,7 +221,7 @@ class CustomSemanticsAction {
   /// Creates a new [CustomSemanticsAction] that overrides a standard semantics
   /// action.
   ///
-  /// The [hint] must not be empty.
+  /// The [hint] must not be null or the empty string.
   const CustomSemanticsAction.overridingAction({required String this.hint, required SemanticsAction this.action})
     : assert(hint != ''),
       label = null;
@@ -410,6 +411,8 @@ class AttributedStringProperty extends DiagnosticsProperty<AttributedString> {
 @immutable
 class SemanticsData with Diagnosticable {
   /// Creates a semantics data object.
+  ///
+  /// The [flags], [actions], [label], and [Rect] arguments must not be null.
   ///
   /// If [label] is not empty, then [textDirection] must also not be null.
   SemanticsData({
@@ -868,7 +871,6 @@ class SemanticsProperties extends DiagnosticableTree {
     this.enabled,
     this.checked,
     this.mixed,
-    this.expanded,
     this.selected,
     this.toggled,
     this.button,
@@ -962,14 +964,6 @@ class SemanticsProperties extends DiagnosticableTree {
   ///
   /// This is mutually exclusive with [checked] and [toggled].
   final bool? mixed;
-
-  /// If non-null, indicates that this subtree represents something
-  /// that can be in an "expanded" or "collapsed" state.
-  ///
-  /// For example, if a [SubmenuButton] is opened, this property
-  /// should be set to true; otherwise, this property should be
-  /// false.
-  final bool? expanded;
 
   /// If non-null, indicates that this subtree represents a toggle switch
   /// or similar widget with an "on" state, and what its current
@@ -1619,7 +1613,6 @@ class SemanticsProperties extends DiagnosticableTree {
     super.debugFillProperties(properties);
     properties.add(DiagnosticsProperty<bool>('checked', checked, defaultValue: null));
     properties.add(DiagnosticsProperty<bool>('mixed', mixed, defaultValue: null));
-    properties.add(DiagnosticsProperty<bool>('expanded', expanded, defaultValue: null));
     properties.add(DiagnosticsProperty<bool>('selected', selected, defaultValue: null));
     properties.add(StringProperty('label', label, defaultValue: null));
     properties.add(AttributedStringProperty('attributedLabel', attributedLabel, defaultValue: null));
@@ -2007,29 +2000,25 @@ class SemanticsNode with DiagnosticableTreeMixin {
 
   /// The owner for this node (null if unattached).
   ///
-  /// The entire semantics tree that this node belongs to will have the same owner.
+  /// The entire subtree that this node belongs to will have the same owner.
   SemanticsOwner? get owner => _owner;
   SemanticsOwner? _owner;
 
-  /// Whether the semantics tree this node belongs to is attached to a [SemanticsOwner].
+  /// Whether this node is in a tree whose root is attached to something.
   ///
   /// This becomes true during the call to [attach].
   ///
   /// This becomes false during the call to [detach].
   bool get attached => _owner != null;
 
-  /// The parent of this node in the semantics tree.
-  ///
-  /// The [parent] of the root node in the semantics tree is null.
+  /// The parent of this node in the tree.
   SemanticsNode? get parent => _parent;
   SemanticsNode? _parent;
 
-  /// The depth of this node in the semantics tree.
+  /// The depth of this node in the tree.
   ///
   /// The depth of nodes in a tree monotonically increases as you traverse down
-  /// the tree.  There's no guarantee regarding depth between siblings.
-  ///
-  /// The depth is used to ensure that nodes are processed in depth order.
+  /// the tree.
   int get depth => _depth;
   int _depth = 0;
 
@@ -2094,7 +2083,7 @@ class SemanticsNode with DiagnosticableTreeMixin {
     }
   }
 
-  /// Mark this node as detached from its owner.
+  /// Mark this node as detached.
   @visibleForTesting
   void detach() {
     assert(_owner != null);
@@ -2679,7 +2668,7 @@ class SemanticsNode with DiagnosticableTreeMixin {
   static final Int32List _kEmptyCustomSemanticsActionsList = Int32List(0);
   static final Float64List _kIdentityTransform = _initIdentityTransform();
 
-  void _addToUpdate(SemanticsUpdateBuilder builder, Set<int> customSemanticsActionIdsUpdate) {
+  void _addToUpdate(ui.SemanticsUpdateBuilder builder, Set<int> customSemanticsActionIdsUpdate) {
     assert(_dirty);
     final SemanticsData data = getSemanticsData();
     final Int32List childrenInTraversalOrder;
@@ -3299,7 +3288,7 @@ class SemanticsOwner extends ChangeNotifier {
       }
     }
     visitedNodes.sort((SemanticsNode a, SemanticsNode b) => a.depth - b.depth);
-    final SemanticsUpdateBuilder builder = SemanticsBinding.instance.createSemanticsUpdateBuilder();
+    final ui.SemanticsUpdateBuilder builder = SemanticsBinding.instance.createSemanticsUpdateBuilder();
     for (final SemanticsNode node in visitedNodes) {
       assert(node.parent?._dirty != true); // could be null (no parent) or false (not dirty)
       // The _serialize() method marks the node as not dirty, and
@@ -4406,20 +4395,6 @@ class SemanticsConfiguration {
     _setFlag(SemanticsFlag.isSelected, value);
   }
 
-  /// If this node has Boolean state that can be controlled by the user, whether
-  /// that state is expanded or collapsed, corresponding to true and false, respectively.
-  ///
-  /// Do not call the setter for this field if the owning [RenderObject] doesn't
-  /// have expanded/collapsed state that can be controlled by the user.
-  ///
-  /// The getter returns null if the owning [RenderObject] does not have
-  /// expanded/collapsed state.
-  bool? get isExpanded => _hasFlag(SemanticsFlag.hasExpandedState) ? _hasFlag(SemanticsFlag.isExpanded) : null;
-  set isExpanded(bool? value) {
-    _setFlag(SemanticsFlag.hasExpandedState, true);
-    _setFlag(SemanticsFlag.isExpanded, value!);
-  }
-
   /// Whether the owning [RenderObject] is currently enabled.
   ///
   /// A disabled object does not respond to user interactions. Only objects that
@@ -4992,7 +4967,7 @@ abstract class SemanticsSortKey with Diagnosticable implements Comparable<Semant
 class OrdinalSortKey extends SemanticsSortKey {
   /// Creates a const semantics sort key that uses a [double] as its key value.
   ///
-  /// The [order] must be a finite number.
+  /// The [order] must be a finite number, and must not be null.
   const OrdinalSortKey(
     this.order, {
     super.name,

@@ -22,9 +22,5 @@
   "selectAllButtonLabel": "Velg alle",
   "modalBarrierDismissLabel": "Avvis",
   "searchTextFieldPlaceholderLabel": "Søk",
-  "noSpellCheckReplacementsLabel": "Fant ingen erstatninger",
-  "menuDismissLabel": "Lukk menyen",
-  "lookUpButtonLabel": "Look Up",
-  "searchWebButtonLabel": "Search Web",
-  "shareButtonLabel": "Share..."
+  "noSpellCheckReplacementsLabel": "No Replacements Found"
 }

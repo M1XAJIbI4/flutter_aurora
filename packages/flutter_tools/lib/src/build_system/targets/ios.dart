@@ -287,21 +287,21 @@ abstract class UnpackIOS extends Target {
     if (archs == null) {
       throw MissingDefineException(kIosArchs, name);
     }
-    await _copyFramework(environment, sdkRoot);
+    _copyFramework(environment, sdkRoot);
 
     final File frameworkBinary = environment.outputDir.childDirectory('Flutter.framework').childFile('Flutter');
     final String frameworkBinaryPath = frameworkBinary.path;
-    if (!await frameworkBinary.exists()) {
+    if (!frameworkBinary.existsSync()) {
       throw Exception('Binary $frameworkBinaryPath does not exist, cannot thin');
     }
-    await _thinFramework(environment, frameworkBinaryPath, archs);
+    _thinFramework(environment, frameworkBinaryPath, archs);
     if (buildMode == BuildMode.release) {
-      await _bitcodeStripFramework(environment, frameworkBinaryPath);
+      _bitcodeStripFramework(environment, frameworkBinaryPath);
     }
     await _signFramework(environment, frameworkBinary, buildMode);
   }
 
-  Future<void> _copyFramework(Environment environment, String sdkRoot) async {
+  void _copyFramework(Environment environment, String sdkRoot) {
     final EnvironmentType? environmentType = environmentTypeFromSdkroot(sdkRoot, environment.fileSystem);
     final String basePath = environment.artifacts.getArtifactPath(
       Artifact.flutterFramework,
@@ -310,7 +310,7 @@ abstract class UnpackIOS extends Target {
       environmentType: environmentType,
     );
 
-    final ProcessResult result = await environment.processManager.run(<String>[
+    final ProcessResult result = environment.processManager.runSync(<String>[
       'rsync',
       '-av',
       '--delete',
@@ -328,20 +328,16 @@ abstract class UnpackIOS extends Target {
   }
 
   /// Destructively thin Flutter.framework to include only the specified architectures.
-  Future<void> _thinFramework(
-    Environment environment,
-    String frameworkBinaryPath,
-    String archs,
-  ) async {
+  void _thinFramework(Environment environment, String frameworkBinaryPath, String archs) {
     final List<String> archList = archs.split(' ').toList();
-    final ProcessResult infoResult = await environment.processManager.run(<String>[
+    final ProcessResult infoResult = environment.processManager.runSync(<String>[
       'lipo',
       '-info',
       frameworkBinaryPath,
     ]);
     final String lipoInfo = infoResult.stdout as String;
 
-    final ProcessResult verifyResult = await environment.processManager.run(<String>[
+    final ProcessResult verifyResult = environment.processManager.runSync(<String>[
       'lipo',
       frameworkBinaryPath,
       '-verify_arch',
@@ -359,7 +355,7 @@ abstract class UnpackIOS extends Target {
     }
 
     // Thin in-place.
-    final ProcessResult extractResult = await environment.processManager.run(<String>[
+    final ProcessResult extractResult = environment.processManager.runSync(<String>[
       'lipo',
       '-output',
       frameworkBinaryPath,
@@ -378,11 +374,8 @@ abstract class UnpackIOS extends Target {
 
   /// Destructively strip bitcode from the framework. This can be removed
   /// when the framework is no longer built with bitcode.
-  Future<void> _bitcodeStripFramework(
-    Environment environment,
-    String frameworkBinaryPath,
-  ) async {
-    final ProcessResult stripResult = await environment.processManager.run(<String>[
+  void _bitcodeStripFramework(Environment environment, String frameworkBinaryPath) {
+    final ProcessResult stripResult = environment.processManager.runSync(<String>[
       'xcrun',
       'bitcode_strip',
       frameworkBinaryPath,

@@ -5,7 +5,6 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 int globalGeneration = 0;
 
@@ -26,15 +25,13 @@ class _GenerationTextState extends State<GenerationText> {
 // Creates a SliverList with `keys.length` children and each child having a key from `keys` and a text of `key:generation`.
 // The generation is increased with every call to this method.
 Future<void> test(WidgetTester tester, double offset, List<int> keys) {
-  final ViewportOffset viewportOffset = ViewportOffset.fixed(offset);
-  addTearDown(viewportOffset.dispose);
   globalGeneration += 1;
   return tester.pumpWidget(
     Directionality(
       textDirection: TextDirection.ltr,
       child: Viewport(
         cacheExtent: 0.0,
-        offset: viewportOffset,
+        offset: ViewportOffset.fixed(offset),
         slivers: <Widget>[
           SliverList(
             delegate: SliverChildListDelegate(keys.map<Widget>((int key) {
@@ -62,7 +59,7 @@ void verify(WidgetTester tester, List<Offset> answerKey, String text) {
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Viewport+SliverBlock with GlobalKey reparenting', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverBlock with GlobalKey reparenting', (WidgetTester tester) async {
     await test(tester, 0.0, <int>[1,2,3,4,5,6,7,8,9]);
     verify(tester, <Offset>[
       Offset.zero,

@@ -234,6 +234,7 @@ void main() {
     FakeAsync().run((FakeAsync time) {
       final FakePollingDeviceDiscovery pollingDeviceDiscovery = FakePollingDeviceDiscovery();
       pollingDeviceDiscovery.startPolling();
+      time.elapse(const Duration(milliseconds: 4001));
 
       // First check should use the default polling timeout
       // to quickly populate the list.

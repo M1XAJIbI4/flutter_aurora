@@ -56,20 +56,17 @@ abstract class DoctorValidatorsProvider {
   // [FeatureFlags].
   factory DoctorValidatorsProvider.test({
     Platform? platform,
-    Logger? logger,
     required FeatureFlags featureFlags,
   }) {
     return _DefaultDoctorValidatorsProvider(
       featureFlags: featureFlags,
       platform: platform ?? FakePlatform(),
-      logger: logger ?? BufferLogger.test(),
     );
   }
   /// The singleton instance, pulled from the [AppContext].
   static DoctorValidatorsProvider get _instance => context.get<DoctorValidatorsProvider>()!;
 
   static final DoctorValidatorsProvider defaultInstance = _DefaultDoctorValidatorsProvider(
-    logger: globals.logger,
     platform: globals.platform,
     featureFlags: featureFlags,
   );
@@ -82,14 +79,12 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
   _DefaultDoctorValidatorsProvider({
     required this.platform,
     required this.featureFlags,
-    required Logger logger,
-  }) : _logger = logger;
+  });
 
   List<DoctorValidator>? _validators;
   List<Workflow>? _workflows;
   final Platform platform;
   final FeatureFlags featureFlags;
-  final Logger _logger;
 
   late final LinuxWorkflow linuxWorkflow = LinuxWorkflow(
     platform: platform,
@@ -130,7 +125,6 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
         userMessages: userMessages,
         plistParser: globals.plistParser,
         processManager: globals.processManager,
-        logger: _logger,
       ),
       ...VsCodeValidator.installedValidators(globals.fs, platform, globals.processManager),
     ];

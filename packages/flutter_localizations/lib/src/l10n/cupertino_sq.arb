@@ -22,9 +22,5 @@
   "tabSemanticsLabel": "Skeda $tabIndex nga $tabCount",
   "modalBarrierDismissLabel": "Hiq",
   "searchTextFieldPlaceholderLabel": "Kërko",
-  "noSpellCheckReplacementsLabel": "Nuk u gjetën zëvendësime",
-  "menuDismissLabel": "Hiqe menynë",
-  "lookUpButtonLabel": "Look Up",
-  "searchWebButtonLabel": "Search Web",
-  "shareButtonLabel": "Share..."
+  "noSpellCheckReplacementsLabel": "No Replacements Found"
 }

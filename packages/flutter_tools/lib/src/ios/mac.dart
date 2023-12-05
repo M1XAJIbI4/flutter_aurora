@@ -72,7 +72,6 @@ class IMobileDevice {
   /// Create an [IMobileDevice] for testing.
   factory IMobileDevice.test({ required ProcessManager processManager }) {
     return IMobileDevice(
-      // ignore: invalid_use_of_visible_for_testing_member
       artifacts: Artifacts.test(),
       cache: Cache.test(processManager: processManager),
       processManager: processManager,
@@ -374,10 +373,10 @@ Future<XcodeBuildResult> buildXcodeProject({
       buildCommands.add('SCRIPT_OUTPUT_STREAM_FILE=${scriptOutputPipeFile.absolute.path}');
     }
 
-    final Directory resultBundleDirectory = tempDir.childDirectory(_kResultBundlePath);
+    final File resultBundleFile = tempDir.childFile(_kResultBundlePath);
     buildCommands.addAll(<String>[
       '-resultBundlePath',
-      resultBundleDirectory.absolute.path,
+      resultBundleFile.absolute.path,
       '-resultBundleVersion',
       _kResultBundleVersion,
     ]);
@@ -399,7 +398,7 @@ Future<XcodeBuildResult> buildXcodeProject({
     final Stopwatch sw = Stopwatch()..start();
     initialBuildStatus = globals.logger.startProgress('Running Xcode build...');
 
-    buildResult = await _runBuildWithRetries(buildCommands, app, resultBundleDirectory);
+    buildResult = await _runBuildWithRetries(buildCommands, app, resultBundleFile);
 
     // Notifies listener that no more output is coming.
     scriptOutputPipeFile?.writeAsStringSync('all done');
@@ -529,14 +528,14 @@ Future<void> removeFinderExtendedAttributes(FileSystemEntity projectDirectory, P
   }
 }
 
-Future<RunResult?> _runBuildWithRetries(List<String> buildCommands, BuildableIOSApp app, Directory resultBundleDirectory) async {
+Future<RunResult?> _runBuildWithRetries(List<String> buildCommands, BuildableIOSApp app, File resultBundleFile) async {
   int buildRetryDelaySeconds = 1;
   int remainingTries = 8;
 
   RunResult? buildResult;
   while (remainingTries > 0) {
-    if (resultBundleDirectory.existsSync()) {
-      resultBundleDirectory.deleteSync(recursive: true);
+    if (resultBundleFile.existsSync()) {
+      resultBundleFile.deleteSync(recursive: true);
     }
     remainingTries--;
     buildRetryDelaySeconds *= 2;

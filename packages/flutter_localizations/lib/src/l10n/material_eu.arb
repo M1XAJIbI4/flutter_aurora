@@ -135,14 +135,10 @@
   "bottomSheetLabel": "Behealdeko orria",
   "scrimOnTapHint": "Itxi $modalRouteContentName",
   "keyboardKeyShift": "Maius",
-  "expansionTileExpandedHint": "tolesteko, sakatu birritan",
-  "expansionTileCollapsedHint": "zabaltzeko, sakatu birritan",
-  "expansionTileExpandedTapHint": "Tolestu",
-  "expansionTileCollapsedTapHint": "Zabaldu hau xehetasun gehiago lortzeko",
-  "expandedHint": "Tolestuta",
-  "collapsedHint": "Zabalduta",
-  "menuDismissLabel": "Baztertu menua",
-  "lookUpButtonLabel": "Look Up",
-  "searchWebButtonLabel": "Search Web",
-  "shareButtonLabel": "Share..."
+  "expansionTileExpandedHint": "double tap to collapse'",
+  "expansionTileCollapsedHint": "double tap to expand",
+  "expansionTileExpandedTapHint": "Collapse",
+  "expansionTileCollapsedTapHint": "Expand for more details",
+  "expandedHint": "Collapsed",
+  "collapsedHint": "Expanded"
 }

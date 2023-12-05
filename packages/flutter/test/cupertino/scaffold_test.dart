@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../image_data.dart';
+import '../rendering/mock_canvas.dart';
 
 /// Integration tests testing both [CupertinoPageScaffold] and [CupertinoTabScaffold].
 void main() {
@@ -553,6 +554,6 @@ void main() {
     expect(richTextList.length, greaterThan(0));
     expect(richTextList.any((RichText text) => text.textScaleFactor != 1), isFalse);
 
-    expect(tester.widget<RichText>(find.descendant(of: find.text('content'), matching: find.byType(RichText))).textScaler, const TextScaler.linear(99.0));
+    expect(tester.widget<RichText>(find.descendant(of: find.text('content'), matching: find.byType(RichText))).textScaleFactor, 99);
   });
 }

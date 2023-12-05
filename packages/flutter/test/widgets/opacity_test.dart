@@ -7,17 +7,15 @@
 @Tags(<String>['reduced-test-set'])
 library;
 
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
+import '../rendering/mock_canvas.dart';
 import 'semantics_tester.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('Opacity', (WidgetTester tester) async {
+  testWidgets('Opacity', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     // Opacity 1.0: Semantics and painting
@@ -154,7 +152,7 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('offset is correctly handled in Opacity', (WidgetTester tester) async {
+  testWidgets('offset is correctly handled in Opacity', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(useMaterial3: false),
@@ -187,7 +185,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('empty opacity does not crash', (WidgetTester tester) async {
+  testWidgets('empty opacity does not crash', (WidgetTester tester) async {
     await tester.pumpWidget(
       RepaintBoundary(child: Opacity(opacity: 0.5, child: Container())),
     );
@@ -195,11 +193,10 @@ void main() {
     // The following line will send the layer to engine and cause crash if an
     // empty opacity layer is sent.
     final OffsetLayer offsetLayer = element.renderObject!.debugLayer! as OffsetLayer;
-    final ui.Image image = await offsetLayer.toImage(const Rect.fromLTRB(0.0, 0.0, 1.0, 1.0));
-    image.dispose();
+    await offsetLayer.toImage(const Rect.fromLTRB(0.0, 0.0, 1.0, 1.0));
   }, skip: isBrowser); // https://github.com/flutter/flutter/issues/49857
 
-  testWidgetsWithLeakTracking('Child shows up in the right spot when opacity is disabled', (WidgetTester tester) async {
+  testWidgets('Child shows up in the right spot when opacity is disabled', (WidgetTester tester) async {
     debugDisableOpacityLayers = true;
     final GlobalKey key = GlobalKey();
     await tester.pumpWidget(

@@ -34,7 +34,7 @@ class SynchronousTestImageProvider extends ImageProvider<int> {
   }
 
   @override
-  ImageStreamCompleter loadImage(int key, ImageDecoderCallback decode) {
+  ImageStreamCompleter load(int key, DecoderCallback decode) {
     return OneFrameImageStreamCompleter(
       SynchronousFuture<ImageInfo>(TestImageInfo(key, image: image)),
     );
@@ -52,7 +52,7 @@ class SynchronousErrorTestImageProvider extends ImageProvider<int> {
   }
 
   @override
-  ImageStreamCompleter loadImage(int key, ImageDecoderCallback decode) {
+  ImageStreamCompleter load(int key, DecoderCallback decode) {
     throw throwable;
   }
 }
@@ -68,7 +68,7 @@ class AsyncTestImageProvider extends ImageProvider<int> {
   }
 
   @override
-  ImageStreamCompleter loadImage(int key, ImageDecoderCallback decode) {
+  ImageStreamCompleter load(int key, DecoderCallback decode) {
     return OneFrameImageStreamCompleter(
       Future<ImageInfo>.value(TestImageInfo(key, image: image)),
     );
@@ -88,7 +88,7 @@ class DelayedImageProvider extends ImageProvider<DelayedImageProvider> {
   }
 
   @override
-  ImageStreamCompleter loadImage(DelayedImageProvider key, ImageDecoderCallback decode) {
+  ImageStreamCompleter load(DelayedImageProvider key, DecoderCallback decode) {
     return OneFrameImageStreamCompleter(_completer.future);
   }
 
@@ -111,7 +111,7 @@ class MultiFrameImageProvider extends ImageProvider<MultiFrameImageProvider> {
   }
 
   @override
-  ImageStreamCompleter loadImage(MultiFrameImageProvider key, ImageDecoderCallback decode) {
+  ImageStreamCompleter load(MultiFrameImageProvider key, DecoderCallback decode) {
     return completer;
   }
 
@@ -331,19 +331,6 @@ void main() {
     expect(paint.isAntiAlias, true);
     // TODO(craiglabenz): change to true when https://github.com/flutter/flutter/issues/88909 is fixed
     expect(paint.invertColors, !kIsWeb);
-  });
-
-  test('DecorationImage.toString', () async {
-    expect(
-      DecorationImage(
-        image: SynchronousTestImageProvider(
-          await createTestImage(width: 100, height: 100),
-        ),
-        opacity: 0.99,
-        scale: 2.01,
-      ).toString(),
-      'DecorationImage(SynchronousTestImageProvider(), Alignment.center, scale 2.0, opacity 1.0, FilterQuality.low)',
-    );
   });
 
   test('DecorationImage with null textDirection configuration should throw Error', () async {

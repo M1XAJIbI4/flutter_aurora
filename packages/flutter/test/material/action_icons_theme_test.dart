@@ -5,7 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../foundation/leak_tracking.dart';
 
 void main() {
   test('ActionIconThemeData copyWith, ==, hashCode basics', () {
@@ -14,7 +15,7 @@ void main() {
         const ActionIconThemeData().copyWith().hashCode);
   });
 
-  testWidgetsWithLeakTracking('ActionIconThemeData copyWith overrides all properties', (WidgetTester tester) async {
+  testWidgets('ActionIconThemeData copyWith overrides all properties', (WidgetTester tester) async {
     // This is a regression test for https://github.com/flutter/flutter/issues/126762.
     Widget originalButtonBuilder(BuildContext context) {
       return const SizedBox();

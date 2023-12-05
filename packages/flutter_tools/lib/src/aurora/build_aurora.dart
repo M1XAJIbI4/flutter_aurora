@@ -379,7 +379,7 @@ Future<void> _buildRPM(
       if (buildInfo.mode != BuildMode.debug) '_flutter_build_type Release',
     ],
     workingDirectory: getAuroraBuildDirectory(targetPlatform, buildInfo),
-    treatStderrAsStdout: true
+    trace: true,
   );
 
   if (result != 0) {

@@ -302,7 +302,7 @@ mixin ToggleableStateMixin<S extends StatefulWidget> on TickerProviderStateMixin
   /// build method - potentially after wrapping it in other widgets.
   Widget buildToggleable({
     FocusNode? focusNode,
-    ValueChanged<bool>? onFocusChange,
+    Function(bool)? onFocusChange,
     bool autofocus = false,
     required MaterialStateProperty<MouseCursor> mouseCursor,
     required Size size,

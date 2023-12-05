@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 
 
 void main() {
-  testWidgetsWithLeakTracking('Large Badge defaults', (WidgetTester tester) async {
+  testWidgets('Large Badge defaults', (WidgetTester tester) async {
     late final ThemeData theme;
 
     await tester.pumpWidget(
@@ -47,16 +47,16 @@ void main() {
     expect(tester.getSize(find.byType(Badge)), const Size(24, 24)); // default Icon size
     expect(tester.getTopLeft(find.byType(Badge)), Offset.zero);
 
-    if (!kIsWeb || isCanvasKit) { // https://github.com/flutter/flutter/issues/99933
-      expect(tester.getTopLeft(find.text('0')), const Offset(16, -4));
-    }
+    expect(tester.getTopLeft(find.text('0')), const Offset(16, -4));
 
     final RenderBox box = tester.renderObject(find.byType(Badge));
-    final RRect rrect = RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8));
+    final RRect rrect = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
+      ? RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8))
+      : RRect.fromLTRBR(12, -4, 32, 12, const Radius.circular(8));
     expect(box, paints..rrect(rrect: rrect, color: theme.colorScheme.error));
   });
 
-  testWidgetsWithLeakTracking('Large Badge defaults with RTL', (WidgetTester tester) async {
+  testWidgets('Large Badge defaults with RTL', (WidgetTester tester) async {
     late final ThemeData theme;
 
     await tester.pumpWidget(
@@ -89,17 +89,17 @@ void main() {
     expect(tester.getSize(find.byType(Badge)), const Size(24, 24)); // default Icon size
     expect(tester.getTopLeft(find.byType(Badge)), Offset.zero);
 
-    if (!kIsWeb || isCanvasKit) { // https://github.com/flutter/flutter/issues/99933
-      expect(tester.getTopLeft(find.text('0')), const Offset(0, -4));
-    }
+    expect(tester.getTopLeft(find.text('0')), const Offset(0, -4));
 
     final RenderBox box = tester.renderObject(find.byType(Badge));
-    final RRect rrect = RRect.fromLTRBR(-4, -4, 15.5, 12, const Radius.circular(8));
+    final RRect rrect = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
+      ? RRect.fromLTRBR(-4, -4, 15.5, 12, const Radius.circular(8))
+      : RRect.fromLTRBR(-4, -4, 16, 12, const Radius.circular(8));
     expect(box, paints..rrect(rrect: rrect, color: theme.colorScheme.error));
   });
 
   // Essentially the same as 'Large Badge defaults'
-  testWidgetsWithLeakTracking('Badge.count', (WidgetTester tester) async {
+  testWidgets('Badge.count', (WidgetTester tester) async {
     late final ThemeData theme;
 
     Widget buildFrame(int count) {
@@ -141,9 +141,7 @@ void main() {
 
     // x = alignment.start + padding.left
     // y = alignment.top
-    if (!kIsWeb || isCanvasKit) { // https://github.com/flutter/flutter/issues/99933
-      expect(tester.getTopLeft(find.text('0')), const Offset(16, -4));
-    }
+    expect(tester.getTopLeft(find.text('0')), const Offset(16, -4));
 
     final RenderBox box = tester.renderObject(find.byType(Badge));
     // '0'.width = 12
@@ -151,14 +149,16 @@ void main() {
     // T = alignment.top
     // R = L + '0'.width + padding.width
     // B = T + largeSize, R = largeSize/2
-    final RRect rrect = RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8));
+    final RRect rrect = const bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK')
+      ? RRect.fromLTRBR(12, -4, 31.5, 12, const Radius.circular(8))
+      : RRect.fromLTRBR(12, -4, 32, 12, const Radius.circular(8));
     expect(box, paints..rrect(rrect: rrect, color: theme.colorScheme.error));
 
     await tester.pumpWidget(buildFrame(1000));
     expect(find.text('999+'), findsOneWidget);
   });
 
-  testWidgetsWithLeakTracking('Small Badge defaults', (WidgetTester tester) async {
+  testWidgets('Small Badge defaults', (WidgetTester tester) async {
     final ThemeData theme = ThemeData.light(useMaterial3: true);
 
     await tester.pumpWidget(
@@ -189,7 +189,7 @@ void main() {
     expect(box, paints..rrect(rrect: RRect.fromLTRBR(18, 0, 24, 6, const Radius.circular(3)), color: theme.colorScheme.error));
   });
 
-  testWidgetsWithLeakTracking('Small Badge RTL defaults', (WidgetTester tester) async {
+  testWidgets('Small Badge RTL defaults', (WidgetTester tester) async {
     final ThemeData theme = ThemeData.light(useMaterial3: true);
 
     await tester.pumpWidget(
@@ -222,7 +222,7 @@ void main() {
     expect(box, paints..rrect(rrect: RRect.fromLTRBR(0, 0, 6, 6, const Radius.circular(3)), color: theme.colorScheme.error));
   });
 
-  testWidgetsWithLeakTracking('Large Badge textStyle and colors', (WidgetTester tester) async {
+  testWidgets('Large Badge textStyle and colors', (WidgetTester tester) async {
     final ThemeData theme = ThemeData.light(useMaterial3: true);
     const Color green = Color(0xff00ff00);
     const Color black = Color(0xff000000);
@@ -249,7 +249,7 @@ void main() {
     expect(tester.renderObject(find.byType(Badge)), paints..rrect(color: black));
   });
 
-  testWidgetsWithLeakTracking('isLabelVisible', (WidgetTester tester) async {
+  testWidgets('isLabelVisible', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData.light(useMaterial3: true),
@@ -273,7 +273,7 @@ void main() {
     expect(box, isNot(paints..rrect()));
   });
 
-  testWidgetsWithLeakTracking('Large Badge alignment', (WidgetTester tester) async {
+  testWidgets('Large Badge alignment', (WidgetTester tester) async {
     const Radius badgeRadius = Radius.circular(8);
 
     Widget buildFrame(Alignment alignment, [Offset offset = Offset.zero]) {
@@ -348,7 +348,7 @@ void main() {
     expect(box, paints..rrect(rrect: RRect.fromLTRBR(200 - 16, 200 - 16, 200, 200, badgeRadius).shift(offset)));
   });
 
-  testWidgetsWithLeakTracking('Small Badge alignment', (WidgetTester tester) async {
+  testWidgets('Small Badge alignment', (WidgetTester tester) async {
     const Radius badgeRadius = Radius.circular(3);
 
     Widget buildFrame(Alignment alignment, [Offset offset = Offset.zero]) {

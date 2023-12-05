@@ -70,14 +70,10 @@ class RenderView extends RenderObject with RenderObjectWithChildMixin<RenderBox>
   ///
   /// Typically created by the binding (e.g., [RendererBinding]).
   ///
-  /// Providing a [configuration] is optional, but a configuration must be set
-  /// before calling [prepareInitialFrame]. This decouples creating the
-  /// [RenderView] object from configuring it. Typically, the object is created
-  /// by the [View] widget and configured by the [RendererBinding] when the
-  /// [RenderView] is registered with it by the [View] widget.
+  /// The [configuration] must not be null.
   RenderView({
     RenderBox? child,
-    ViewConfiguration? configuration,
+    required ViewConfiguration configuration,
     required ui.FlutterView view,
   }) : _configuration = configuration,
        _view = view {
@@ -89,38 +85,25 @@ class RenderView extends RenderObject with RenderObjectWithChildMixin<RenderBox>
   Size _size = Size.zero;
 
   /// The constraints used for the root layout.
+  ViewConfiguration get configuration => _configuration;
+  ViewConfiguration _configuration;
+
+  /// The configuration is initially set by the [configuration] argument
+  /// passed to the constructor.
   ///
-  /// Typically, this configuration is set by the [RendererBinding], when the
-  /// [RenderView] is registered with it. It will also update the configuration
-  /// if necessary. Therefore, if used in conjunction with the [RendererBinding]
-  /// this property must not be set manually as the [RendererBinding] will just
-  /// override it.
-  ///
-  /// For tests that want to change the size of the view, set
-  /// [TestFlutterView.physicalSize] on the appropriate [TestFlutterView]
-  /// (typically [WidgetTester.view]) instead of setting a configuration
-  /// directly on the [RenderView].
-  ViewConfiguration get configuration => _configuration!;
-  ViewConfiguration? _configuration;
+  /// Always call [prepareInitialFrame] before changing the configuration.
   set configuration(ViewConfiguration value) {
-    if (_configuration == value) {
+    if (configuration == value) {
       return;
     }
-    final ViewConfiguration? oldConfiguration = _configuration;
+    final ViewConfiguration oldConfiguration = _configuration;
     _configuration = value;
-    if (_rootTransform == null) {
-      // [prepareInitialFrame] has not been called yet, nothing to do for now.
-      return;
-    }
-    if (oldConfiguration?.toMatrix() != configuration.toMatrix()) {
+    if (oldConfiguration.toMatrix() != _configuration.toMatrix()) {
       replaceRootLayer(_updateMatricesAndCreateNewRootLayer());
     }
     assert(_rootTransform != null);
     markNeedsLayout();
   }
-
-  /// Whether a [configuration] has been set.
-  bool get hasConfiguration => _configuration != null;
 
   /// The [FlutterView] into which this [RenderView] will render.
   ui.FlutterView get flutterView => _view;

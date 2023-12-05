@@ -9,7 +9,8 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 
 void main() {
   group('Container control tests:', () {
@@ -38,7 +39,7 @@ void main() {
       ),
     );
 
-    testWidgetsWithLeakTracking('paints as expected', (WidgetTester tester) async {
+    testWidgets('paints as expected', (WidgetTester tester) async {
       await tester.pumpWidget(Align(
         alignment: Alignment.topLeft,
         child: container,
@@ -55,7 +56,7 @@ void main() {
     });
 
     group('diagnostics', () {
-      testWidgetsWithLeakTracking('has reasonable default diagnostics', (WidgetTester tester) async {
+      testWidgets('has reasonable default diagnostics', (WidgetTester tester) async {
         await tester.pumpWidget(Align(
           alignment: Alignment.topLeft,
           child: container,
@@ -67,7 +68,7 @@ void main() {
         expect(box, hasAGoodToStringDeep);
       });
 
-      testWidgetsWithLeakTracking('has expected info diagnostics', (WidgetTester tester) async {
+      testWidgets('has expected info diagnostics', (WidgetTester tester) async {
         await tester.pumpWidget(Align(
           alignment: Alignment.topLeft,
           child: container,
@@ -139,7 +140,7 @@ void main() {
         );
       });
 
-      testWidgetsWithLeakTracking('has expected debug diagnostics', (WidgetTester tester) async {
+      testWidgets('has expected debug diagnostics', (WidgetTester tester) async {
         await tester.pumpWidget(Align(
           alignment: Alignment.topLeft,
           child: container,
@@ -155,9 +156,8 @@ void main() {
           equalsIgnoringHashCodes(
             'RenderPadding#00000 relayoutBoundary=up1\n'
             ' │ creator: Padding ← Container ← Align ← MediaQuery ←\n'
-            ' │   _MediaQueryFromView ← _PipelineOwnerScope ← _ViewScope ←\n'
-            ' │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← View ←\n'
-            ' │   [root]\n'
+            ' │   _MediaQueryFromView ← _ViewScope ← View-[GlobalObjectKey\n'
+            ' │   TestFlutterView#00000] ← [root]\n'
             ' │ parentData: offset=Offset(0.0, 0.0) (can use size)\n'
             ' │ constraints: BoxConstraints(0.0<=w<=800.0, 0.0<=h<=600.0)\n'
             ' │ size: Size(63.0, 88.0)\n'
@@ -165,9 +165,8 @@ void main() {
             ' │\n'
             ' └─child: RenderConstrainedBox#00000 relayoutBoundary=up2\n'
             '   │ creator: ConstrainedBox ← Padding ← Container ← Align ←\n'
-            '   │   MediaQuery ← _MediaQueryFromView ← _PipelineOwnerScope ←\n'
-            '   │   _ViewScope ← _RawView-[_DeprecatedRawViewKey\n'
-            '   │   TestFlutterView#00000] ← View ← [root]\n'
+            '   │   MediaQuery ← _MediaQueryFromView ← _ViewScope ←\n'
+            '   │   View-[GlobalObjectKey TestFlutterView#00000] ← [root]\n'
             '   │ parentData: offset=Offset(5.0, 5.0) (can use size)\n'
             '   │ constraints: BoxConstraints(0.0<=w<=790.0, 0.0<=h<=590.0)\n'
             '   │ size: Size(53.0, 78.0)\n'
@@ -175,9 +174,8 @@ void main() {
             '   │\n'
             '   └─child: RenderDecoratedBox#00000\n'
             '     │ creator: DecoratedBox ← ConstrainedBox ← Padding ← Container ←\n'
-            '     │   Align ← MediaQuery ← _MediaQueryFromView ← _PipelineOwnerScope\n'
-            '     │   ← _ViewScope ← _RawView-[_DeprecatedRawViewKey\n'
-            '     │   TestFlutterView#00000] ← View ← [root]\n'
+            '     │   Align ← MediaQuery ← _MediaQueryFromView ← _ViewScope ←\n'
+            '     │   View-[GlobalObjectKey TestFlutterView#00000] ← [root]\n'
             '     │ parentData: <none> (can use size)\n'
             '     │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '     │ size: Size(53.0, 78.0)\n'
@@ -190,9 +188,8 @@ void main() {
             '     └─child: _RenderColoredBox#00000\n'
             '       │ creator: ColoredBox ← DecoratedBox ← ConstrainedBox ← Padding ←\n'
             '       │   Container ← Align ← MediaQuery ← _MediaQueryFromView ←\n'
-            '       │   _PipelineOwnerScope ← _ViewScope ←\n'
-            '       │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← View ←\n'
-            '       │   ⋯\n'
+            '       │   _ViewScope ← View-[GlobalObjectKey TestFlutterView#00000] ←\n'
+            '       │   [root]\n'
             '       │ parentData: <none> (can use size)\n'
             '       │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '       │ size: Size(53.0, 78.0)\n'
@@ -201,8 +198,8 @@ void main() {
             '       └─child: RenderPadding#00000\n'
             '         │ creator: Padding ← ColoredBox ← DecoratedBox ← ConstrainedBox ←\n'
             '         │   Padding ← Container ← Align ← MediaQuery ← _MediaQueryFromView\n'
-            '         │   ← _PipelineOwnerScope ← _ViewScope ←\n'
-            '         │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← ⋯\n'
+            '         │   ← _ViewScope ← View-[GlobalObjectKey TestFlutterView#00000] ←\n'
+            '         │   [root]\n'
             '         │ parentData: <none> (can use size)\n'
             '         │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '         │ size: Size(53.0, 78.0)\n'
@@ -211,7 +208,8 @@ void main() {
             '         └─child: RenderPositionedBox#00000\n'
             '           │ creator: Align ← Padding ← ColoredBox ← DecoratedBox ←\n'
             '           │   ConstrainedBox ← Padding ← Container ← Align ← MediaQuery ←\n'
-            '           │   _MediaQueryFromView ← _PipelineOwnerScope ← _ViewScope ← ⋯\n'
+            '           │   _MediaQueryFromView ← _ViewScope ← View-[GlobalObjectKey\n'
+            '           │   TestFlutterView#00000] ← ⋯\n'
             '           │ parentData: offset=Offset(7.0, 7.0) (can use size)\n'
             '           │ constraints: BoxConstraints(w=39.0, h=64.0)\n'
             '           │ size: Size(39.0, 64.0)\n'
@@ -222,7 +220,7 @@ void main() {
             '           └─child: RenderConstrainedBox#00000 relayoutBoundary=up1\n'
             '             │ creator: SizedBox ← Align ← Padding ← ColoredBox ← DecoratedBox ←\n'
             '             │   ConstrainedBox ← Padding ← Container ← Align ← MediaQuery ←\n'
-            '             │   _MediaQueryFromView ← _PipelineOwnerScope ← ⋯\n'
+            '             │   _MediaQueryFromView ← _ViewScope ← ⋯\n'
             '             │ parentData: offset=Offset(14.0, 31.0) (can use size)\n'
             '             │ constraints: BoxConstraints(0.0<=w<=39.0, 0.0<=h<=64.0)\n'
             '             │ size: Size(25.0, 33.0)\n'
@@ -244,7 +242,7 @@ void main() {
         );
       });
 
-      testWidgetsWithLeakTracking('has expected fine diagnostics', (WidgetTester tester) async {
+      testWidgets('has expected fine diagnostics', (WidgetTester tester) async {
         await tester.pumpWidget(Align(
           alignment: Alignment.topLeft,
           child: container,
@@ -257,9 +255,8 @@ void main() {
           equalsIgnoringHashCodes(
             'RenderPadding#00000 relayoutBoundary=up1\n'
             ' │ creator: Padding ← Container ← Align ← MediaQuery ←\n'
-            ' │   _MediaQueryFromView ← _PipelineOwnerScope ← _ViewScope ←\n'
-            ' │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← View ←\n'
-            ' │   [root]\n'
+            ' │   _MediaQueryFromView ← _ViewScope ← View-[GlobalObjectKey\n'
+            ' │   TestFlutterView#00000] ← [root]\n'
             ' │ parentData: offset=Offset(0.0, 0.0) (can use size)\n'
             ' │ constraints: BoxConstraints(0.0<=w<=800.0, 0.0<=h<=600.0)\n'
             ' │ layer: null\n'
@@ -270,9 +267,8 @@ void main() {
             ' │\n'
             ' └─child: RenderConstrainedBox#00000 relayoutBoundary=up2\n'
             '   │ creator: ConstrainedBox ← Padding ← Container ← Align ←\n'
-            '   │   MediaQuery ← _MediaQueryFromView ← _PipelineOwnerScope ←\n'
-            '   │   _ViewScope ← _RawView-[_DeprecatedRawViewKey\n'
-            '   │   TestFlutterView#00000] ← View ← [root]\n'
+            '   │   MediaQuery ← _MediaQueryFromView ← _ViewScope ←\n'
+            '   │   View-[GlobalObjectKey TestFlutterView#00000] ← [root]\n'
             '   │ parentData: offset=Offset(5.0, 5.0) (can use size)\n'
             '   │ constraints: BoxConstraints(0.0<=w<=790.0, 0.0<=h<=590.0)\n'
             '   │ layer: null\n'
@@ -282,9 +278,8 @@ void main() {
             '   │\n'
             '   └─child: RenderDecoratedBox#00000\n'
             '     │ creator: DecoratedBox ← ConstrainedBox ← Padding ← Container ←\n'
-            '     │   Align ← MediaQuery ← _MediaQueryFromView ← _PipelineOwnerScope\n'
-            '     │   ← _ViewScope ← _RawView-[_DeprecatedRawViewKey\n'
-            '     │   TestFlutterView#00000] ← View ← [root]\n'
+            '     │   Align ← MediaQuery ← _MediaQueryFromView ← _ViewScope ←\n'
+            '     │   View-[GlobalObjectKey TestFlutterView#00000] ← [root]\n'
             '     │ parentData: <none> (can use size)\n'
             '     │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '     │ layer: null\n'
@@ -305,9 +300,8 @@ void main() {
             '     └─child: _RenderColoredBox#00000\n'
             '       │ creator: ColoredBox ← DecoratedBox ← ConstrainedBox ← Padding ←\n'
             '       │   Container ← Align ← MediaQuery ← _MediaQueryFromView ←\n'
-            '       │   _PipelineOwnerScope ← _ViewScope ←\n'
-            '       │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← View ←\n'
-            '       │   ⋯\n'
+            '       │   _ViewScope ← View-[GlobalObjectKey TestFlutterView#00000] ←\n'
+            '       │   [root]\n'
             '       │ parentData: <none> (can use size)\n'
             '       │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '       │ layer: null\n'
@@ -318,8 +312,8 @@ void main() {
             '       └─child: RenderPadding#00000\n'
             '         │ creator: Padding ← ColoredBox ← DecoratedBox ← ConstrainedBox ←\n'
             '         │   Padding ← Container ← Align ← MediaQuery ← _MediaQueryFromView\n'
-            '         │   ← _PipelineOwnerScope ← _ViewScope ←\n'
-            '         │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← ⋯\n'
+            '         │   ← _ViewScope ← View-[GlobalObjectKey TestFlutterView#00000] ←\n'
+            '         │   [root]\n'
             '         │ parentData: <none> (can use size)\n'
             '         │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '         │ layer: null\n'
@@ -331,7 +325,8 @@ void main() {
             '         └─child: RenderPositionedBox#00000\n'
             '           │ creator: Align ← Padding ← ColoredBox ← DecoratedBox ←\n'
             '           │   ConstrainedBox ← Padding ← Container ← Align ← MediaQuery ←\n'
-            '           │   _MediaQueryFromView ← _PipelineOwnerScope ← _ViewScope ← ⋯\n'
+            '           │   _MediaQueryFromView ← _ViewScope ← View-[GlobalObjectKey\n'
+            '           │   TestFlutterView#00000] ← ⋯\n'
             '           │ parentData: offset=Offset(7.0, 7.0) (can use size)\n'
             '           │ constraints: BoxConstraints(w=39.0, h=64.0)\n'
             '           │ layer: null\n'
@@ -345,7 +340,7 @@ void main() {
             '           └─child: RenderConstrainedBox#00000 relayoutBoundary=up1\n'
             '             │ creator: SizedBox ← Align ← Padding ← ColoredBox ← DecoratedBox ←\n'
             '             │   ConstrainedBox ← Padding ← Container ← Align ← MediaQuery ←\n'
-            '             │   _MediaQueryFromView ← _PipelineOwnerScope ← ⋯\n'
+            '             │   _MediaQueryFromView ← _ViewScope ← ⋯\n'
             '             │ parentData: offset=Offset(14.0, 31.0) (can use size)\n'
             '             │ constraints: BoxConstraints(0.0<=w<=39.0, 0.0<=h<=64.0)\n'
             '             │ layer: null\n'
@@ -372,12 +367,12 @@ void main() {
             '                   shape: rectangle\n'
             '                 configuration: ImageConfiguration(bundle:\n'
             '                   PlatformAssetBundle#00000(), devicePixelRatio: 3.0, platform:\n'
-            '                   android)\n'
+            '                   android)\n',
           ),
         );
       });
 
-      testWidgetsWithLeakTracking('has expected hidden diagnostics', (WidgetTester tester) async {
+      testWidgets('has expected hidden diagnostics', (WidgetTester tester) async {
         await tester.pumpWidget(Align(
           alignment: Alignment.topLeft,
           child: container,
@@ -391,9 +386,8 @@ void main() {
             'RenderPadding#00000 relayoutBoundary=up1\n'
             ' │ needsCompositing: false\n'
             ' │ creator: Padding ← Container ← Align ← MediaQuery ←\n'
-            ' │   _MediaQueryFromView ← _PipelineOwnerScope ← _ViewScope ←\n'
-            ' │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← View ←\n'
-            ' │   [root]\n'
+            ' │   _MediaQueryFromView ← _ViewScope ← View-[GlobalObjectKey\n'
+            ' │   TestFlutterView#00000] ← [root]\n'
             ' │ parentData: offset=Offset(0.0, 0.0) (can use size)\n'
             ' │ constraints: BoxConstraints(0.0<=w<=800.0, 0.0<=h<=600.0)\n'
             ' │ layer: null\n'
@@ -407,9 +401,8 @@ void main() {
             ' └─child: RenderConstrainedBox#00000 relayoutBoundary=up2\n'
             '   │ needsCompositing: false\n'
             '   │ creator: ConstrainedBox ← Padding ← Container ← Align ←\n'
-            '   │   MediaQuery ← _MediaQueryFromView ← _PipelineOwnerScope ←\n'
-            '   │   _ViewScope ← _RawView-[_DeprecatedRawViewKey\n'
-            '   │   TestFlutterView#00000] ← View ← [root]\n'
+            '   │   MediaQuery ← _MediaQueryFromView ← _ViewScope ←\n'
+            '   │   View-[GlobalObjectKey TestFlutterView#00000] ← [root]\n'
             '   │ parentData: offset=Offset(5.0, 5.0) (can use size)\n'
             '   │ constraints: BoxConstraints(0.0<=w<=790.0, 0.0<=h<=590.0)\n'
             '   │ layer: null\n'
@@ -422,9 +415,8 @@ void main() {
             '   └─child: RenderDecoratedBox#00000\n'
             '     │ needsCompositing: false\n'
             '     │ creator: DecoratedBox ← ConstrainedBox ← Padding ← Container ←\n'
-            '     │   Align ← MediaQuery ← _MediaQueryFromView ← _PipelineOwnerScope\n'
-            '     │   ← _ViewScope ← _RawView-[_DeprecatedRawViewKey\n'
-            '     │   TestFlutterView#00000] ← View ← [root]\n'
+            '     │   Align ← MediaQuery ← _MediaQueryFromView ← _ViewScope ←\n'
+            '     │   View-[GlobalObjectKey TestFlutterView#00000] ← [root]\n'
             '     │ parentData: <none> (can use size)\n'
             '     │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '     │ layer: null\n'
@@ -448,9 +440,8 @@ void main() {
             '       │ needsCompositing: false\n'
             '       │ creator: ColoredBox ← DecoratedBox ← ConstrainedBox ← Padding ←\n'
             '       │   Container ← Align ← MediaQuery ← _MediaQueryFromView ←\n'
-            '       │   _PipelineOwnerScope ← _ViewScope ←\n'
-            '       │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← View ←\n'
-            '       │   ⋯\n'
+            '       │   _ViewScope ← View-[GlobalObjectKey TestFlutterView#00000] ←\n'
+            '       │   [root]\n'
             '       │ parentData: <none> (can use size)\n'
             '       │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '       │ layer: null\n'
@@ -464,8 +455,8 @@ void main() {
             '         │ needsCompositing: false\n'
             '         │ creator: Padding ← ColoredBox ← DecoratedBox ← ConstrainedBox ←\n'
             '         │   Padding ← Container ← Align ← MediaQuery ← _MediaQueryFromView\n'
-            '         │   ← _PipelineOwnerScope ← _ViewScope ←\n'
-            '         │   _RawView-[_DeprecatedRawViewKey TestFlutterView#00000] ← ⋯\n'
+            '         │   ← _ViewScope ← View-[GlobalObjectKey TestFlutterView#00000] ←\n'
+            '         │   [root]\n'
             '         │ parentData: <none> (can use size)\n'
             '         │ constraints: BoxConstraints(w=53.0, h=78.0)\n'
             '         │ layer: null\n'
@@ -480,7 +471,8 @@ void main() {
             '           │ needsCompositing: false\n'
             '           │ creator: Align ← Padding ← ColoredBox ← DecoratedBox ←\n'
             '           │   ConstrainedBox ← Padding ← Container ← Align ← MediaQuery ←\n'
-            '           │   _MediaQueryFromView ← _PipelineOwnerScope ← _ViewScope ← ⋯\n'
+            '           │   _MediaQueryFromView ← _ViewScope ← View-[GlobalObjectKey\n'
+            '           │   TestFlutterView#00000] ← ⋯\n'
             '           │ parentData: offset=Offset(7.0, 7.0) (can use size)\n'
             '           │ constraints: BoxConstraints(w=39.0, h=64.0)\n'
             '           │ layer: null\n'
@@ -497,7 +489,7 @@ void main() {
             '             │ needsCompositing: false\n'
             '             │ creator: SizedBox ← Align ← Padding ← ColoredBox ← DecoratedBox ←\n'
             '             │   ConstrainedBox ← Padding ← Container ← Align ← MediaQuery ←\n'
-            '             │   _MediaQueryFromView ← _PipelineOwnerScope ← ⋯\n'
+            '             │   _MediaQueryFromView ← _ViewScope ← ⋯\n'
             '             │ parentData: offset=Offset(14.0, 31.0) (can use size)\n'
             '             │ constraints: BoxConstraints(0.0<=w<=39.0, 0.0<=h<=64.0)\n'
             '             │ layer: null\n'
@@ -529,12 +521,12 @@ void main() {
             '                   shape: rectangle\n'
             '                 configuration: ImageConfiguration(bundle:\n'
             '                   PlatformAssetBundle#00000(), devicePixelRatio: 3.0, platform:\n'
-            '                   android)\n'
+            '                   android)\n',
           ),
         );
       });
 
-      testWidgetsWithLeakTracking('painting error has expected diagnostics', (WidgetTester tester) async {
+      testWidgets('painting error has expected diagnostics', (WidgetTester tester) async {
         await tester.pumpWidget(Align(
           alignment: Alignment.topLeft,
           child: container,
@@ -565,7 +557,7 @@ void main() {
     });
   });
 
-  testWidgetsWithLeakTracking('Can be placed in an infinite box', (WidgetTester tester) async {
+  testWidgets('Can be placed in an infinite box', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -574,7 +566,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Container transformAlignment', (WidgetTester tester) async {
+  testWidgets('Container transformAlignment', (WidgetTester tester) async {
     final Key key = UniqueKey();
 
     await tester.pumpWidget(
@@ -621,7 +613,7 @@ void main() {
     expect(tester.getBottomRight(finder), equals(const Offset(200, 200)));
   });
 
-  testWidgetsWithLeakTracking('giving clipBehaviour Clip.None, will not add a ClipPath to the tree', (WidgetTester tester) async {
+  testWidgets('giving clipBehaviour Clip.None, will not add a ClipPath to the tree', (WidgetTester tester) async {
     await tester.pumpWidget(
       Container(
         decoration: const BoxDecoration(
@@ -636,7 +628,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('giving clipBehaviour not a Clip.None, will add a ClipPath to the tree', (WidgetTester tester) async {
+  testWidgets('giving clipBehaviour not a Clip.None, will add a ClipPath to the tree', (WidgetTester tester) async {
     final Container container = Container(
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(
@@ -653,7 +645,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('getClipPath() works for lots of kinds of decorations', (WidgetTester tester) async {
+  testWidgets('getClipPath() works for lots of kinds of decorations', (WidgetTester tester) async {
     Future<void> test(Decoration decoration) async {
       await tester.pumpWidget(
         Directionality(
@@ -683,7 +675,7 @@ void main() {
     await test(const FlutterLogoDecoration());
   });
 
-  testWidgetsWithLeakTracking('Container is hittable only when having decorations', (WidgetTester tester) async {
+  testWidgets('Container is hittable only when having decorations', (WidgetTester tester) async {
     bool tapped = false;
     await tester.pumpWidget(GestureDetector(
       onTap: () { tapped = true; },
@@ -737,7 +729,7 @@ void main() {
     expect(tapped, false);
   });
 
-  testWidgetsWithLeakTracking('Container discards alignment when the child parameter is null and constraints is not Tight', (WidgetTester tester) async {
+  testWidgets('Container discards alignment when the child parameter is null and constraints is not Tight', (WidgetTester tester) async {
     await tester.pumpWidget(
       Container(
         decoration: const BoxDecoration(
@@ -752,7 +744,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('using clipBehaviour and shadow, should not clip the shadow', (WidgetTester tester) async {
+  testWidgets('using clipBehaviour and shadow, should not clip the shadow', (WidgetTester tester) async {
     final Container container = Container(
       clipBehavior: Clip.hardEdge,
       decoration: const BoxDecoration(

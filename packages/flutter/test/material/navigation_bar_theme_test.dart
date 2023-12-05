@@ -11,7 +11,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
   test('copyWith, ==, hashCode basics', () {
@@ -25,7 +24,7 @@ void main() {
     expect(identical(NavigationBarThemeData.lerp(data, data, 0.5), data), true);
   });
 
-  testWidgetsWithLeakTracking('Default debugFillProperties', (WidgetTester tester) async {
+  testWidgets('Default debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const NavigationBarThemeData().debugFillProperties(builder);
 
@@ -37,7 +36,7 @@ void main() {
     expect(description, <String>[]);
   });
 
-  testWidgetsWithLeakTracking('Custom debugFillProperties', (WidgetTester tester) async {
+  testWidgets('Custom debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const NavigationBarThemeData(
       height: 200.0,
@@ -69,7 +68,7 @@ void main() {
     expect(description[7], 'labelBehavior: NavigationDestinationLabelBehavior.alwaysHide');
   });
 
-  testWidgetsWithLeakTracking('NavigationBarThemeData values are used when no NavigationBar properties are specified', (WidgetTester tester) async {
+  testWidgets('NavigationBarThemeData values are used when no NavigationBar properties are specified', (WidgetTester tester) async {
     const double height = 200.0;
     const Color backgroundColor = Color(0x00000001);
     const double elevation = 42.0;
@@ -141,7 +140,7 @@ void main() {
     expect(_labelBehavior(tester), labelBehavior);
   });
 
-  testWidgetsWithLeakTracking('NavigationBar values take priority over NavigationBarThemeData values when both properties are specified', (WidgetTester tester) async {
+  testWidgets('NavigationBar values take priority over NavigationBarThemeData values when both properties are specified', (WidgetTester tester) async {
     const double height = 200.0;
     const Color backgroundColor = Color(0x00000001);
     const double elevation = 42.0;
@@ -175,7 +174,7 @@ void main() {
     expect(_labelBehavior(tester), labelBehavior);
   });
 
-  testWidgetsWithLeakTracking('Custom label style renders ink ripple properly', (WidgetTester tester) async {
+  testWidgets('Custom label style renders ink ripple properly', (WidgetTester tester) async {
     Widget buildWidget({ NavigationDestinationLabelBehavior? labelBehavior }) {
       return MaterialApp(
         theme: ThemeData(

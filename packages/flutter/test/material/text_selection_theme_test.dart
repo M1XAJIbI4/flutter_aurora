@@ -5,7 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 
 void main() {
   test('TextSelectionThemeData copyWith, ==, hashCode basics', () {
@@ -26,7 +27,7 @@ void main() {
     expect(theme.selectionHandleColor, null);
   });
 
-  testWidgetsWithLeakTracking('Default TextSelectionThemeData debugFillProperties', (WidgetTester tester) async {
+  testWidgets('Default TextSelectionThemeData debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const TextSelectionThemeData().debugFillProperties(builder);
 
@@ -38,7 +39,7 @@ void main() {
     expect(description, <String>[]);
   });
 
-  testWidgetsWithLeakTracking('TextSelectionThemeData implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('TextSelectionThemeData implements debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const TextSelectionThemeData(
       cursorColor: Color(0xffeeffaa),
@@ -58,11 +59,12 @@ void main() {
     ]);
   });
 
-  testWidgetsWithLeakTracking('Material2 - Empty textSelectionTheme will use defaults', (WidgetTester tester) async {
-    final ThemeData theme = ThemeData(useMaterial3: false);
-    const Color defaultCursorColor = Color(0xff2196f3);
-    const Color defaultSelectionColor = Color(0x662196f3);
-    const Color defaultSelectionHandleColor = Color(0xff2196f3);
+  testWidgets('Empty textSelectionTheme will use defaults', (WidgetTester tester) async {
+    final ThemeData theme = ThemeData();
+    final bool material3 = theme.useMaterial3;
+    final Color defaultCursorColor = material3 ? theme.colorScheme.primary : const Color(0xff2196f3);
+    final Color defaultSelectionColor = material3 ? theme.colorScheme.primary.withOpacity(0.40) : const Color(0x662196f3);
+    final Color defaultSelectionHandleColor = material3 ? theme.colorScheme.primary : const Color(0xff2196f3);
 
     EditableText.debugDeterministicCursor = true;
     addTearDown(() {
@@ -88,7 +90,6 @@ void main() {
     // Test the selection handle color.
     await tester.pumpWidget(
       MaterialApp(
-        theme: theme,
         home: Material(
           child: Builder(
             builder: (BuildContext context) {
@@ -107,56 +108,7 @@ void main() {
     expect(handle, paints..path(color: defaultSelectionHandleColor));
   });
 
-  testWidgetsWithLeakTracking('Material3 - Empty textSelectionTheme will use defaults', (WidgetTester tester) async {
-    final ThemeData theme = ThemeData(useMaterial3: true);
-    final Color defaultCursorColor = theme.colorScheme.primary;
-    final Color defaultSelectionColor = theme.colorScheme.primary.withOpacity(0.40);
-    final Color defaultSelectionHandleColor = theme.colorScheme.primary;
-
-    EditableText.debugDeterministicCursor = true;
-    addTearDown(() {
-      EditableText.debugDeterministicCursor = false;
-    });
-    // Test TextField's cursor & selection color.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: const Material(
-          child: TextField(autofocus: true),
-        ),
-      ),
-    );
-    await tester.pump();
-    await tester.pumpAndSettle();
-
-    final EditableTextState editableTextState = tester.firstState(find.byType(EditableText));
-    final RenderEditable renderEditable = editableTextState.renderEditable;
-    expect(renderEditable.cursorColor, defaultCursorColor);
-    expect(renderEditable.selectionColor, defaultSelectionColor);
-
-    // Test the selection handle color.
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: theme,
-        home: Material(
-          child: Builder(
-            builder: (BuildContext context) {
-              return materialTextSelectionControls.buildHandle(
-                context,
-                TextSelectionHandleType.left,
-                10.0,
-              );
-            },
-          ),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    final RenderBox handle = tester.firstRenderObject<RenderBox>(find.byType(CustomPaint));
-    expect(handle, paints..path(color: defaultSelectionHandleColor));
-  });
-
-  testWidgetsWithLeakTracking('ThemeData.textSelectionTheme will be used if provided', (WidgetTester tester) async {
+  testWidgets('ThemeData.textSelectionTheme will be used if provided', (WidgetTester tester) async {
     const TextSelectionThemeData textSelectionTheme = TextSelectionThemeData(
       cursorColor: Color(0xffaabbcc),
       selectionColor: Color(0x88888888),
@@ -209,7 +161,7 @@ void main() {
     expect(handle, paints..path(color: textSelectionTheme.selectionHandleColor));
   });
 
-  testWidgetsWithLeakTracking('TextSelectionTheme widget will override ThemeData.textSelectionTheme', (WidgetTester tester) async {
+  testWidgets('TextSelectionTheme widget will override ThemeData.textSelectionTheme', (WidgetTester tester) async {
     const TextSelectionThemeData defaultTextSelectionTheme = TextSelectionThemeData(
       cursorColor: Color(0xffaabbcc),
       selectionColor: Color(0x88888888),
@@ -271,7 +223,7 @@ void main() {
     expect(handle, paints..path(color: widgetTextSelectionTheme.selectionHandleColor));
   });
 
-  testWidgetsWithLeakTracking('TextField parameters will override theme settings', (WidgetTester tester) async {
+  testWidgets('TextField parameters will override theme settings', (WidgetTester tester) async {
     const TextSelectionThemeData defaultTextSelectionTheme = TextSelectionThemeData(
       cursorColor: Color(0xffaabbcc),
       selectionHandleColor: Color(0x00ccbbaa),
@@ -320,7 +272,7 @@ void main() {
     expect(renderSelectable.cursorColor, cursorColor.withAlpha(0));
   });
 
-  testWidgetsWithLeakTracking('TextSelectionThem overrides DefaultSelectionStyle', (WidgetTester tester) async {
+  testWidgets('TextSelectionThem overrides DefaultSelectionStyle', (WidgetTester tester) async {
     const Color themeSelectionColor = Color(0xffaabbcc);
     const Color themeCursorColor = Color(0x00ccbbaa);
     const Color defaultSelectionColor = Color(0xffaa1111);

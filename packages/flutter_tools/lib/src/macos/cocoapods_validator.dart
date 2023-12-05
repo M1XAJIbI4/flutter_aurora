@@ -29,28 +29,31 @@ class CocoaPodsValidator extends DoctorValidator {
       .evaluateCocoaPodsInstallation;
 
     ValidationType status = ValidationType.success;
-    switch (cocoaPodsStatus) {
-      case CocoaPodsStatus.recommended:
-        messages.add(ValidationMessage(_userMessages.cocoaPodsVersion((await _cocoaPods.cocoaPodsVersionText).toString())));
-      case CocoaPodsStatus.notInstalled:
+    if (cocoaPodsStatus == CocoaPodsStatus.recommended) {
+      messages.add(ValidationMessage(_userMessages.cocoaPodsVersion((await _cocoaPods.cocoaPodsVersionText).toString())));
+    } else {
+      if (cocoaPodsStatus == CocoaPodsStatus.notInstalled) {
         status = ValidationType.missing;
         messages.add(ValidationMessage.error(
           _userMessages.cocoaPodsMissing(noCocoaPodsConsequence, cocoaPodsInstallInstructions)));
-      case CocoaPodsStatus.brokenInstall:
+
+      } else if (cocoaPodsStatus == CocoaPodsStatus.brokenInstall) {
         status = ValidationType.missing;
         messages.add(ValidationMessage.error(
           _userMessages.cocoaPodsBrokenInstall(brokenCocoaPodsConsequence, cocoaPodsInstallInstructions)));
-      case CocoaPodsStatus.unknownVersion:
+
+      } else if (cocoaPodsStatus == CocoaPodsStatus.unknownVersion) {
         status = ValidationType.partial;
         messages.add(ValidationMessage.hint(
           _userMessages.cocoaPodsUnknownVersion(unknownCocoaPodsConsequence, cocoaPodsInstallInstructions)));
-      case CocoaPodsStatus.belowMinimumVersion:
-      case CocoaPodsStatus.belowRecommendedVersion:
+      } else {
         status = ValidationType.partial;
         final String currentVersionText = (await _cocoaPods.cocoaPodsVersionText).toString();
         messages.add(ValidationMessage.hint(
-          _userMessages.cocoaPodsOutdated(currentVersionText, cocoaPodsRecommendedVersion.toString(), noCocoaPodsConsequence, cocoaPodsUpdateInstructions)));
+          _userMessages.cocoaPodsOutdated(currentVersionText, cocoaPodsRecommendedVersion.toString(), noCocoaPodsConsequence, cocoaPodsInstallInstructions)));
+      }
     }
+
     return ValidationResult(status, messages);
   }
 }

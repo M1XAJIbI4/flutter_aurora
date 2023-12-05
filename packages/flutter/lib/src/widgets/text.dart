@@ -40,6 +40,11 @@ class DefaultTextStyle extends InheritedTheme {
   /// Consider using [DefaultTextStyle.merge] to inherit styling information
   /// from the current default text style for a given [BuildContext].
   ///
+  /// The [style] and [child] arguments are required and must not be null.
+  ///
+  /// The [softWrap] and [overflow] arguments must not be null (though they do
+  /// have default values).
+  ///
   /// The [maxLines] property may be null (and indeed defaults to null), but if
   /// it is not null, it must be greater than zero.
   const DefaultTextStyle({
@@ -230,6 +235,8 @@ class _NullWidget extends StatelessWidget {
 ///    [Text] widgets.
 class DefaultTextHeightBehavior extends InheritedTheme {
   /// Creates a default text height behavior for the given subtree.
+  ///
+  /// The [textHeightBehavior] and [child] arguments are required and must not be null.
   const DefaultTextHeightBehavior({
     super.key,
     required this.textHeightBehavior,
@@ -412,6 +419,8 @@ class Text extends StatelessWidget {
   /// If the [style] argument is null, the text will use the style from the
   /// closest enclosing [DefaultTextStyle].
   ///
+  /// The [data] parameter must not be null.
+  ///
   /// The [overflow] property's behavior is affected by the [softWrap] argument.
   /// If the [softWrap] is true or null, the glyph causing overflow, and those
   /// that follow, will not be rendered. Otherwise, it will be shown with the
@@ -426,23 +435,13 @@ class Text extends StatelessWidget {
     this.locale,
     this.softWrap,
     this.overflow,
-    @Deprecated(
-      'Use textScaler instead. '
-      'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
-      'This feature was deprecated after v3.12.0-2.0.pre.',
-    )
     this.textScaleFactor,
-    this.textScaler,
     this.maxLines,
     this.semanticsLabel,
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
-  }) : textSpan = null,
-       assert(
-         textScaler == null || textScaleFactor == null,
-         'textScaleFactor is deprecated and cannot be specified when textScaler is specified.',
-       );
+  }) : textSpan = null;
 
   /// Creates a text widget with a [InlineSpan].
   ///
@@ -450,6 +449,8 @@ class Text extends StatelessWidget {
   ///
   /// * [TextSpan]s define text and children [InlineSpan]s.
   /// * [WidgetSpan]s define embedded inline widgets.
+  ///
+  /// The [textSpan] parameter must not be null.
   ///
   /// See [RichText] which provides a lower-level way to draw text.
   const Text.rich(
@@ -462,23 +463,13 @@ class Text extends StatelessWidget {
     this.locale,
     this.softWrap,
     this.overflow,
-    @Deprecated(
-      'Use textScaler instead. '
-      'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
-      'This feature was deprecated after v3.12.0-2.0.pre.',
-    )
     this.textScaleFactor,
-    this.textScaler,
     this.maxLines,
     this.semanticsLabel,
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
-  }) : data = null,
-       assert(
-         textScaler == null || textScaleFactor == null,
-         'textScaleFactor is deprecated and cannot be specified when textScaler is specified.',
-       );
+  }) : data = null;
 
   /// The text to display.
   ///
@@ -538,9 +529,6 @@ class Text extends StatelessWidget {
   /// from the nearest [DefaultTextStyle] ancestor will be used.
   final TextOverflow? overflow;
 
-  /// Deprecated. Will be removed in a future version of Flutter. Use
-  /// [textScaler] instead.
-  ///
   /// The number of font pixels for each logical pixel.
   ///
   /// For example, if the text scale factor is 1.5, text will be 50% larger than
@@ -549,15 +537,7 @@ class Text extends StatelessWidget {
   /// The value given to the constructor as textScaleFactor. If null, will
   /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
   /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
-  @Deprecated(
-    'Use textScaler instead. '
-    'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
-    'This feature was deprecated after v3.12.0-2.0.pre.',
-  )
   final double? textScaleFactor;
-
-  /// {@macro flutter.painting.textPainter.textScaler}
-  final TextScaler? textScaler;
 
   /// An optional maximum number of lines for the text to span, wrapping if necessary.
   /// If the text exceeds the given number of lines, it will be truncated according
@@ -615,20 +595,13 @@ class Text extends StatelessWidget {
       effectiveTextStyle = effectiveTextStyle!.merge(const TextStyle(fontWeight: FontWeight.bold));
     }
     final SelectionRegistrar? registrar = SelectionContainer.maybeOf(context);
-    final TextScaler textScaler = switch ((this.textScaler, textScaleFactor)) {
-      (final TextScaler textScaler, _)     => textScaler,
-      // For unmigrated apps, fall back to textScaleFactor.
-      (null, final double textScaleFactor) => TextScaler.linear(textScaleFactor),
-      (null, null)                         => MediaQuery.textScalerOf(context),
-    };
-
     Widget result = RichText(
       textAlign: textAlign ?? defaultTextStyle.textAlign ?? TextAlign.start,
       textDirection: textDirection, // RichText uses Directionality.of to obtain a default if this is null.
       locale: locale, // RichText uses Localizations.localeOf to obtain a default if this is null
       softWrap: softWrap ?? defaultTextStyle.softWrap,
       overflow: overflow ?? effectiveTextStyle?.overflow ?? defaultTextStyle.overflow,
-      textScaler: textScaler,
+      textScaleFactor: textScaleFactor ?? MediaQuery.textScaleFactorOf(context),
       maxLines: maxLines ?? defaultTextStyle.maxLines,
       strutStyle: strutStyle,
       textWidthBasis: textWidthBasis ?? defaultTextStyle.textWidthBasis,

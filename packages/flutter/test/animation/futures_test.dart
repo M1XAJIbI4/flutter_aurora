@@ -5,7 +5,8 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../foundation/leak_tracking.dart';
 
 void main() {
   testWidgetsWithLeakTracking('awaiting animation controllers - using direct future', (WidgetTester tester) async {

@@ -7,11 +7,12 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../foundation/leak_tracking.dart';
 
 void main() {
   group('Horizontal', () {
-    testWidgets('gets local coordinates', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('gets local coordinates', (WidgetTester tester) async {
       int dragCancelCount = 0;
       final List<DragDownDetails> downDetails = <DragDownDetails>[];
       final List<DragEndDetails> endDetails = <DragEndDetails>[];

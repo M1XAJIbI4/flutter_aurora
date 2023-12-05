@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
 
@@ -21,11 +20,9 @@ void main() {
     );
   }
 
-  testWidgetsWithLeakTracking('updates its registrar and delegate based on the number of selectables', (WidgetTester tester) async {
+  testWidgets('updates its registrar and delegate based on the number of selectables', (WidgetTester tester) async {
     final TestSelectionRegistrar registrar = TestSelectionRegistrar();
     final TestContainerDelegate delegate = TestContainerDelegate();
-    addTearDown(delegate.dispose);
-
     await pumpContainer(
       tester,
       SelectionContainer(
@@ -45,11 +42,9 @@ void main() {
     expect(delegate.selectables.length, 3);
   });
 
-  testWidgetsWithLeakTracking('disabled container', (WidgetTester tester) async {
+  testWidgets('disabled container', (WidgetTester tester) async {
     final TestSelectionRegistrar registrar = TestSelectionRegistrar();
     final TestContainerDelegate delegate = TestContainerDelegate();
-    addTearDown(delegate.dispose);
-
     await pumpContainer(
       tester,
       SelectionContainer(
@@ -70,13 +65,10 @@ void main() {
     expect(delegate.selectables.length, 0);
   });
 
-  testWidgetsWithLeakTracking('Swapping out container delegate does not crash', (WidgetTester tester) async {
+  testWidgets('Swapping out container delegate does not crash', (WidgetTester tester) async {
     final TestSelectionRegistrar registrar = TestSelectionRegistrar();
     final TestContainerDelegate delegate = TestContainerDelegate();
-    addTearDown(delegate.dispose);
     final TestContainerDelegate childDelegate = TestContainerDelegate();
-    addTearDown(childDelegate.dispose);
-
     await pumpContainer(
       tester,
       SelectionContainer(
@@ -98,8 +90,6 @@ void main() {
     expect(delegate.value.hasContent, isTrue);
 
     final TestContainerDelegate newDelegate = TestContainerDelegate();
-    addTearDown(newDelegate.dispose);
-
     await pumpContainer(
       tester,
       SelectionContainer(
@@ -122,13 +112,10 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgetsWithLeakTracking('Can update within one frame', (WidgetTester tester) async {
+  testWidgets('Can update within one frame', (WidgetTester tester) async {
     final TestSelectionRegistrar registrar = TestSelectionRegistrar();
     final TestContainerDelegate delegate = TestContainerDelegate();
-    addTearDown(delegate.dispose);
     final TestContainerDelegate childDelegate = TestContainerDelegate();
-    addTearDown(childDelegate.dispose);
-
     await pumpContainer(
       tester,
       SelectionContainer(
@@ -152,11 +139,9 @@ void main() {
     expect(delegate.value.hasContent, isTrue);
   });
 
-  testWidgetsWithLeakTracking('selection container registers itself if there is a selectable child', (WidgetTester tester) async {
+  testWidgets('selection container registers itself if there is a selectable child', (WidgetTester tester) async {
     final TestSelectionRegistrar registrar = TestSelectionRegistrar();
     final TestContainerDelegate delegate = TestContainerDelegate();
-    addTearDown(delegate.dispose);
-
     await pumpContainer(
       tester,
       SelectionContainer(
@@ -196,10 +181,9 @@ void main() {
     expect(registrar.selectables.length, 0);
   });
 
-  testWidgetsWithLeakTracking('selection container gets registrar from context if not provided', (WidgetTester tester) async {
+  testWidgets('selection container gets registrar from context if not provided', (WidgetTester tester) async {
     final TestSelectionRegistrar registrar = TestSelectionRegistrar();
     final TestContainerDelegate delegate = TestContainerDelegate();
-    addTearDown(delegate.dispose);
 
     await pumpContainer(
       tester,

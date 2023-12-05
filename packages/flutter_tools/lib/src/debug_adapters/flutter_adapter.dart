@@ -12,7 +12,6 @@ import '../base/io.dart';
 import '../cache.dart';
 import '../convert.dart';
 import '../globals.dart' as globals show fs;
-import 'error_formatter.dart';
 import 'flutter_adapter_args.dart';
 import 'flutter_base_adapter.dart';
 
@@ -220,14 +219,17 @@ class FlutterDebugAdapter extends FlutterBaseDebugAdapter with VmServiceInfoFile
 
   /// Sends OutputEvents to the client for a Flutter.Error event.
   void _handleFlutterErrorEvent(vm.ExtensionData? data) {
-    final Map<String, Object?>? errorData = data?.data;
+    final Map<String, dynamic>? errorData = data?.data;
     if (errorData == null) {
       return;
     }
 
-    FlutterErrorFormatter()
-      ..formatError(errorData)
-      ..sendOutput(sendOutput);
+    final String errorText = (errorData['renderedErrorText'] as String?)
+        ?? (errorData['description'] as String?)
+        // We should never not error text, but if we do at least send something
+        // so it's not just completely silent.
+        ?? 'Unknown error in Flutter.Error event';
+    sendOutput('stderr', '$errorText\n');
   }
 
   /// Called by [launchRequest] to request that we actually start the app to be run/debugged.

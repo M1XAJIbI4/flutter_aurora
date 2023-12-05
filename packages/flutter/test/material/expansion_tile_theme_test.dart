@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 class TestIcon extends StatefulWidget {
   const TestIcon({super.key});
@@ -70,7 +69,7 @@ void main() {
     expect(theme.clipBehavior, null);
   });
 
-  testWidgetsWithLeakTracking('Default ExpansionTileThemeData debugFillProperties', (WidgetTester tester) async {
+  testWidgets('Default ExpansionTileThemeData debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const TooltipThemeData().debugFillProperties(builder);
 
@@ -82,7 +81,7 @@ void main() {
     expect(description, <String>[]);
   });
 
-  testWidgetsWithLeakTracking('ExpansionTileThemeData implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('ExpansionTileThemeData implements debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     const ExpansionTileThemeData(
       backgroundColor: Color(0xff000000),
@@ -120,7 +119,7 @@ void main() {
     ]);
   });
 
-  testWidgetsWithLeakTracking('ExpansionTileTheme - collapsed', (WidgetTester tester) async {
+  testWidgets('ExpansionTileTheme - collapsed', (WidgetTester tester) async {
     final Key tileKey = UniqueKey();
     final Key titleKey = UniqueKey();
     final Key iconKey = UniqueKey();
@@ -212,7 +211,7 @@ void main() {
     expect(shapeDecoration.shape, collapsedShape);
   });
 
-  testWidgetsWithLeakTracking('ExpansionTileTheme - expanded', (WidgetTester tester) async {
+  testWidgets('ExpansionTileTheme - expanded', (WidgetTester tester) async {
     final Key tileKey = UniqueKey();
     final Key titleKey = UniqueKey();
     final Key iconKey = UniqueKey();
@@ -291,7 +290,7 @@ void main() {
     // Check the expanded text color when textColor is applied.
     expect(getTextColor(), textColor);
     // Check the expanded ShapeBorder when shape is applied.
-    expect(shapeDecoration.shape, shape);
+    expect(shapeDecoration.shape, collapsedShape);
 
     // Check the child position when expandedAlignment is applied.
     final Rect childRect = tester.getRect(find.text('Tile 1'));

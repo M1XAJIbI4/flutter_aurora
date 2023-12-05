@@ -146,7 +146,7 @@ class RenderListWheelViewport
     implements RenderAbstractViewport {
   /// Creates a [RenderListWheelViewport] which renders children on a wheel.
   ///
-  /// Optional arguments have reasonable defaults.
+  /// All arguments must not be null. Optional arguments have reasonable defaults.
   RenderListWheelViewport({
     required this.childManager,
     required ViewportOffset offset,
@@ -220,6 +220,8 @@ class RenderListWheelViewport
   /// viewport uses to select which part of its content to display. As the user
   /// scrolls the viewport, this value changes, which changes the content that
   /// is displayed.
+  ///
+  /// Must not be null.
   ViewportOffset get offset => _offset;
   ViewportOffset _offset;
   set offset(ViewportOffset value) {
@@ -262,7 +264,7 @@ class RenderListWheelViewport
   ///
   /// Defaults to an arbitrary but aesthetically reasonable number of 2.0.
   ///
-  /// Must be a positive number.
+  /// Must not be null and must be positive.
   /// {@endtemplate}
   double get diameterRatio => _diameterRatio;
   double _diameterRatio;
@@ -291,7 +293,7 @@ class RenderListWheelViewport
   /// A larger number brings the vanishing point closer and a smaller number
   /// pushes the vanishing point further.
   ///
-  /// Must be a positive number.
+  /// Must not be null and must be positive.
   /// {@endtemplate}
   double get perspective => _perspective;
   double _perspective;
@@ -400,7 +402,7 @@ class RenderListWheelViewport
   /// The size of the children along the main axis. Children [RenderBox]es will
   /// be given the [BoxConstraints] of this exact size.
   ///
-  /// Must be a positive number.
+  /// Must not be null and must be positive.
   /// {@endtemplate}
   double get itemExtent => _itemExtent;
   double _itemExtent;
@@ -430,7 +432,7 @@ class RenderListWheelViewport
   /// Changing this value will change the number of children built and shown
   /// inside the wheel.
   ///
-  /// Must be a positive number.
+  /// Must not be null and must be positive.
   /// {@endtemplate}
   ///
   /// Defaults to 1.
@@ -452,9 +454,9 @@ class RenderListWheelViewport
   /// If false, every child will be painted. However the [Scrollable] is still
   /// the size of the viewport and detects gestures inside only.
   ///
-  /// Defaults to false. Cannot be true if [clipBehavior] is not [Clip.none]
-  /// since children outside the viewport will be clipped, and therefore cannot
-  /// render children outside the viewport.
+  /// Defaults to false. Must not be null. Cannot be true if [clipBehavior]
+  /// is not [Clip.none] since children outside the viewport will be clipped, and
+  /// therefore cannot render children outside the viewport.
   /// {@endtemplate}
   bool get renderChildrenOutsideViewport => _renderChildrenOutsideViewport;
   bool _renderChildrenOutsideViewport;
@@ -473,7 +475,7 @@ class RenderListWheelViewport
 
   /// {@macro flutter.material.Material.clipBehavior}
   ///
-  /// Defaults to [Clip.hardEdge].
+  /// Defaults to [Clip.hardEdge], and must not be null.
   Clip get clipBehavior => _clipBehavior;
   Clip _clipBehavior = Clip.hardEdge;
   set clipBehavior(Clip value) {
@@ -1121,15 +1123,11 @@ class RenderListWheelViewport
   }
 
   @override
-  RevealedOffset getOffsetToReveal(
-    RenderObject target,
-    double alignment, {
-    Rect? rect,
-    Axis? axis, // Unused, only Axis.vertical supported by this viewport.
-  }) {
+  RevealedOffset getOffsetToReveal(RenderObject target, double alignment, { Rect? rect }) {
     // `target` is only fully revealed when in the selected/center position. Therefore,
     // this method always returns the offset that shows `target` in the center position,
     // which is the same offset for all `alignment` values.
+
     rect ??= target.paintBounds;
 
     // `child` will be the last RenderObject before the viewport when walking up from `target`.

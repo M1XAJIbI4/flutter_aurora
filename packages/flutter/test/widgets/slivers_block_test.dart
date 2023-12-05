@@ -5,16 +5,15 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 
 Future<void> test(WidgetTester tester, double offset) {
-  final ViewportOffset viewportOffset = ViewportOffset.fixed(offset);
-  addTearDown(viewportOffset.dispose);
   return tester.pumpWidget(
     Directionality(
       textDirection: TextDirection.ltr,
       child: Viewport(
-        offset: viewportOffset,
+        offset: ViewportOffset.fixed(offset),
         slivers: <Widget>[
           SliverList(
             delegate: SliverChildListDelegate(const <Widget>[
@@ -32,13 +31,11 @@ Future<void> test(WidgetTester tester, double offset) {
 }
 
 Future<void> testWithConstChildDelegate(WidgetTester tester, double offset) {
-  final ViewportOffset viewportOffset = ViewportOffset.fixed(offset);
-  addTearDown(viewportOffset.dispose);
   return tester.pumpWidget(
     Directionality(
       textDirection: TextDirection.ltr,
       child: Viewport(
-        offset: viewportOffset,
+        offset: ViewportOffset.fixed(offset),
         slivers: const <Widget>[
           SliverList(
             delegate: SliverChildListDelegate.fixed(<Widget>[
@@ -68,7 +65,7 @@ void verify(WidgetTester tester, List<Offset> answerKey, String text) {
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Viewport+SliverBlock basic test', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverBlock basic test', (WidgetTester tester) async {
     await test(tester, 0.0);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
     verify(tester, <Offset>[
@@ -101,7 +98,7 @@ void main() {
     ], 'ab');
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverBlock basic test with constant SliverChildListDelegate', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverBlock basic test with constant SliverChildListDelegate', (WidgetTester tester) async {
     await testWithConstChildDelegate(tester, 0.0);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
     verify(tester, <Offset>[
@@ -134,10 +131,9 @@ void main() {
     ], 'ab');
   });
 
-  testWidgetsWithLeakTracking('Viewport with GlobalKey reparenting', (WidgetTester tester) async {
+  testWidgets('Viewport with GlobalKey reparenting', (WidgetTester tester) async {
     final Key key1 = GlobalKey();
     final ViewportOffset offset = ViewportOffset.zero();
-    addTearDown(offset.dispose);
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -248,15 +244,12 @@ void main() {
     ], 'acb');
   });
 
-  testWidgetsWithLeakTracking('Viewport overflow clipping of SliverToBoxAdapter', (WidgetTester tester) async {
-    final ViewportOffset offset1 = ViewportOffset.zero();
-    addTearDown(offset1.dispose);
-
+  testWidgets('Viewport overflow clipping of SliverToBoxAdapter', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset1,
+          offset: ViewportOffset.zero(),
           slivers: const <Widget>[
             SliverToBoxAdapter(
               child: SizedBox(height: 400.0, child: Text('a')),
@@ -268,14 +261,11 @@ void main() {
 
     expect(find.byType(Viewport), isNot(paints..clipRect()));
 
-    final ViewportOffset offset2 = ViewportOffset.fixed(100.0);
-    addTearDown(offset2.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset2,
+          offset: ViewportOffset.fixed(100.0),
           slivers: const <Widget>[
             SliverToBoxAdapter(
               child: SizedBox(height: 400.0, child: Text('a')),
@@ -287,14 +277,11 @@ void main() {
 
     expect(find.byType(Viewport), paints..clipRect());
 
-    final ViewportOffset offset3 = ViewportOffset.fixed(100.0);
-    addTearDown(offset3.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset3,
+          offset: ViewportOffset.fixed(100.0),
           slivers: const <Widget>[
             SliverToBoxAdapter(
               child: SizedBox(height: 4000.0, child: Text('a')),
@@ -306,14 +293,11 @@ void main() {
 
     expect(find.byType(Viewport), paints..clipRect());
 
-    final ViewportOffset offset4 = ViewportOffset.zero();
-    addTearDown(offset4.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset4,
+          offset: ViewportOffset.zero(),
           slivers: const <Widget>[
             SliverToBoxAdapter(
               child: SizedBox(height: 4000.0, child: Text('a')),
@@ -326,15 +310,12 @@ void main() {
     expect(find.byType(Viewport), paints..clipRect());
   });
 
-  testWidgetsWithLeakTracking('Viewport overflow clipping of SliverBlock', (WidgetTester tester) async {
-    final ViewportOffset offset1 = ViewportOffset.zero();
-    addTearDown(offset1.dispose);
-
+  testWidgets('Viewport overflow clipping of SliverBlock', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset1,
+          offset: ViewportOffset.zero(),
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(const <Widget>[
@@ -348,14 +329,11 @@ void main() {
 
     expect(find.byType(Viewport), isNot(paints..clipRect()));
 
-    final ViewportOffset offset2 = ViewportOffset.fixed(100.0);
-    addTearDown(offset2.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset2,
+          offset: ViewportOffset.fixed(100.0),
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(const <Widget>[
@@ -369,14 +347,11 @@ void main() {
 
     expect(find.byType(Viewport), paints..clipRect());
 
-    final ViewportOffset offset3 = ViewportOffset.fixed(100.0);
-    addTearDown(offset3.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset3,
+          offset: ViewportOffset.fixed(100.0),
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(const <Widget>[
@@ -390,14 +365,11 @@ void main() {
 
     expect(find.byType(Viewport), paints..clipRect());
 
-    final ViewportOffset offset4 = ViewportOffset.zero();
-    addTearDown(offset4.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset4,
+          offset: ViewportOffset.zero(),
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(const <Widget>[

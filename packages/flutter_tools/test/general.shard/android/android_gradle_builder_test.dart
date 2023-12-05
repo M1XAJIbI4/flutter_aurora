@@ -885,13 +885,113 @@ Gradle Crashed
         command: <String>[
           'gradlew',
           '-q',
-          'outputFreeDebugAppLinkSettings',
+          'printFreeDebugApplicationId',
         ],
+        stdout: '''
+ApplicationId: com.example.id
+        ''',
       ));
-      await builder.outputsAppLinkSettings(
+      final String actual = await builder.getApplicationIdForVariant(
         'freeDebug',
         project: FlutterProject.fromDirectoryTest(fileSystem.currentDirectory),
       );
+      expect(actual, 'com.example.id');
+    }, overrides: <Type, Generator>{
+      AndroidStudio: () => FakeAndroidStudio(),
+    });
+
+    testUsingContext('can call custom gradle task getApplicationIdForVariant with unknown crash', () async {
+      final AndroidGradleBuilder builder = AndroidGradleBuilder(
+        java: FakeJava(),
+        logger: logger,
+        processManager: processManager,
+        fileSystem: fileSystem,
+        artifacts: Artifacts.test(),
+        usage: testUsage,
+        gradleUtils: FakeGradleUtils(),
+        platform: FakePlatform(),
+        androidStudio: FakeAndroidStudio(),
+      );
+      processManager.addCommand(const FakeCommand(
+        command: <String>[
+          'gradlew',
+          '-q',
+          'printFreeDebugApplicationId',
+        ],
+        stdout: '''
+unknown crash
+        ''',
+      ));
+      final String actual = await builder.getApplicationIdForVariant(
+        'freeDebug',
+        project: FlutterProject.fromDirectoryTest(fileSystem.currentDirectory),
+      );
+      expect(actual, '');
+    }, overrides: <Type, Generator>{
+      AndroidStudio: () => FakeAndroidStudio(),
+    });
+
+    testUsingContext('can call custom gradle task getAppLinkDomainsForVariant and parse the result', () async {
+      final AndroidGradleBuilder builder = AndroidGradleBuilder(
+        java: FakeJava(),
+        logger: logger,
+        processManager: processManager,
+        fileSystem: fileSystem,
+        artifacts: Artifacts.test(),
+        usage: testUsage,
+        gradleUtils: FakeGradleUtils(),
+        platform: FakePlatform(),
+        androidStudio: FakeAndroidStudio(),
+      );
+
+      processManager.addCommand(const FakeCommand(
+        command: <String>[
+          'gradlew',
+          '-q',
+          'printFreeDebugAppLinkDomains',
+        ],
+        stdout: '''
+Domain: example.com
+Domain: example2.com
+        ''',
+      ));
+      final List<String> actual = await builder.getAppLinkDomainsForVariant(
+        'freeDebug',
+        project: FlutterProject.fromDirectoryTest(fileSystem.currentDirectory),
+      );
+      expect(actual, <String>['example.com', 'example2.com']);
+    }, overrides: <Type, Generator>{
+      AndroidStudio: () => FakeAndroidStudio(),
+    });
+
+    testUsingContext('can call custom gradle task getAppLinkDomainsForVariant with unknown crash', () async {
+      final AndroidGradleBuilder builder = AndroidGradleBuilder(
+        java: FakeJava(),
+        logger: logger,
+        processManager: processManager,
+        fileSystem: fileSystem,
+        artifacts: Artifacts.test(),
+        usage: testUsage,
+        gradleUtils: FakeGradleUtils(),
+        platform: FakePlatform(),
+        androidStudio: FakeAndroidStudio(),
+      );
+
+      processManager.addCommand(const FakeCommand(
+        command: <String>[
+          'gradlew',
+          '-q',
+          'printFreeDebugAppLinkDomains',
+        ],
+        stdout: '''
+unknown crash
+        ''',
+      ));
+      final List<String> actual = await builder.getAppLinkDomainsForVariant(
+        'freeDebug',
+        project: FlutterProject.fromDirectoryTest(fileSystem.currentDirectory),
+      );
+      expect(actual.isEmpty, isTrue);
     }, overrides: <Type, Generator>{
       AndroidStudio: () => FakeAndroidStudio(),
     });
@@ -1087,7 +1187,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_arm', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_arm'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1100,7 +1200,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_arm',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-arm',
           '-Ptarget=lib/main.dart',
           '-Pbase-application-name=io.flutter.app.FlutterApplication',
@@ -1167,7 +1266,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_arm64', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_arm64'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1180,7 +1279,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_arm64',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-arm64',
           '-Ptarget=lib/main.dart',
           '-Pbase-application-name=io.flutter.app.FlutterApplication',
@@ -1247,7 +1345,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_x86', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_x86'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1260,7 +1358,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_x86',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-x86',
           '-Ptarget=lib/main.dart',
           '-Pbase-application-name=io.flutter.app.FlutterApplication',
@@ -1327,7 +1424,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_x64', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_x64'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1340,7 +1437,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_x64',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-x64',
           '-Ptarget=lib/main.dart',
           '-Pbase-application-name=io.flutter.app.FlutterApplication',
@@ -1469,7 +1565,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_arm', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_arm'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1490,7 +1586,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_arm',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-arm',
           'assembleAarRelease',
         ],
@@ -1558,7 +1653,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_arm64', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_arm64'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1579,7 +1674,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_arm64',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-arm64',
           'assembleAarRelease',
         ],
@@ -1647,7 +1741,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_x86', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_x86'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1668,7 +1762,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_x86',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-x86',
           'assembleAarRelease',
         ],
@@ -1736,7 +1829,7 @@ Gradle Crashed
         logger: logger,
         processManager: processManager,
         fileSystem: fileSystem,
-        artifacts: Artifacts.testLocalEngine(localEngine: 'out/android_x64', localEngineHost: 'out/host_release'),
+        artifacts: Artifacts.test(localEngine: 'out/android_x64'),
         usage: testUsage,
         gradleUtils: FakeGradleUtils(),
         platform: FakePlatform(),
@@ -1757,7 +1850,6 @@ Gradle Crashed
           '-Plocal-engine-repo=/.tmp_rand0/flutter_tool_local_engine_repo.rand0',
           '-Plocal-engine-build-mode=release',
           '-Plocal-engine-out=out/android_x64',
-          '-Plocal-engine-host-out=out/host_release',
           '-Ptarget-platform=android-x64',
           'assembleAarRelease',
         ],

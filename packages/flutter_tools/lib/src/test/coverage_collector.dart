@@ -187,13 +187,8 @@ class CoverageCollector extends TestWatcher {
     if (formatter == null) {
       final coverage.Resolver usedResolver = resolver ?? this.resolver ?? await CoverageCollector.getResolver(packagesPath);
       final String packagePath = globals.fs.currentDirectory.path;
-      // find paths for libraryNames so we can include them to report
-      final List<String>? libraryPaths = libraryNames
-          ?.map((String e) => usedResolver.resolve('package:$e'))
-          .whereType<String>()
-          .toList();
-      final List<String>? reportOn = coverageDirectory == null
-          ? libraryPaths
+      final List<String> reportOn = coverageDirectory == null
+          ? <String>[globals.fs.path.join(packagePath, 'lib')]
           : <String>[coverageDirectory.path];
       formatter = (Map<String, coverage.HitMap> hitmap) => hitmap
           .formatLcov(usedResolver, reportOn: reportOn, basePath: packagePath);

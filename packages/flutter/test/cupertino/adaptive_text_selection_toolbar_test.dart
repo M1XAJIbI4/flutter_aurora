@@ -9,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import '../widgets/clipboard_utils.dart';
 import '../widgets/live_text_utils.dart';
@@ -34,14 +33,7 @@ void main() {
     );
   });
 
-  Finder findOverflowNextButton() {
-    return find.byWidgetPredicate((Widget widget) =>
-      widget is CustomPaint &&
-          '${widget.painter?.runtimeType}' == '_RightCupertinoChevronPainter',
-      );
-  }
-
-  testWidgetsWithLeakTracking('Builds the right toolbar on each platform, including web, and shows buttonItems', (WidgetTester tester) async {
+  testWidgets('Builds the right toolbar on each platform, including web, and shows buttonItems', (WidgetTester tester) async {
     const String buttonText = 'Click me';
 
     await tester.pumpWidget(
@@ -83,7 +75,7 @@ void main() {
     skip: isBrowser, // [intended] see https://github.com/flutter/flutter/issues/108382
   );
 
-  testWidgetsWithLeakTracking('Can build children directly as well', (WidgetTester tester) async {
+  testWidgets('Can build children directly as well', (WidgetTester tester) async {
     final GlobalKey key = GlobalKey();
 
     await tester.pumpWidget(
@@ -106,21 +98,17 @@ void main() {
     skip: isBrowser, // [intended] see https://github.com/flutter/flutter/issues/108382
   );
 
-  testWidgetsWithLeakTracking('Can build from EditableTextState', (WidgetTester tester) async {
+  testWidgets('Can build from EditableTextState', (WidgetTester tester) async {
     final GlobalKey key = GlobalKey();
-    final FocusNode focusNode = FocusNode();
-    addTearDown(focusNode.dispose);
-    final TextEditingController controller = TextEditingController();
-    addTearDown(controller.dispose);
     await tester.pumpWidget(CupertinoApp(
       home: Align(
         alignment: Alignment.topLeft,
         child: SizedBox(
           width: 400,
           child: EditableText(
-            controller: controller,
+            controller: TextEditingController(),
             backgroundCursorColor: const Color(0xff00ffff),
-            focusNode: focusNode,
+            focusNode: FocusNode(),
             style: const TextStyle(),
             cursorColor: const Color(0xff00ffff),
             selectionControls: cupertinoTextSelectionHandleControls,
@@ -170,7 +158,7 @@ void main() {
     variant: TargetPlatformVariant.all(),
   );
 
-  testWidgetsWithLeakTracking('Can build for editable text from raw parameters', (WidgetTester tester) async {
+  testWidgets('Can build for editable text from raw parameters', (WidgetTester tester) async {
     final GlobalKey key = GlobalKey();
     await tester.pumpWidget(CupertinoApp(
       home: Center(
@@ -185,9 +173,6 @@ void main() {
           onPaste: () {},
           onSelectAll: () {},
           onLiveTextInput: () {},
-          onLookUp: () {},
-          onSearchWeb: () {},
-          onShare: () {},
         ),
       ),
     ));
@@ -197,31 +182,27 @@ void main() {
     expect(find.text('Cut'), findsOneWidget);
     expect(find.text('Select All'), findsOneWidget);
     expect(find.text('Paste'), findsOneWidget);
-    expect(find.text('Look Up'), findsOneWidget);
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(6));
+        expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(5));
       case TargetPlatform.fuchsia:
-        expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(6));
+        expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(5));
       case TargetPlatform.iOS:
-        expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(6));
-        expect(findOverflowNextButton(), findsOneWidget);
-        await tester.tapAt(tester.getCenter(findOverflowNextButton()));
-        await tester.pumpAndSettle();
+        expect(find.byType(CupertinoTextSelectionToolbarButton), findsNWidgets(5));
         expect(findLiveTextButton(), findsOneWidget);
       case TargetPlatform.macOS:
       case TargetPlatform.linux:
       case TargetPlatform.aurora:
       case TargetPlatform.windows:
-        expect(find.byType(CupertinoDesktopTextSelectionToolbarButton), findsNWidgets(8));
+        expect(find.byType(CupertinoDesktopTextSelectionToolbarButton), findsNWidgets(5));
     }
   },
     skip: kIsWeb, // [intended] on web the browser handles the context menu.
     variant: TargetPlatformVariant.all(),
   );
 
-  testWidgetsWithLeakTracking('Builds the correct button per-platform', (WidgetTester tester) async {
+  testWidgets('Builds the correct button per-platform', (WidgetTester tester) async {
     const String buttonText = 'Click me';
 
     await tester.pumpWidget(

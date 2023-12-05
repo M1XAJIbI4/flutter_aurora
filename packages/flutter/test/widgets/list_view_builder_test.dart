@@ -4,12 +4,11 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import 'test_widgets.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('ListView.builder mount/dismount smoke test', (WidgetTester tester) async {
+  testWidgets('ListView.builder mount/dismount smoke test', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // the root view is 800x600 in the test environment
@@ -62,7 +61,7 @@ void main() {
     check(visible: <int>[0, 1, 2, 3, 4, 5], hidden: <int>[ 6, 7, 8]);
   });
 
-  testWidgetsWithLeakTracking('ListView.builder vertical', (WidgetTester tester) async {
+  testWidgets('ListView.builder vertical', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // the root view is 800x600 in the test environment
@@ -80,14 +79,11 @@ void main() {
     }
 
     Widget buildWidget() {
-      final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-      addTearDown(controller.dispose);
-
       return Directionality(
         textDirection: TextDirection.ltr,
         child: FlipWidget(
           left: ListView.builder(
-            controller: controller,
+            controller: ScrollController(initialScrollOffset: 300.0),
             itemExtent: 200.0,
             itemBuilder: itemBuilder,
           ),
@@ -138,7 +134,7 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView.builder horizontal', (WidgetTester tester) async {
+  testWidgets('ListView.builder horizontal', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // the root view is 800x600 in the test environment
@@ -156,14 +152,11 @@ void main() {
     }
 
     Widget buildWidget() {
-      final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-      addTearDown(controller.dispose);
-
       return Directionality(
         textDirection: TextDirection.ltr,
         child: FlipWidget(
           left: ListView.builder(
-            controller: controller,
+            controller: ScrollController(initialScrollOffset: 300.0),
             itemBuilder: itemBuilder,
             itemExtent: 200.0,
             scrollDirection: Axis.horizontal,
@@ -215,7 +208,7 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView.builder 10 items, 2-3 items visible', (WidgetTester tester) async {
+  testWidgets('ListView.builder 10 items, 2-3 items visible', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // The root view is 800x600 in the test environment and our list
@@ -268,7 +261,7 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView.builder 30 items with big jump, using prototypeItem', (WidgetTester tester) async {
+  testWidgets('ListView.builder 30 items with big jump, using prototypeItem', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // The root view is 800x600 in the test environment and our list
@@ -316,7 +309,7 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView.separated', (WidgetTester tester) async {
+  testWidgets('ListView.separated', (WidgetTester tester) async {
     Widget buildFrame({ required int itemCount }) {
       return Directionality(
         textDirection: TextDirection.ltr,
@@ -362,7 +355,7 @@ void main() {
   });
 
 
-  testWidgetsWithLeakTracking('ListView.separated uses correct semanticChildCount', (WidgetTester tester) async {
+  testWidgets('ListView.separated uses correct semanticChildCount', (WidgetTester tester) async {
     Widget buildFrame({ required int itemCount}) {
       return Directionality(
         textDirection: TextDirection.ltr,
@@ -410,7 +403,7 @@ void main() {
   });
 
   // Regression test for https://github.com/flutter/flutter/issues/72292
-  testWidgetsWithLeakTracking('ListView.builder and SingleChildScrollView can work well together', (WidgetTester tester) async {
+  testWidgets('ListView.builder and SingleChildScrollView can work well together', (WidgetTester tester) async {
     Widget builder(int itemCount) {
       return Directionality(
         textDirection: TextDirection.ltr,

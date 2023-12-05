@@ -23,9 +23,8 @@ const double _kRecipePageMaxWidth = 500.0;
 final Set<Recipe?> _favoriteRecipes = <Recipe?>{};
 
 final ThemeData _kTheme = ThemeData(
-  appBarTheme: const AppBarTheme(foregroundColor: Colors.white, backgroundColor: Colors.teal),
   brightness: Brightness.light,
-  floatingActionButtonTheme: const FloatingActionButtonThemeData(foregroundColor: Colors.white),
+  primarySwatch: Colors.teal,
 );
 
 class PestoHome extends StatelessWidget {

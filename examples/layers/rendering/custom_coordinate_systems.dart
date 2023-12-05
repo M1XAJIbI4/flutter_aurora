@@ -6,7 +6,6 @@
 // system. Most of the guts of this examples are in src/sector_layout.dart.
 
 import 'package:flutter/rendering.dart';
-import 'src/binding.dart';
 import 'src/sector_layout.dart';
 
 RenderBox buildSectorExample() {
@@ -22,5 +21,5 @@ RenderBox buildSectorExample() {
 }
 
 void main() {
-  ViewRenderingFlutterBinding(root: buildSectorExample()).scheduleFrame();
+  RenderingFlutterBinding(root: buildSectorExample()).scheduleFrame();
 }

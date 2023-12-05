@@ -74,13 +74,11 @@ class _TaskRunner {
       final bool runFlutterConfig = parameters['runFlutterConfig'] != 'false'; // used by tests to avoid changing the configuration
       final bool runProcessCleanup = parameters['runProcessCleanup'] != 'false';
       final String? localEngine = parameters['localEngine'];
-      final String? localEngineHost = parameters['localEngineHost'];
       final TaskResult result = await run(
         taskTimeout,
         runProcessCleanup: runProcessCleanup,
         runFlutterConfig: runFlutterConfig,
         localEngine: localEngine,
-        localEngineHost: localEngineHost,
       );
       return ServiceExtensionResponse.result(json.encode(result.toJson()));
     });
@@ -117,7 +115,6 @@ class _TaskRunner {
     bool runFlutterConfig = true,
     bool runProcessCleanup = true,
     required String? localEngine,
-    required String? localEngineHost,
   }) async {
     try {
       _taskStarted = true;
@@ -147,7 +144,6 @@ class _TaskRunner {
           '--enable-macos-desktop',
           '--enable-linux-desktop',
           if (localEngine != null) ...<String>['--local-engine', localEngine],
-          if (localEngineHost != null) ...<String>['--local-engine-host', localEngineHost],
         ], canFail: true);
         if (configResult != 0) {
           print('Failed to enable configuration, tasks may not run.');

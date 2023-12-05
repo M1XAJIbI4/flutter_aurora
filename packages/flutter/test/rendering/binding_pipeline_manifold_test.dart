@@ -13,20 +13,20 @@ void main() {
 
   tearDown(() {
     final List<PipelineOwner> children = <PipelineOwner>[];
-    RendererBinding.instance.rootPipelineOwner.visitChildren((PipelineOwner child) {
+    RendererBinding.instance.pipelineOwner.visitChildren((PipelineOwner child) {
       children.add(child);
     });
-    children.forEach(RendererBinding.instance.rootPipelineOwner.dropChild);
+    children.forEach(RendererBinding.instance.pipelineOwner.dropChild);
   });
 
   test("BindingPipelineManifold notifies binding if render object managed by binding's PipelineOwner tree needs visual update", () {
     final PipelineOwner child = PipelineOwner();
-    RendererBinding.instance.rootPipelineOwner.adoptChild(child);
+    RendererBinding.instance.pipelineOwner.adoptChild(child);
 
     final RenderObject renderObject = TestRenderObject();
     child.rootNode = renderObject;
     renderObject.scheduleInitialLayout();
-    RendererBinding.instance.rootPipelineOwner.flushLayout();
+    RendererBinding.instance.pipelineOwner.flushLayout();
 
     MyTestRenderingFlutterBinding.instance.ensureVisualUpdateCount = 0;
     renderObject.markNeedsLayout();
@@ -37,20 +37,20 @@ void main() {
     final PipelineOwner child = PipelineOwner(
       onSemanticsUpdate: (_) { },
     );
-    RendererBinding.instance.rootPipelineOwner.adoptChild(child);
+    RendererBinding.instance.pipelineOwner.adoptChild(child);
 
     expect(child.semanticsOwner, isNull);
-    expect(RendererBinding.instance.rootPipelineOwner.semanticsOwner, isNull);
+    expect(RendererBinding.instance.pipelineOwner.semanticsOwner, isNull);
 
     final SemanticsHandle handle = SemanticsBinding.instance.ensureSemantics();
 
     expect(child.semanticsOwner, isNotNull);
-    expect(RendererBinding.instance.rootPipelineOwner.semanticsOwner, isNotNull);
+    expect(RendererBinding.instance.pipelineOwner.semanticsOwner, isNotNull);
 
     handle.dispose();
 
     expect(child.semanticsOwner, isNull);
-    expect(RendererBinding.instance.rootPipelineOwner.semanticsOwner, isNull);
+    expect(RendererBinding.instance.pipelineOwner.semanticsOwner, isNull);
   });
 }
 

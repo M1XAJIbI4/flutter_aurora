@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,7 +13,10 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   ByteData makeByteData(String str) {
-    return ByteData.sublistView(utf8.encode(str));
+    final List<int> list = utf8.encode(str);
+    final ByteBuffer buffer =
+        list is Uint8List ? list.buffer : Uint8List.fromList(list).buffer;
+    return ByteData.view(buffer);
   }
 
   test('default binary messenger calls callback once', () async {

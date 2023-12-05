@@ -22,7 +22,7 @@ import 'print.dart';
 import 'service_extensions.dart';
 import 'timeline.dart';
 
-export 'dart:ui' show PlatformDispatcher, SingletonFlutterWindow, clampDouble; // ignore: deprecated_member_use
+export 'dart:ui' show PlatformDispatcher, SingletonFlutterWindow; // ignore: deprecated_member_use
 
 export 'basic_types.dart' show AsyncCallback, AsyncValueGetter, AsyncValueSetter;
 
@@ -158,8 +158,9 @@ abstract class BindingBase {
     initServiceExtensions();
     assert(_debugServiceExtensionsRegistered);
 
+    developer.postEvent('Flutter.FrameworkInitialization', <String, String>{});
+
     if (!kReleaseMode) {
-      developer.postEvent('Flutter.FrameworkInitialization', <String, String>{});
       FlutterTimeline.finishSync();
     }
   }
@@ -167,6 +168,13 @@ abstract class BindingBase {
   bool _debugConstructed = false;
   static Type? _debugInitializedType;
   static bool _debugServiceExtensionsRegistered = false;
+
+  /// Additional configuration used by the framework during hot reload.
+  ///
+  /// See also:
+  ///
+  ///  * [DebugReassembleConfig], which describes the configuration.
+  static DebugReassembleConfig? debugReassembleConfig;
 
   /// Deprecated. Will be removed in a future version of Flutter.
   ///
@@ -561,22 +569,33 @@ abstract class BindingBase {
         name: FoundationServiceExtensions.platformOverride.name,
         callback: (Map<String, String> parameters) async {
           if (parameters.containsKey('value')) {
-            final String value = parameters['value']!;
-            debugDefaultTargetPlatformOverride = null;
-            for (final TargetPlatform candidate in TargetPlatform.values) {
-              if (candidate.name == value) {
-                debugDefaultTargetPlatformOverride = candidate;
-                break;
-              }
+            switch (parameters['value']) {
+              case 'android':
+                debugDefaultTargetPlatformOverride = TargetPlatform.android;
+              case 'fuchsia':
+                debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+              case 'iOS':
+                debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+              case 'linux':
+                debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+              case 'macOS':
+                debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+              case 'windows':
+                debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+              case 'default':
+              default:
+                debugDefaultTargetPlatformOverride = null;
             }
             _postExtensionStateChangedEvent(
               FoundationServiceExtensions.platformOverride.name,
-              defaultTargetPlatform.name,
+              defaultTargetPlatform.toString().substring('$TargetPlatform.'.length),
             );
             await reassembleApplication();
           }
           return <String, dynamic>{
-            'value': defaultTargetPlatform.name,
+            'value': defaultTargetPlatform
+                     .toString()
+                     .substring('$TargetPlatform.'.length),
           };
         },
       );
@@ -638,19 +657,14 @@ abstract class BindingBase {
   /// [locked].
   @protected
   Future<void> lockEvents(Future<void> Function() callback) {
-    developer.TimelineTask? debugTimelineTask;
-    if (!kReleaseMode) {
-      debugTimelineTask = developer.TimelineTask()..start('Lock events');
-    }
+    final developer.TimelineTask timelineTask = developer.TimelineTask()..start('Lock events');
 
     _lockCount += 1;
     final Future<void> future = callback();
     future.whenComplete(() {
       _lockCount -= 1;
       if (!locked) {
-        if (!kReleaseMode) {
-          debugTimelineTask!.finish();
-        }
+        timelineTask.finish();
         try {
           unlocked();
         } catch (error, stack) {
@@ -970,4 +984,24 @@ abstract class BindingBase {
 /// Terminate the Flutter application.
 Future<void> _exitApplication() async {
   exit(0);
+}
+
+/// Additional configuration used for hot reload reassemble optimizations.
+///
+/// Do not extend, implement, or mixin this class. This may only be instantiated
+/// in debug mode.
+class DebugReassembleConfig {
+  /// Create a new [DebugReassembleConfig].
+  ///
+  /// Throws a [FlutterError] if this is called in profile or release mode.
+  DebugReassembleConfig({
+    this.widgetName,
+  }) {
+    if (!kDebugMode) {
+      throw FlutterError('Cannot instantiate DebugReassembleConfig in profile or release mode.');
+    }
+  }
+
+  /// The name of the widget that was modified, or `null` if the change was elsewhere.
+  final String? widgetName;
 }

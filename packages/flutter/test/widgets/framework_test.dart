@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 typedef ElementRebuildCallback = void Function(StatefulElement element);
 
@@ -23,13 +22,13 @@ class _MyGlobalObjectKey<T extends State<StatefulWidget>> extends GlobalObjectKe
 }
 
 void main() {
-  testWidgetsWithLeakTracking('UniqueKey control test', (WidgetTester tester) async {
+  testWidgets('UniqueKey control test', (WidgetTester tester) async {
     final Key key = UniqueKey();
     expect(key, hasOneLineDescription);
     expect(key, isNot(equals(UniqueKey())));
   });
 
-  testWidgetsWithLeakTracking('ObjectKey control test', (WidgetTester tester) async {
+  testWidgets('ObjectKey control test', (WidgetTester tester) async {
     final Object a = Object();
     final Object b = Object();
     final Key keyA = ObjectKey(a);
@@ -42,7 +41,7 @@ void main() {
     expect(keyA, isNot(equals(keyB)));
   });
 
-  testWidgetsWithLeakTracking('GlobalObjectKey toString test', (WidgetTester tester) async {
+  testWidgets('GlobalObjectKey toString test', (WidgetTester tester) async {
     const GlobalObjectKey one = GlobalObjectKey(1);
     const GlobalObjectKey<TestState> two = GlobalObjectKey<TestState>(2);
     const GlobalObjectKey three = _MyGlobalObjectKey(3);
@@ -54,7 +53,7 @@ void main() {
     expect(four.toString(), equals('[_MyGlobalObjectKey<TestState> ${describeIdentity(4)}]'));
   });
 
-  testWidgetsWithLeakTracking('GlobalObjectKey control test', (WidgetTester tester) async {
+  testWidgets('GlobalObjectKey control test', (WidgetTester tester) async {
     final Object a = Object();
     final Object b = Object();
     final Key keyA = GlobalObjectKey(a);
@@ -67,7 +66,7 @@ void main() {
     expect(keyA, isNot(equals(keyB)));
   });
 
-  testWidgetsWithLeakTracking('GlobalKey correct case 1 - can move global key from container widget to layoutbuilder', (WidgetTester tester) async {
+  testWidgets('GlobalKey correct case 1 - can move global key from container widget to layoutbuilder', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'correct');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -102,7 +101,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('GlobalKey correct case 2 - can move global key from layoutbuilder to container widget', (WidgetTester tester) async {
+  testWidgets('GlobalKey correct case 2 - can move global key from layoutbuilder to container widget', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'correct');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -136,7 +135,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('GlobalKey correct case 3 - can deal with early rebuild in layoutbuilder - move backward', (WidgetTester tester) async {
+  testWidgets('GlobalKey correct case 3 - can deal with early rebuild in layoutbuilder - move backward', (WidgetTester tester) async {
     const Key key1 = GlobalObjectKey('Text1');
     const Key key2 = GlobalObjectKey('Text2');
     Key? rebuiltKeyOfSecondChildBeforeLayout;
@@ -225,7 +224,7 @@ void main() {
     expect(rebuiltKeyOfSecondChildAfterLayout, key1);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey correct case 4 - can deal with early rebuild in layoutbuilder - move forward', (WidgetTester tester) async {
+  testWidgets('GlobalKey correct case 4 - can deal with early rebuild in layoutbuilder - move forward', (WidgetTester tester) async {
     const Key key1 = GlobalObjectKey('Text1');
     const Key key2 = GlobalObjectKey('Text2');
     const Key key3 = GlobalObjectKey('Text3');
@@ -328,7 +327,7 @@ void main() {
     expect(rebuiltKeyOfThirdChildAfterLayout, key2);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey correct case 5 - can deal with early rebuild in layoutbuilder - only one global key', (WidgetTester tester) async {
+  testWidgets('GlobalKey correct case 5 - can deal with early rebuild in layoutbuilder - only one global key', (WidgetTester tester) async {
     const Key key1 = GlobalObjectKey('Text1');
     Key? rebuiltKeyOfSecondChildBeforeLayout;
     Key? rebuiltKeyOfThirdChildAfterLayout;
@@ -419,7 +418,7 @@ void main() {
     expect(rebuiltKeyOfThirdChildAfterLayout, key1);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 1 - double appearance', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 1 - double appearance', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -448,7 +447,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 2 - splitting and changing type', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 2 - splitting and changing type', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
 
     await tester.pumpWidget(Stack(
@@ -494,7 +493,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 3 - splitting and changing type', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 3 - splitting and changing type', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -521,7 +520,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 4 - splitting and half changing type', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 4 - splitting and half changing type', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -548,7 +547,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 5 - splitting and half changing type', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 5 - splitting and half changing type', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -566,7 +565,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 6 - splitting and not changing type', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 6 - splitting and not changing type', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -584,7 +583,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 7 - appearing later', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 7 - appearing later', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -603,7 +602,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 8 - appearing earlier', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 8 - appearing earlier', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -622,7 +621,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 9 - moving and appearing later', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 9 - moving and appearing later', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -643,7 +642,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 10 - moving and appearing earlier', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 10 - moving and appearing earlier', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -664,7 +663,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 11 - double sibling appearance', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 11 - double sibling appearance', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -676,7 +675,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 12 - all kinds of badness at once', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 12 - all kinds of badness at once', (WidgetTester tester) async {
     final Key key1 = GlobalKey(debugLabel: 'problematic');
     final Key key2 = GlobalKey(debugLabel: 'problematic'); // intentionally the same label
     final Key key3 = GlobalKey(debugLabel: 'also problematic');
@@ -724,7 +723,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 13 - all kinds of badness at once', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 13 - all kinds of badness at once', (WidgetTester tester) async {
     final Key key1 = GlobalKey(debugLabel: 'problematic');
     final Key key2 = GlobalKey(debugLabel: 'problematic'); // intentionally the same label
     final Key key3 = GlobalKey(debugLabel: 'also problematic');
@@ -771,7 +770,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 14 - moving during build - before', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 14 - moving during build - before', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -790,7 +789,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 15 - duplicating during build - before', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 15 - duplicating during build - before', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -811,7 +810,7 @@ void main() {
     expect(tester.takeException(), isFlutterError);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 16 - moving during build - after', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 16 - moving during build - after', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -830,7 +829,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 17 - duplicating during build - after', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 17 - duplicating during build - after', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     await tester.pumpWidget(Stack(
       textDirection: TextDirection.ltr,
@@ -858,7 +857,7 @@ void main() {
     expect(count, 1);
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 18 - subtree build duplicate key with same type', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 18 - subtree build duplicate key with same type', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     final Stack stack = Stack(
       textDirection: TextDirection.ltr,
@@ -895,7 +894,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 19 - subtree build duplicate key with different types', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 19 - subtree build duplicate key with different types', (WidgetTester tester) async {
     final Key key = GlobalKey(debugLabel: 'problematic');
     final Stack stack = Stack(
       textDirection: TextDirection.ltr,
@@ -923,7 +922,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey duplication 20 - real duplication with early rebuild in layoutbuilder will throw', (WidgetTester tester) async {
+  testWidgets('GlobalKey duplication 20 - real duplication with early rebuild in layoutbuilder will throw', (WidgetTester tester) async {
     const Key key1 = GlobalObjectKey('Text1');
     const Key key2 = GlobalObjectKey('Text2');
     Key? rebuiltKeyOfSecondChildBeforeLayout;
@@ -1024,17 +1023,14 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('GlobalKey - detach and re-attach child to different parents', (WidgetTester tester) async {
-    final ScrollController scrollController = ScrollController();
-    addTearDown(scrollController.dispose);
-
+  testWidgets('GlobalKey - detach and re-attach child to different parents', (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
       textDirection: TextDirection.ltr,
       child: Center(
         child: SizedBox(
           height: 100,
           child: CustomScrollView(
-            controller: scrollController,
+            controller: ScrollController(),
             slivers: <Widget>[
               SliverList(
                 delegate: SliverChildListDelegate(<Widget>[
@@ -1108,7 +1104,7 @@ void main() {
     expect(tabController.index, 0);
   });
 
-  testWidgetsWithLeakTracking('Defunct setState throws exception', (WidgetTester tester) async {
+  testWidgets('Defunct setState throws exception', (WidgetTester tester) async {
     late StateSetter setState;
 
     await tester.pumpWidget(StatefulBuilder(
@@ -1126,12 +1122,12 @@ void main() {
     expect(() { setState(() { }); }, throwsFlutterError);
   });
 
-  testWidgetsWithLeakTracking('State toString', (WidgetTester tester) async {
+  testWidgets('State toString', (WidgetTester tester) async {
     final TestState state = TestState();
     expect(state.toString(), contains('no widget'));
   });
 
-  testWidgetsWithLeakTracking('debugPrintGlobalKeyedWidgetLifecycle control test', (WidgetTester tester) async {
+  testWidgets('debugPrintGlobalKeyedWidgetLifecycle control test', (WidgetTester tester) async {
     expect(debugPrintGlobalKeyedWidgetLifecycle, isFalse);
 
     final DebugPrintCallback oldCallback = debugPrint;
@@ -1154,7 +1150,7 @@ void main() {
     expect(log[1], matches('Discarding .+ from inactive elements list.'));
   });
 
-  testWidgetsWithLeakTracking('MultiChildRenderObjectElement.children', (WidgetTester tester) async {
+  testWidgets('MultiChildRenderObjectElement.children', (WidgetTester tester) async {
     GlobalKey key0, key1, key2;
     await tester.pumpWidget(Column(
       key: key0 = GlobalKey(),
@@ -1173,7 +1169,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Can not attach a non-RenderObjectElement to the MultiChildRenderObjectElement - mount', (WidgetTester tester) async {
+  testWidgets('Can not attach a non-RenderObjectElement to the MultiChildRenderObjectElement - mount', (WidgetTester tester) async {
     await tester.pumpWidget(
       Column(
         children: <Widget>[
@@ -1198,7 +1194,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Can not attach a non-RenderObjectElement to the MultiChildRenderObjectElement - update', (WidgetTester tester) async {
+  testWidgets('Can not attach a non-RenderObjectElement to the MultiChildRenderObjectElement - update', (WidgetTester tester) async {
     await tester.pumpWidget(
       Column(
         children: <Widget>[
@@ -1231,7 +1227,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Element diagnostics', (WidgetTester tester) async {
+  testWidgets('Element diagnostics', (WidgetTester tester) async {
     GlobalKey key0;
     await tester.pumpWidget(Column(
       key: key0 = GlobalKey(),
@@ -1323,7 +1319,7 @@ void main() {
     }
   });
 
-  testWidgetsWithLeakTracking('didUpdateDependencies is not called on a State that never rebuilds', (WidgetTester tester) async {
+  testWidgets('didUpdateDependencies is not called on a State that never rebuilds', (WidgetTester tester) async {
     final GlobalKey<DependentState> key = GlobalKey<DependentState>();
 
     /// Initial build - should call didChangeDependencies, not deactivate
@@ -1352,7 +1348,7 @@ void main() {
     expect(state.deactivatedCount, 2);
   });
 
-  testWidgetsWithLeakTracking('StatefulElement subclass can decorate State.build', (WidgetTester tester) async {
+  testWidgets('StatefulElement subclass can decorate State.build', (WidgetTester tester) async {
     late bool isDidChangeDependenciesDecorated;
     late bool isBuildDecorated;
 
@@ -1376,7 +1372,7 @@ void main() {
     expect(isDidChangeDependenciesDecorated, isFalse);
   });
   group('BuildContext.debugDoingbuild', () {
-    testWidgetsWithLeakTracking('StatelessWidget', (WidgetTester tester) async {
+    testWidgets('StatelessWidget', (WidgetTester tester) async {
       late bool debugDoingBuildOnBuild;
       await tester.pumpWidget(
         StatelessWidgetSpy(
@@ -1391,7 +1387,7 @@ void main() {
       expect(context.debugDoingBuild, isFalse);
       expect(debugDoingBuildOnBuild, isTrue);
     });
-    testWidgetsWithLeakTracking('StatefulWidget', (WidgetTester tester) async {
+    testWidgets('StatefulWidget', (WidgetTester tester) async {
       late bool debugDoingBuildOnBuild;
       late bool debugDoingBuildOnInitState;
       late bool debugDoingBuildOnDidChangeDependencies;
@@ -1460,12 +1456,11 @@ void main() {
       expect(debugDoingBuildOnDispose, isFalse);
       expect(debugDoingBuildOnDeactivate, isFalse);
     });
-    testWidgetsWithLeakTracking('RenderObjectWidget', (WidgetTester tester) async {
+    testWidgets('RenderObjectWidget', (WidgetTester tester) async {
       late bool debugDoingBuildOnCreateRenderObject;
       bool? debugDoingBuildOnUpdateRenderObject;
       bool? debugDoingBuildOnDidUnmountRenderObject;
       final ValueNotifier<int> notifier = ValueNotifier<int>(0);
-      addTearDown(notifier.dispose);
 
       late BuildContext spyContext;
 
@@ -1521,7 +1516,7 @@ void main() {
     });
   });
 
-  testWidgetsWithLeakTracking('A widget whose element has an invalid visitChildren implementation triggers a useful error message', (WidgetTester tester) async {
+  testWidgets('A widget whose element has an invalid visitChildren implementation triggers a useful error message', (WidgetTester tester) async {
     final GlobalKey key = GlobalKey();
     await tester.pumpWidget(_WidgetWithNoVisitChildren(_StatefulLeaf(key: key)));
     (key.currentState! as _StatefulLeafState).markNeedsBuild();
@@ -1547,13 +1542,11 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Can create BuildOwner that does not interfere with pointer router or raw key event handler', (WidgetTester tester) async {
+  testWidgets('Can create BuildOwner that does not interfere with pointer router or raw key event handler', (WidgetTester tester) async {
     final int pointerRouterCount = GestureBinding.instance.pointerRouter.debugGlobalRouteCount;
     final RawKeyEventHandler? rawKeyEventHandler = RawKeyboard.instance.keyEventHandler;
     expect(rawKeyEventHandler, isNotNull);
-    final FocusManager focusManager = FocusManager();
-    addTearDown(focusManager.dispose);
-    BuildOwner(focusManager: focusManager);
+    BuildOwner(focusManager: FocusManager());
     expect(GestureBinding.instance.pointerRouter.debugGlobalRouteCount, pointerRouterCount);
     expect(RawKeyboard.instance.keyEventHandler, same(rawKeyEventHandler));
   });
@@ -1608,7 +1601,7 @@ void main() {
     expect(dependenciesProperty.toDescription(), '[ButtonBarTheme, Directionality, FocusTraversalOrder]');
   });
 
-  testWidgetsWithLeakTracking('BuildOwner.globalKeyCount keeps track of in-use global keys', (WidgetTester tester) async {
+  testWidgets('BuildOwner.globalKeyCount keeps track of in-use global keys', (WidgetTester tester) async {
     final int initialCount = tester.binding.buildOwner!.globalKeyCount;
     final GlobalKey key1 = GlobalKey();
     final GlobalKey key2 = GlobalKey();
@@ -1622,7 +1615,7 @@ void main() {
     expect(tester.binding.buildOwner!.globalKeyCount, initialCount + 0);
   });
 
-  testWidgetsWithLeakTracking('Widget and State properties are nulled out when unmounted', (WidgetTester tester) async {
+  testWidgets('Widget and State properties are nulled out when unmounted', (WidgetTester tester) async {
     await tester.pumpWidget(const _StatefulLeaf());
     final StatefulElement element = tester.element<StatefulElement>(find.byType(_StatefulLeaf));
     expect(element.state, isA<State<_StatefulLeaf>>());
@@ -1638,7 +1631,7 @@ void main() {
     expect(() => element.widget, throwsA(isA<TypeError>()));
   });
 
-  testWidgetsWithLeakTracking('LayerLink can be swapped between parent and child container layers', (WidgetTester tester) async {
+  testWidgets('LayerLink can be swapped between parent and child container layers', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/96959.
     final LayerLink link = LayerLink();
     await tester.pumpWidget(_TestLeaderLayerWidget(
@@ -1660,7 +1653,7 @@ void main() {
 
   });
 
-  testWidgetsWithLeakTracking('Deactivate and activate are called correctly', (WidgetTester tester) async {
+  testWidgets('Deactivate and activate are called correctly', (WidgetTester tester) async {
     final List<String> states = <String>[];
     Widget build([Key? key]) {
       return StatefulWidgetSpy(
@@ -1694,7 +1687,7 @@ void main() {
     expect(states, <String>['deactivate', 'dispose']);
   });
 
-  testWidgetsWithLeakTracking('RenderObjectElement.unmount disposes of its renderObject', (WidgetTester tester) async {
+  testWidgets('RenderObjectElement.unmount disposes of its renderObject', (WidgetTester tester) async {
     await tester.pumpWidget(const Placeholder());
     final RenderObjectElement element = tester.allElements.whereType<RenderObjectElement>().last;
     final RenderObject renderObject = element.renderObject;
@@ -1706,7 +1699,7 @@ void main() {
     expect(renderObject.debugDisposed, true);
   });
 
-  testWidgetsWithLeakTracking('Getting the render object of an unmounted element throws', (WidgetTester tester) async {
+  testWidgets('Getting the render object of an unmounted element throws', (WidgetTester tester) async {
     await tester.pumpWidget(const _StatefulLeaf());
     final StatefulElement element = tester.element<StatefulElement>(find.byType(_StatefulLeaf));
     expect(element.state, isA<State<_StatefulLeaf>>());
@@ -1761,7 +1754,7 @@ The findRenderObject() method was called for the following element:
     expect(child.doesDependOnInheritedElement(ancestor), isTrue);
   });
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
       'MultiChildRenderObjectElement.updateChildren test',
       (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/120762.

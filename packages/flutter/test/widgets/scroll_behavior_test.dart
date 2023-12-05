@@ -9,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 late GestureVelocityTrackerBuilder lastCreatedBuilder;
 class TestScrollBehavior extends ScrollBehavior {
@@ -37,7 +36,7 @@ class TestScrollBehavior extends ScrollBehavior {
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Assert in buildScrollbar that controller != null when using it', (WidgetTester tester) async {
+  testWidgets('Assert in buildScrollbar that controller != null when using it', (WidgetTester tester) async {
     const ScrollBehavior defaultBehavior = ScrollBehavior();
     late BuildContext capturedContext;
 
@@ -80,14 +79,14 @@ void main() {
   }, variant: TargetPlatformVariant.all());
 
   // Regression test for https://github.com/flutter/flutter/issues/89681
-  testWidgetsWithLeakTracking('_WrappedScrollBehavior shouldNotify test', (WidgetTester tester) async {
+  testWidgets('_WrappedScrollBehavior shouldNotify test', (WidgetTester tester) async {
     final ScrollBehavior behavior1 = const ScrollBehavior().copyWith();
     final ScrollBehavior behavior2 = const ScrollBehavior().copyWith();
 
     expect(behavior1.shouldNotify(behavior2), false);
   });
 
-  testWidgetsWithLeakTracking('Inherited ScrollConfiguration changed', (WidgetTester tester) async {
+  testWidgets('Inherited ScrollConfiguration changed', (WidgetTester tester) async {
     final GlobalKey key = GlobalKey(debugLabel: 'scrollable');
     TestScrollBehavior? behavior;
     late ScrollPositionWithSingleContext position;
@@ -136,7 +135,7 @@ void main() {
     expect(metrics.viewportDimension, equals(600.0));
   });
 
-  testWidgetsWithLeakTracking('ScrollBehavior default android overscroll indicator', (WidgetTester tester) async {
+  testWidgets('ScrollBehavior default android overscroll indicator', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -159,8 +158,34 @@ void main() {
     expect(find.byType(GlowingOverscrollIndicator), findsOneWidget);
   }, variant: TargetPlatformVariant.only(TargetPlatform.android));
 
+  testWidgets('ScrollBehavior stretch android overscroll indicator', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: MediaQuery(
+          data: const MediaQueryData(size: Size(800, 600)),
+          child: ScrollConfiguration(
+            behavior: const ScrollBehavior(androidOverscrollIndicator: AndroidOverscrollIndicator.stretch),
+            child: ListView(
+              children: const <Widget>[
+                SizedBox(
+                  height: 1000.0,
+                  width: 1000.0,
+                  child: Text('Test'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(StretchingOverscrollIndicator), findsOneWidget);
+    expect(find.byType(GlowingOverscrollIndicator), findsNothing);
+  }, variant: TargetPlatformVariant.only(TargetPlatform.android));
+
   group('ScrollBehavior configuration is maintained over multiple copies', () {
-    testWidgetsWithLeakTracking('dragDevices', (WidgetTester tester) async {
+    testWidgets('dragDevices', (WidgetTester tester) async {
       // Regression test for https://github.com/flutter/flutter/issues/91673
       const ScrollBehavior defaultBehavior = ScrollBehavior();
       expect(defaultBehavior.dragDevices, <PointerDeviceKind>{
@@ -182,7 +207,23 @@ void main() {
       expect(twiceCopiedBehavior.dragDevices, PointerDeviceKind.values.toSet());
     });
 
-    testWidgetsWithLeakTracking('physics', (WidgetTester tester) async {
+    testWidgets('androidOverscrollIndicator', (WidgetTester tester) async {
+      // Regression test for https://github.com/flutter/flutter/issues/91673
+      const ScrollBehavior defaultBehavior = ScrollBehavior();
+      expect(defaultBehavior.androidOverscrollIndicator, AndroidOverscrollIndicator.glow);
+
+      // Use copyWith to modify androidOverscrollIndicator
+      final ScrollBehavior onceCopiedBehavior = defaultBehavior.copyWith(
+        androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
+      );
+      expect(onceCopiedBehavior.androidOverscrollIndicator, AndroidOverscrollIndicator.stretch);
+
+      // Copy again. The previously modified value should carry over.
+      final ScrollBehavior twiceCopiedBehavior = onceCopiedBehavior.copyWith();
+      expect(twiceCopiedBehavior.androidOverscrollIndicator, AndroidOverscrollIndicator.stretch);
+    });
+
+    testWidgets('physics', (WidgetTester tester) async {
       // Regression test for https://github.com/flutter/flutter/issues/91673
       late ScrollPhysics defaultPhysics;
       late ScrollPhysics onceCopiedPhysics;
@@ -224,7 +265,7 @@ void main() {
       expect(twiceCopiedPhysics, const BouncingScrollPhysics());
     });
 
-    testWidgetsWithLeakTracking('platform', (WidgetTester tester) async {
+    testWidgets('platform', (WidgetTester tester) async {
       // Regression test for https://github.com/flutter/flutter/issues/91673
       late TargetPlatform defaultPlatform;
       late TargetPlatform onceCopiedPlatform;
@@ -281,7 +322,7 @@ void main() {
       );
     }
 
-    testWidgetsWithLeakTracking('scrollbar', (WidgetTester tester) async {
+    testWidgets('scrollbar', (WidgetTester tester) async {
       // Regression test for https://github.com/flutter/flutter/issues/91673
       const  ScrollBehavior defaultBehavior = ScrollBehavior();
       await tester.pumpWidget(wrap(defaultBehavior));
@@ -301,7 +342,7 @@ void main() {
       // For default scrollbars
     }, variant: TargetPlatformVariant.desktop());
 
-    testWidgetsWithLeakTracking('overscroll', (WidgetTester tester) async {
+    testWidgets('overscroll', (WidgetTester tester) async {
       // Regression test for https://github.com/flutter/flutter/issues/91673
       const  ScrollBehavior defaultBehavior = ScrollBehavior();
       await tester.pumpWidget(wrap(defaultBehavior));

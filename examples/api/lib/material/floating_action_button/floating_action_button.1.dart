@@ -14,14 +14,14 @@ class FloatingActionButtonExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const FloatingActionButtonExample(),
+      theme: ThemeData(colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
+      home: const FabExample(),
     );
   }
 }
 
-class FloatingActionButtonExample extends StatelessWidget {
-  const FloatingActionButtonExample({super.key});
+class FabExample extends StatelessWidget {
+  const FabExample({super.key});
 
   @override
   Widget build(BuildContext context) {

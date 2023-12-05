@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../services.dart';
 import 'material_state.dart';
 import 'theme.dart';
 
@@ -48,7 +47,6 @@ class SearchBarThemeData with Diagnosticable {
     this.textStyle,
     this.hintStyle,
     this.constraints,
-    this.textCapitalization,
   });
 
   /// Overrides the default value of the [SearchBar.elevation].
@@ -84,9 +82,6 @@ class SearchBarThemeData with Diagnosticable {
   /// Overrides the value of size constraints for [SearchBar].
   final BoxConstraints? constraints;
 
-  /// Overrides the value of [SearchBar.textCapitalization].
-  final TextCapitalization? textCapitalization;
-
   /// Creates a copy of this object but with the given fields replaced with the
   /// new values.
   SearchBarThemeData copyWith({
@@ -101,7 +96,6 @@ class SearchBarThemeData with Diagnosticable {
     MaterialStateProperty<TextStyle?>? textStyle,
     MaterialStateProperty<TextStyle?>? hintStyle,
     BoxConstraints? constraints,
-    TextCapitalization? textCapitalization,
   }) {
     return SearchBarThemeData(
       elevation: elevation ?? this.elevation,
@@ -115,7 +109,6 @@ class SearchBarThemeData with Diagnosticable {
       textStyle: textStyle ?? this.textStyle,
       hintStyle: hintStyle ?? this.hintStyle,
       constraints: constraints ?? this.constraints,
-      textCapitalization: textCapitalization ?? this.textCapitalization,
     );
   }
 
@@ -138,7 +131,6 @@ class SearchBarThemeData with Diagnosticable {
       textStyle: MaterialStateProperty.lerp<TextStyle?>(a?.textStyle, b?.textStyle, t, TextStyle.lerp),
       hintStyle: MaterialStateProperty.lerp<TextStyle?>(a?.hintStyle, b?.hintStyle, t, TextStyle.lerp),
       constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t),
-      textCapitalization: t < 0.5 ? a?.textCapitalization : b?.textCapitalization,
     );
   }
 
@@ -155,7 +147,6 @@ class SearchBarThemeData with Diagnosticable {
     textStyle,
     hintStyle,
     constraints,
-    textCapitalization,
   );
 
   @override
@@ -177,8 +168,7 @@ class SearchBarThemeData with Diagnosticable {
       && other.padding == padding
       && other.textStyle == textStyle
       && other.hintStyle == hintStyle
-      && other.constraints == constraints
-      && other.textCapitalization == textCapitalization;
+      && other.constraints == constraints;
   }
 
   @override
@@ -195,7 +185,6 @@ class SearchBarThemeData with Diagnosticable {
     properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('textStyle', textStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<MaterialStateProperty<TextStyle?>>('hintStyle', hintStyle, defaultValue: null));
     properties.add(DiagnosticsProperty<BoxConstraints>('constraints', constraints, defaultValue: null));
-    properties.add(DiagnosticsProperty<TextCapitalization>('textCapitalization', textCapitalization, defaultValue: null));
   }
 
   // Special case because BorderSide.lerp() doesn't support null arguments

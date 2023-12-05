@@ -5,6 +5,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../rendering/mock_canvas.dart';
+
 void main() {
   testWidgets('overflow indicator is not shown when not overflowing', (WidgetTester tester) async {
     await tester.pumpWidget(

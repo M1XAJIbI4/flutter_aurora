@@ -5,12 +5,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
+import '../rendering/mock_canvas.dart';
 import 'test_widgets.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('ListView mount/dismount smoke test', (WidgetTester tester) async {
+  testWidgets('ListView mount/dismount smoke test', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // the root view is 800x600 in the test environment
@@ -60,7 +60,7 @@ void main() {
     ]));
   });
 
-  testWidgetsWithLeakTracking('ListView vertical', (WidgetTester tester) async {
+  testWidgets('ListView vertical', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // the root view is 800x600 in the test environment
@@ -78,14 +78,11 @@ void main() {
     }
 
     Widget builder() {
-      final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-      addTearDown(controller.dispose);
-
       return Directionality(
         textDirection: TextDirection.ltr,
         child: FlipWidget(
           left: ListView.builder(
-            controller: controller,
+            controller: ScrollController(initialScrollOffset: 300.0),
             itemBuilder: itemBuilder,
           ),
           right: const Text('Not Today'),
@@ -126,7 +123,7 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView horizontal', (WidgetTester tester) async {
+  testWidgets('ListView horizontal', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
 
     // the root view is 800x600 in the test environment
@@ -144,15 +141,12 @@ void main() {
     }
 
     Widget builder() {
-      final ScrollController controller = ScrollController(initialScrollOffset: 500.0);
-      addTearDown(controller.dispose);
-
       return Directionality(
         textDirection: TextDirection.ltr,
         child: FlipWidget(
           left: ListView.builder(
             scrollDirection: Axis.horizontal,
-            controller: controller,
+            controller: ScrollController(initialScrollOffset: 500.0),
             itemBuilder: itemBuilder,
           ),
           right: const Text('Not Today'),
@@ -183,7 +177,7 @@ void main() {
     callbackTracker.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView reinvoke builders', (WidgetTester tester) async {
+  testWidgets('ListView reinvoke builders', (WidgetTester tester) async {
     final List<int> callbackTracker = <int>[];
     final List<String?> text = <String?>[];
 
@@ -235,7 +229,7 @@ void main() {
     text.clear();
   });
 
-  testWidgetsWithLeakTracking('ListView reinvoke builders', (WidgetTester tester) async {
+  testWidgets('ListView reinvoke builders', (WidgetTester tester) async {
     late StateSetter setState;
     ThemeData themeData = ThemeData.light(useMaterial3: false);
 
@@ -278,7 +272,7 @@ void main() {
     expect(widget.color, equals(Colors.green));
   });
 
-  testWidgetsWithLeakTracking('ListView padding', (WidgetTester tester) async {
+  testWidgets('ListView padding', (WidgetTester tester) async {
     Widget itemBuilder(BuildContext context, int index) {
       return Container(
         key: ValueKey<int>(index),
@@ -305,7 +299,7 @@ void main() {
     expect(firstBox.size.width, equals(800.0 - 12.0));
   });
 
-  testWidgetsWithLeakTracking('ListView underflow extents', (WidgetTester tester) async {
+  testWidgets('ListView underflow extents', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -440,11 +434,8 @@ void main() {
     expect(position.minScrollExtent, equals(0.0));
   });
 
-  testWidgetsWithLeakTracking('ListView should not paint hidden children', (WidgetTester tester) async {
+  testWidgets('ListView should not paint hidden children', (WidgetTester tester) async {
     const Text text = Text('test');
-    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-    addTearDown(controller.dispose);
-
     await tester.pumpWidget(
         Directionality(
             textDirection: TextDirection.ltr,
@@ -453,7 +444,7 @@ void main() {
                   height: 200.0,
                   child: ListView(
                     cacheExtent: 500.0,
-                    controller: controller,
+                    controller: ScrollController(initialScrollOffset: 300.0),
                     children: const <Widget>[
                       SizedBox(height: 140.0, child: text),
                       SizedBox(height: 160.0, child: text),
@@ -472,17 +463,14 @@ void main() {
     expect(list, paintsExactlyCountTimes(#drawParagraph, 2));
   });
 
-  testWidgetsWithLeakTracking('ListView should paint with offset', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController(initialScrollOffset: 120.0);
-    addTearDown(controller.dispose);
-
+  testWidgets('ListView should paint with offset', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: SizedBox(
             height: 500.0,
             child: CustomScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 120.0),
               slivers: <Widget>[
                 const SliverAppBar(
                   expandedHeight: 250.0,
@@ -506,14 +494,9 @@ void main() {
 
     final RenderObject renderObject = tester.renderObject(find.byType(Scrollable));
     expect(renderObject, paintsExactlyCountTimes(#drawParagraph, 10));
-  },
-  leakTrackingTestConfig: const LeakTrackingTestConfig(
-    // TODO(ksokolovskyi): remove after fixing
-    // https://github.com/flutter/flutter/issues/134661
-    notDisposedAllowList: <String, int?> {'AnnotatedRegionLayer<SystemUiOverlayStyle>': 1},
-  ));
+  });
 
-  testWidgetsWithLeakTracking('ListView should paint with rtl', (WidgetTester tester) async {
+  testWidgets('ListView should paint with rtl', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.rtl,

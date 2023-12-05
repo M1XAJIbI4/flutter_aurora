@@ -43,7 +43,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: 'ios_debug', localHostEngine: 'host_debug'),
+      await localEngineLocator.findEnginePath(localEngine: 'ios_debug'),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug',
         targetEngine: '/arbitrary/engine/src/out/ios_debug',
@@ -58,7 +58,7 @@ void main() {
       .writeAsStringSync('sky_engine:file:///symlink/src/out/ios_debug/gen/dart-pkg/sky_engine/lib/');
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: 'ios_debug', localHostEngine: 'host_debug'),
+      await localEngineLocator.findEnginePath(localEngine: 'ios_debug'),
       matchesEngineBuildPaths(
         hostEngine: '/symlink/src/out/host_debug',
         targetEngine: '/symlink/src/out/ios_debug',
@@ -84,61 +84,13 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(engineSourcePath: '$kArbitraryEngineRoot/src', localEngine: 'ios_debug', localHostEngine: 'host_debug'),
+      await localEngineLocator.findEnginePath(engineSourcePath: '$kArbitraryEngineRoot/src', localEngine: 'ios_debug'),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug',
         targetEngine: '/arbitrary/engine/src/out/ios_debug',
       ),
     );
     expect(logger.traceText, contains('Local engine source at /arbitrary/engine/src'));
-  });
-
-  testWithoutContext('works if --local-engine is specified and --local-engine-host is specified', () async {
-    final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/android_debug_unopt_arm64/')
-        ..createSync(recursive: true);
-    fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug_unopt_arm64/').createSync(recursive: true);
-
-    final BufferLogger logger = BufferLogger.test();
-    final LocalEngineLocator localEngineLocator = LocalEngineLocator(
-      fileSystem: fileSystem,
-      flutterRoot: 'flutter/flutter',
-      logger: logger,
-      userMessages: UserMessages(),
-      platform: FakePlatform(environment: <String, String>{}),
-    );
-
-    expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: 'host_debug_unopt_arm64'),
-      matchesEngineBuildPaths(
-        hostEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
-        targetEngine: '/arbitrary/engine/src/out/android_debug_unopt_arm64',
-      ),
-    );
-    expect(logger.traceText, contains('Local engine source at /arbitrary/engine/src'));
-  });
-
-  testWithoutContext('fails if --local-engine-host is omitted', () async {
-    final FileSystem fileSystem = MemoryFileSystem.test();
-    final Directory localEngine = fileSystem
-        .directory('$kArbitraryEngineRoot/src/out/android_debug_unopt_arm64/')
-        ..createSync(recursive: true);
-    fileSystem.directory('$kArbitraryEngineRoot/src/out/host_debug_unopt/').createSync(recursive: true);
-
-    final BufferLogger logger = BufferLogger.test();
-    final LocalEngineLocator localEngineLocator = LocalEngineLocator(
-      fileSystem: fileSystem,
-      flutterRoot: 'flutter/flutter',
-      logger: logger,
-      userMessages: UserMessages(),
-      platform: FakePlatform(environment: <String, String>{}),
-    );
-
-    await expectLater(
-      localEngineLocator.findEnginePath(localEngine: localEngine.path),
-      throwsToolExit(message: 'You are using a locally built engine (--local-engine) but have not specified --local-engine-host'),
-    );
   });
 
   testWithoutContext('works if --local-engine is specified and --local-engine-src-path '
@@ -159,7 +111,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: 'host_debug'),
+      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug',
         targetEngine: '/arbitrary/engine/src/out/ios_debug',
@@ -185,7 +137,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: localEngine.path),
+      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug',
         targetEngine: '/arbitrary/engine/src/out/host_debug',
@@ -210,7 +162,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: localEngine.path),
+      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
         targetEngine: '/arbitrary/engine/src/out/host_debug_unopt_arm64',
@@ -237,7 +189,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: 'host_debug'),
+      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug',
         targetEngine: '/arbitrary/engine/src/out/ios_debug_sim',
@@ -265,7 +217,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: 'host_debug_unopt'),
+      await localEngineLocator.findEnginePath(localEngine: localEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/host_debug_unopt',
         targetEngine: '/arbitrary/engine/src/out/ios_debug_sim_unopt',
@@ -288,7 +240,7 @@ void main() {
     );
 
     await expectToolExitLater(
-      localEngineLocator.findEnginePath(localEngine: localEngine.path, localHostEngine: 'host_debug'),
+      localEngineLocator.findEnginePath(localEngine: localEngine.path),
       contains('No Flutter engine build found at /arbitrary/engine/src/out/host_debug'),
     );
   });
@@ -317,7 +269,7 @@ void main() {
     );
 
     expect(
-      await localEngineLocator.findEnginePath(localEngine: 'ios_debug', localHostEngine: 'host_debug'),
+      await localEngineLocator.findEnginePath(localEngine: 'ios_debug'),
       matchesEngineBuildPaths(
         hostEngine: 'flutter/engine/src/out/host_debug',
         targetEngine: 'flutter/engine/src/out/ios_debug',
@@ -339,7 +291,7 @@ void main() {
     );
 
     await expectToolExitLater(
-      localEngineLocator.findEnginePath(localEngine: '/path/to/nothing', localHostEngine: '/path/to/nothing'),
+      localEngineLocator.findEnginePath(localEngine: '/path/to/nothing'),
       contains('Unable to detect local Flutter engine src directory'),
     );
   });
@@ -363,7 +315,7 @@ void main() {
     );
 
     expect(
-      await localWasmEngineLocator.findEnginePath(localEngine: localWasmEngine.path, localHostEngine: localWasmEngine.path),
+      await localWasmEngineLocator.findEnginePath(localEngine: localWasmEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/wasm_whatever',
         targetEngine: '/arbitrary/engine/src/out/wasm_whatever',
@@ -381,7 +333,7 @@ void main() {
     );
 
     expect(
-      await localWebEngineLocator.findEnginePath(localEngine: localWebEngine.path, localHostEngine: localWebEngine.path),
+      await localWebEngineLocator.findEnginePath(localEngine: localWebEngine.path),
       matchesEngineBuildPaths(
         hostEngine: '/arbitrary/engine/src/out/web_whatever',
         targetEngine: '/arbitrary/engine/src/out/web_whatever',

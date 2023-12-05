@@ -6,8 +6,6 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import '../base/process.dart';
-import '../globals.dart' as globals;
 import 'async_guard.dart';
 import 'io.dart';
 
@@ -20,8 +18,7 @@ abstract class Signals {
   @visibleForTesting
   factory Signals.test({
     List<ProcessSignal> exitSignals = defaultExitSignals,
-    ShutdownHooks? shutdownHooks,
-  }) => LocalSignals._(exitSignals, shutdownHooks: shutdownHooks);
+  }) => LocalSignals._(exitSignals);
 
   // The default list of signals that should cause the process to exit.
   static const List<ProcessSignal> defaultExitSignals = <ProcessSignal>[
@@ -53,17 +50,13 @@ abstract class Signals {
 /// We use a singleton instance of this class to ensure that all handlers for
 /// fatal signals run before this class calls exit().
 class LocalSignals implements Signals {
-  LocalSignals._(
-    this.exitSignals, {
-    ShutdownHooks? shutdownHooks,
-  }) : _shutdownHooks = shutdownHooks ?? globals.shutdownHooks;
+  LocalSignals._(this.exitSignals);
 
   static LocalSignals instance = LocalSignals._(
     Signals.defaultExitSignals,
   );
 
   final List<ProcessSignal> exitSignals;
-  final ShutdownHooks _shutdownHooks;
 
   // A table mapping (signal, token) -> signal handler.
   final Map<ProcessSignal, Map<Object, SignalHandler>> _handlersTable =
@@ -151,7 +144,7 @@ class LocalSignals implements Signals {
     // If this was a signal that should cause the process to go down, then
     // call exit();
     if (_shouldExitFor(s)) {
-      await exitWithHooks(0, shutdownHooks: _shutdownHooks);
+      exit(0);
     }
   }
 

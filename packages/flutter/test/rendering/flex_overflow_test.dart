@@ -5,6 +5,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'mock_canvas.dart';
+
 void main() {
   testWidgets('Flex overflow indicator', (WidgetTester tester) async {
     await tester.pumpWidget(

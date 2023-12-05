@@ -77,11 +77,11 @@ void main() {
         expect(
             testLogger.statusText,
             equals('''
-No authorized devices detected.
+No devices detected.
 
 Run "flutter emulators" to list and start any available device emulators.
 
-If you expected a device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+If you expected your device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the --device-timeout flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
 '''),
         );
       }, overrides: <Type, Generator>{
@@ -178,18 +178,16 @@ If you expected a device to be detected, please run "flutter doctor" to diagnose
           final DevicesCommand command = DevicesCommand();
           await createTestCommandRunner(command).run(<String>['devices']);
           expect(testLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
 
-Found 1 wirelessly connected device:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
-Cannot connect to device ABC
+1 wirelessly connected device:
 
-Run "flutter emulators" to list and start any available device emulators.
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
 
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
         }, overrides: <Type, Generator>{
           DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -202,15 +200,12 @@ If you expected another device to be detected, please run "flutter doctor" to di
             final DevicesCommand command = DevicesCommand();
             await createTestCommandRunner(command).run(<String>['devices', '--device-connection', 'attached']);
             expect(testLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
 
-Cannot connect to device ABC
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -222,14 +217,11 @@ If you expected another device to be detected, please run "flutter doctor" to di
             final DevicesCommand command = DevicesCommand();
             await createTestCommandRunner(command).run(<String>['devices', '--device-connection', 'wireless']);
             expect(testLogger.statusText, '''
-Found 1 wirelessly connected device:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+1 wirelessly connected device:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -252,15 +244,12 @@ If you expected another device to be detected, please run "flutter doctor" to di
           final DevicesCommand command = DevicesCommand();
           await createTestCommandRunner(command).run(<String>['devices']);
           expect(testLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
 
-Cannot connect to device ABC
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
         }, overrides: <Type, Generator>{
           DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -281,14 +270,11 @@ If you expected another device to be detected, please run "flutter doctor" to di
           final DevicesCommand command = DevicesCommand();
           await createTestCommandRunner(command).run(<String>['devices']);
           expect(testLogger.statusText, '''
-Found 1 wirelessly connected device:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+1 wirelessly connected device:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
         }, overrides: <Type, Generator>{
           DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -322,11 +308,11 @@ If you expected another device to be detected, please run "flutter doctor" to di
             equals('''
 No devices found yet. Checking for wireless devices...
 
-No authorized devices detected.
+No devices detected.
 
 Run "flutter emulators" to list and start any available device emulators.
 
-If you expected a device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+If you expected your device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the --device-timeout flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
 '''),
           );
         }, overrides: <Type, Generator>{
@@ -343,11 +329,11 @@ If you expected a device to be detected, please run "flutter doctor" to diagnose
             final DevicesCommand command = DevicesCommand();
             await createTestCommandRunner(command).run(<String>['devices', '--device-connection', 'attached']);
             expect(testLogger.statusText, '''
-No authorized devices detected.
+No devices detected.
 
 Run "flutter emulators" to list and start any available device emulators.
 
-If you expected a device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+If you expected your device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the --device-timeout flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => NoDevicesManager(),
@@ -361,11 +347,11 @@ If you expected a device to be detected, please run "flutter doctor" to diagnose
             expect(testLogger.statusText, '''
 Checking for wireless devices...
 
-No authorized devices detected.
+No devices detected.
 
 Run "flutter emulators" to list and start any available device emulators.
 
-If you expected a device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+If you expected your device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the --device-timeout flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => NoDevicesManager(),
@@ -463,21 +449,19 @@ If you expected a device to be detected, please run "flutter doctor" to diagnose
           final DevicesCommand command = DevicesCommand();
           await createTestCommandRunner(command).run(<String>['devices']);
           expect(testLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 Checking for wireless devices...
 
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+2 wirelessly connected devices:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
         }, overrides: <Type, Generator>{
           DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -493,9 +477,10 @@ If you expected another device to be detected, please run "flutter doctor" to di
             terminal = FakeTerminal(supportsColor: true);
             fakeLogger = FakeBufferLogger(terminal: terminal);
             fakeLogger.originalStatusText = '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 Checking for wireless devices...
 ''';
@@ -506,19 +491,17 @@ Checking for wireless devices...
             await createTestCommandRunner(command).run(<String>['devices']);
 
             expect(fakeLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
 
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
-Cannot connect to device ABC
+2 wirelessly connected devices:
 
-Run "flutter emulators" to list and start any available device emulators.
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () =>
@@ -542,25 +525,24 @@ If you expected another device to be detected, please run "flutter doctor" to di
             await createTestCommandRunner(command).run(<String>['devices']);
 
             expect(fakeLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 Checking for wireless devices...
 
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
 
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
-Cannot connect to device ABC
+2 wirelessly connected devices:
 
-Run "flutter emulators" to list and start any available device emulators.
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(
@@ -578,15 +560,12 @@ If you expected another device to be detected, please run "flutter doctor" to di
             expect(testLogger.statusText, '''
 Checking for wireless devices...
 
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+2 wirelessly connected devices:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -609,19 +588,16 @@ If you expected another device to be detected, please run "flutter doctor" to di
           final DevicesCommand command = DevicesCommand();
           await createTestCommandRunner(command).run(<String>['devices']);
           expect(testLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 Checking for wireless devices...
 
 No wireless devices were found.
 
-Cannot connect to device ABC
-
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
         }, overrides: <Type, Generator>{
           DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -637,9 +613,10 @@ If you expected another device to be detected, please run "flutter doctor" to di
             terminal = FakeTerminal(supportsColor: true);
             fakeLogger = FakeBufferLogger(terminal: terminal);
             fakeLogger.originalStatusText = '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 Checking for wireless devices...
 ''';
@@ -650,17 +627,14 @@ Checking for wireless devices...
             await createTestCommandRunner(command).run(<String>['devices']);
 
             expect(fakeLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 No wireless devices were found.
 
-Cannot connect to device ABC
-
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(
@@ -686,23 +660,21 @@ If you expected another device to be detected, please run "flutter doctor" to di
             await createTestCommandRunner(command).run(<String>['devices']);
 
             expect(fakeLogger.statusText, '''
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 Checking for wireless devices...
 
-Found 2 connected devices:
-  ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
-  webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
+2 connected devices:
+
+ephemeral (mobile) • ephemeral • android-arm    • Test SDK (1.2.3) (emulator)
+webby (mobile)     • webby     • web-javascript • Web SDK (1.2.4) (emulator)
 
 No wireless devices were found.
 
-Cannot connect to device ABC
-
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(
@@ -731,15 +703,12 @@ If you expected another device to be detected, please run "flutter doctor" to di
           expect(testLogger.statusText, '''
 No devices found yet. Checking for wireless devices...
 
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+2 wirelessly connected devices:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
         }, overrides: <Type, Generator>{
           DeviceManager: () => _FakeDeviceManager(devices: deviceList),
@@ -764,15 +733,12 @@ No devices found yet. Checking for wireless devices...
             await createTestCommandRunner(command).run(<String>['devices']);
 
             expect(fakeLogger.statusText, '''
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+2 wirelessly connected devices:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(
@@ -800,15 +766,12 @@ If you expected another device to be detected, please run "flutter doctor" to di
             expect(fakeLogger.statusText, '''
 No devices found yet. Checking for wireless devices...
 
-Found 2 wirelessly connected devices:
-  wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
-  wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
+2 wirelessly connected devices:
 
-Cannot connect to device ABC
+wireless android (mobile) • wireless-android • android-arm • Test SDK (1.2.3) (emulator)
+wireless ios (mobile)     • wireless-ios     • ios         • iOS 16 (simulator)
 
-Run "flutter emulators" to list and start any available device emulators.
-
-If you expected another device to be detected, please run "flutter doctor" to diagnose potential issues. You may also try increasing the time to wait for connected devices with the "--device-timeout" flag. Visit https://flutter.dev/setup/ for troubleshooting tips.
+• Cannot connect to device ABC
 ''');
           }, overrides: <Type, Generator>{
             DeviceManager: () => _FakeDeviceManager(
@@ -881,9 +844,6 @@ class FakeTerminal extends Fake implements AnsiTerminal {
 
   @override
   final bool supportsColor;
-
-  @override
-  bool get isCliAnimationEnabled => supportsColor;
 
   @override
   bool singleCharMode = false;

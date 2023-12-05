@@ -34,6 +34,8 @@ const EdgeInsets _kToolbarButtonPadding = EdgeInsets.symmetric(vertical: 18.0, h
 /// A button in the style of the iOS text selection toolbar buttons.
 class CupertinoTextSelectionToolbarButton extends StatefulWidget {
   /// Create an instance of [CupertinoTextSelectionToolbarButton].
+  ///
+  /// [child] cannot be null.
   const CupertinoTextSelectionToolbarButton({
     super.key,
     this.onPressed,
@@ -52,6 +54,8 @@ class CupertinoTextSelectionToolbarButton extends StatefulWidget {
 
   /// Create an instance of [CupertinoTextSelectionToolbarButton] from the given
   /// [ContextMenuButtonItem].
+  ///
+  /// [buttonItem] cannot be null.
   CupertinoTextSelectionToolbarButton.buttonItem({
     super.key,
     required ContextMenuButtonItem this.buttonItem,
@@ -101,12 +105,6 @@ class CupertinoTextSelectionToolbarButton extends StatefulWidget {
         return localizations.pasteButtonLabel;
       case ContextMenuButtonType.selectAll:
         return localizations.selectAllButtonLabel;
-      case ContextMenuButtonType.lookUp:
-        return localizations.lookUpButtonLabel;
-      case ContextMenuButtonType.searchWeb:
-        return localizations.searchWebButtonLabel;
-      case ContextMenuButtonType.share:
-        return localizations.shareButtonLabel;
       case ContextMenuButtonType.liveTextInput:
       case ContextMenuButtonType.delete:
       case ContextMenuButtonType.custom:
@@ -191,9 +189,6 @@ class _CupertinoTextSelectionToolbarButtonState extends State<CupertinoTextSelec
       case ContextMenuButtonType.paste:
       case ContextMenuButtonType.selectAll:
       case ContextMenuButtonType.delete:
-      case ContextMenuButtonType.lookUp:
-      case ContextMenuButtonType.searchWeb:
-      case ContextMenuButtonType.share:
       case ContextMenuButtonType.custom:
         return textWidget;
       case ContextMenuButtonType.liveTextInput:

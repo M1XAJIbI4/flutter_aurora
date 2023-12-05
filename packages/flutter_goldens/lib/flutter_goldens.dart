@@ -97,11 +97,11 @@ abstract class FlutterGoldenFileComparator extends GoldenFileComparator {
   });
 
   /// The directory to which golden file URIs will be resolved in [compare] and
-  /// [update].
+  /// [update], cannot be null.
   final Uri basedir;
 
   /// A client for uploading image tests and making baseline requests to the
-  /// Flutter Gold Dashboard.
+  /// Flutter Gold Dashboard, cannot be null.
   final SkiaGoldClient skiaClient;
 
   /// The file system used to perform file access.
@@ -378,6 +378,8 @@ class FlutterSkippingFileComparator extends FlutterGoldenFileComparator {
   });
 
   /// Describes the reason for using the [FlutterSkippingFileComparator].
+  ///
+  /// Cannot be null.
   final String reason;
 
   /// Creates a new [FlutterSkippingFileComparator] that mirrors the

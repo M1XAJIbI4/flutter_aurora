@@ -80,7 +80,7 @@ ${parser.usage}
   }
 
   final FrameworkRepository framework = FrameworkRepository(
-    _localCheckouts(token),
+    _localCheckouts,
     mirrorRemote: Remote.mirror(mirrorUrl),
     upstreamRemote: Remote.upstream(upstreamUrl),
   );
@@ -106,7 +106,7 @@ String _parseOrgName(String remoteUrl) {
   return match.group(1)!;
 }
 
-Checkouts _localCheckouts(String token) {
+Checkouts get _localCheckouts {
   const FileSystem fileSystem = LocalFileSystem();
   const ProcessManager processManager = LocalProcessManager();
   const Platform platform = LocalPlatform();
@@ -114,7 +114,6 @@ Checkouts _localCheckouts(String token) {
     stdout: io.stdout,
     stderr: io.stderr,
     stdin: io.stdin,
-    filter: (String message) => message.replaceAll(token, '[GitHub TOKEN]'),
   );
   return Checkouts(
     fileSystem: fileSystem,

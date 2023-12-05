@@ -99,10 +99,8 @@ void usePathUrlStrategy() {
 /// ```dart
 /// import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 ///
-/// void main() {
-///   // Somewhere before calling `runApp()` do:
-///   setUrlStrategy(const HashUrlStrategy());
-/// }
+/// // Somewhere before calling `runApp()` do:
+/// setUrlStrategy(const HashUrlStrategy());
 /// ```
 class HashUrlStrategy extends UrlStrategy {
   /// Creates an instance of [HashUrlStrategy].
@@ -119,15 +117,13 @@ class HashUrlStrategy extends UrlStrategy {
 /// ```dart
 /// import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 ///
-/// void main() {
-///   // Somewhere before calling `runApp()` do:
-///   setUrlStrategy(PathUrlStrategy());
-/// }
+/// // Somewhere before calling `runApp()` do:
+/// setUrlStrategy(PathUrlStrategy());
 /// ```
 class PathUrlStrategy extends HashUrlStrategy {
   /// Creates an instance of [PathUrlStrategy].
   ///
   /// The [PlatformLocation] parameter is useful for testing to mock out browser
   /// integrations.
-  const PathUrlStrategy([PlatformLocation? _, bool __ = false,]);
+  const PathUrlStrategy([PlatformLocation? _]);
 }

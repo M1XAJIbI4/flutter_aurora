@@ -1335,10 +1335,13 @@ class FakeIOSDevice extends Fake implements IOSDevice {
 
 class TestRunCommandForUsageValues extends RunCommand {
   TestRunCommandForUsageValues({
-    List<Device>? devices,
-  }) {
-    this.devices = devices;
-  }
+   this.devices,
+  });
+
+  @override
+  // devices is not set within usageValues, so we override the field
+  // ignore: overridden_fields
+  List<Device>? devices;
 
   @override
   Future<BuildInfo> getBuildInfo({ BuildMode? forcedBuildMode, File? forcedTargetFile }) async {

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'mock_canvas.dart';
 import 'rendering_tester.dart';
 
 void main() {
@@ -881,7 +882,7 @@ void main() {
   });
 
   // Simulate painting a RenderBox as if 'debugPaintSizeEnabled == true'
-  DebugPaintCallback debugPaint(RenderBox renderBox) {
+  Function(PaintingContext, Offset) debugPaint(RenderBox renderBox) {
     layout(renderBox);
     pumpFrame(phase: EnginePhase.compositingBits);
     return (PaintingContext context, Offset offset) {
@@ -891,7 +892,7 @@ void main() {
   }
 
   test('RenderClipPath.debugPaintSize draws a path and a debug text when clipBehavior is not Clip.none', () {
-    DebugPaintCallback debugPaintClipRect(Clip clip) {
+    Function(PaintingContext, Offset) debugPaintClipRect(Clip clip) {
       final RenderBox child = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 200, height: 200));
       final RenderClipPath renderClipPath = RenderClipPath(clipBehavior: clip, child: child);
       return debugPaint(renderClipPath);
@@ -908,7 +909,7 @@ void main() {
   });
 
   test('RenderClipRect.debugPaintSize draws a rect and a debug text when clipBehavior is not Clip.none', () {
-    DebugPaintCallback debugPaintClipRect(Clip clip) {
+    Function(PaintingContext, Offset) debugPaintClipRect(Clip clip) {
       final RenderBox child = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 200, height: 200));
       final RenderClipRect renderClipRect = RenderClipRect(clipBehavior: clip, child: child);
       return debugPaint(renderClipRect);
@@ -924,7 +925,7 @@ void main() {
   });
 
   test('RenderClipRRect.debugPaintSize draws a rounded rect and a debug text when clipBehavior is not Clip.none', () {
-    DebugPaintCallback debugPaintClipRRect(Clip clip) {
+    Function(PaintingContext, Offset) debugPaintClipRRect(Clip clip) {
       final RenderBox child = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 200, height: 200));
       final RenderClipRRect renderClipRRect = RenderClipRRect(clipBehavior: clip, child: child);
       return debugPaint(renderClipRRect);
@@ -940,7 +941,7 @@ void main() {
   });
 
   test('RenderClipOval.debugPaintSize draws a path and a debug text when clipBehavior is not Clip.none', () {
-    DebugPaintCallback debugPaintClipOval(Clip clip) {
+    Function(PaintingContext, Offset) debugPaintClipOval(Clip clip) {
       final RenderBox child = RenderConstrainedBox(additionalConstraints: const BoxConstraints.tightFor(width: 200, height: 200));
       final RenderClipOval renderClipOval = RenderClipOval(clipBehavior: clip, child: child);
       return debugPaint(renderClipOval);
@@ -1085,5 +1086,3 @@ void expectAssertionError() {
     FlutterError.reportError(errorDetails);
   }
 }
-
-typedef DebugPaintCallback = void Function(PaintingContext context, Offset offset);

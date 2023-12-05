@@ -11,8 +11,6 @@ import 'package:flutter/material.dart';
 
 /// Flutter code sample for [NavigationDrawer].
 
-void main() => runApp(const NavigationDrawerApp());
-
 class ExampleDestination {
   const ExampleDestination(this.label, this.icon, this.selectedIcon);
 
@@ -22,22 +20,20 @@ class ExampleDestination {
 }
 
 const List<ExampleDestination> destinations = <ExampleDestination>[
-  ExampleDestination('Messages', Icon(Icons.widgets_outlined), Icon(Icons.widgets)),
-  ExampleDestination('Profile', Icon(Icons.format_paint_outlined), Icon(Icons.format_paint)),
-  ExampleDestination('Settings', Icon(Icons.settings_outlined), Icon(Icons.settings)),
+  ExampleDestination('page 0', Icon(Icons.widgets_outlined), Icon(Icons.widgets)),
+  ExampleDestination('page 1', Icon(Icons.format_paint_outlined), Icon(Icons.format_paint)),
+  ExampleDestination('page 2', Icon(Icons.text_snippet_outlined), Icon(Icons.text_snippet)),
+  ExampleDestination('page 3', Icon(Icons.invert_colors_on_outlined), Icon(Icons.opacity)),
 ];
 
-class NavigationDrawerApp extends StatelessWidget {
-  const NavigationDrawerApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+void main() {
+  runApp(
+    MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
       home: const NavigationDrawerExample(),
-    );
-  }
+    ),
+  );
 }
 
 class NavigationDrawerExample extends StatefulWidget {
@@ -69,7 +65,7 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('Page Index = $screenIndex'),
+            Text('Page Index =  $screenIndex'),
           ],
         ),
       ),
@@ -129,7 +125,7 @@ class _NavigationDrawerExampleState extends State<NavigationDrawerExample> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text('Page Index = $screenIndex'),
+                  Text('Page Index =  $screenIndex'),
                   ElevatedButton(
                     onPressed: openDrawer,
                     child: const Text('Open Drawer'),

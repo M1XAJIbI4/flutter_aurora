@@ -8,6 +8,7 @@ import 'package:flutter_tools/src/base/io.dart';
 import 'package:flutter_tools/src/build_info.dart';
 import 'package:flutter_tools/src/device.dart';
 import 'package:flutter_tools/src/test/flutter_platform.dart';
+import 'package:test/fake.dart';
 import 'package:test_core/backend.dart'; // ignore: deprecated_member_use
 
 import '../src/common.dart';
@@ -24,11 +25,6 @@ void main() {
   });
 
   group('FlutterPlatform', () {
-    late SuitePlatform fakeSuitePlatform;
-    setUp(() {
-      fakeSuitePlatform = SuitePlatform(Runtime.vm);
-    });
-
     testUsingContext('ensureConfiguration throws an error if an '
       'explicitVmServicePort is specified and more than one test file', () async {
       final FlutterPlatform flutterPlatform = FlutterPlatform(
@@ -39,9 +35,9 @@ void main() {
         ),
         enableVmService: false,
       );
-      flutterPlatform.loadChannel('test1.dart', fakeSuitePlatform);
+      flutterPlatform.loadChannel('test1.dart', FakeSuitePlatform());
 
-      expect(() => flutterPlatform.loadChannel('test2.dart', fakeSuitePlatform), throwsToolExit());
+      expect(() => flutterPlatform.loadChannel('test2.dart', FakeSuitePlatform()), throwsToolExit());
     }, overrides: <Type, Generator>{
       FileSystem: () => fileSystem,
       ProcessManager: () => FakeProcessManager.any(),
@@ -55,9 +51,9 @@ void main() {
         precompiledDillPath: 'example.dill',
         enableVmService: false,
       );
-      flutterPlatform.loadChannel('test1.dart', fakeSuitePlatform);
+      flutterPlatform.loadChannel('test1.dart', FakeSuitePlatform());
 
-      expect(() => flutterPlatform.loadChannel('test2.dart', fakeSuitePlatform), throwsToolExit());
+      expect(() => flutterPlatform.loadChannel('test2.dart', FakeSuitePlatform()), throwsToolExit());
     }, overrides: <Type, Generator>{
       FileSystem: () => fileSystem,
       ProcessManager: () => FakeProcessManager.any(),
@@ -123,3 +119,5 @@ void main() {
     });
   });
 }
+
+class FakeSuitePlatform extends Fake implements SuitePlatform { }

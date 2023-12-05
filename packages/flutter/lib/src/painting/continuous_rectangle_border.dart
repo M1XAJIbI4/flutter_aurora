@@ -33,7 +33,7 @@ import 'edge_insets.dart';
 ///    radius in a step function instead of gradually like the
 ///    [ContinuousRectangleBorder].
 class ContinuousRectangleBorder extends OutlinedBorder {
-  /// Creates a [ContinuousRectangleBorder].
+  /// The arguments must not be null.
   const ContinuousRectangleBorder({
     super.side,
     this.borderRadius = BorderRadius.zero,

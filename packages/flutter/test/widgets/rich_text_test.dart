@@ -6,10 +6,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('RichText with recognizers without handlers does not throw', (WidgetTester tester) async {
+  testWidgets('RichText with recognizers without handlers does not throw', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -41,7 +40,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('TextSpan Locale works', (WidgetTester tester) async {
+  testWidgets('TextSpan Locale works', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -90,7 +89,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('TextSpan spellOut works', (WidgetTester tester) async {
+  testWidgets('TextSpan spellOut works', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -139,7 +138,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('WidgetSpan calculate correct intrinsic heights', (WidgetTester tester) async {
+  testWidgets('WidgetSpan calculate correct intrinsic heights', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -171,7 +170,7 @@ void main() {
     expect(tester.getSize(find.byType(IntrinsicHeight)).height, 3 * 16);
   });
 
-  testWidgetsWithLeakTracking('RichText implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('RichText implements debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
     RichText(
       text: const TextSpan(text: 'rich text'),
@@ -194,12 +193,12 @@ void main() {
       .map((DiagnosticsNode node) => node.toString())
       .toList();
 
-    expect(description, unorderedMatches(<Matcher>[
+    expect(description, unorderedMatches(<dynamic>[
       contains('textAlign: center'),
       contains('textDirection: rtl'),
       contains('softWrap: no wrapping except at line break characters'),
       contains('overflow: ellipsis'),
-      contains('textScaler: linear (1.3x)'),
+      contains('textScaleFactor: 1.3'),
       contains('maxLines: 1'),
       contains('textWidthBasis: longestLine'),
       contains('text: "rich text"'),

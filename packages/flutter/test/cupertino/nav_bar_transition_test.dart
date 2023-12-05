@@ -146,14 +146,14 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).first),
       const Offset(
-        342.547737105096302912,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 342.547737105096302912 : 342.33420100808144,
         13.5,
       ),
     );
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).last),
       const Offset(
-        342.547737105096302912,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 342.547737105096302912 : 342.33420100808144,
         13.5,
       ),
     );
@@ -173,14 +173,14 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).first),
       const Offset(
-        357.912261979376353338,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 357.912261979376353338 : 357.66579899191856,
         13.5,
       ),
     );
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).last),
       const Offset(
-        357.912261979376353338,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 357.912261979376353338 : 357.66579899191856,
         13.5,
       ),
     );
@@ -372,7 +372,7 @@ void main() {
       expect(
         tester.getTopLeft(flying(tester, find.text('Page 1')).first),
         const Offset(
-          342.547737105096302912,
+          bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 342.547737105096302912 : 342.33420100808144,
           13.5,
         ),
       );
@@ -385,7 +385,7 @@ void main() {
       expect(
         tester.getTopLeft(flying(tester, find.text('Page 1')).last),
         const Offset(
-          342.547737105096302912,
+          bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 342.547737105096302912 : 342.33420100808144,
           13.5,
         ),
       );
@@ -423,7 +423,7 @@ void main() {
       expect(
         tester.getTopLeft(flying(tester, find.text('Page 1')).first),
         const Offset(
-          357.912261979376353338,
+          bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 357.912261979376353338 : 357.66579899191856,
           13.5,
         ),
       );
@@ -436,7 +436,7 @@ void main() {
       expect(
         tester.getTopLeft(flying(tester, find.text('Page 1')).last),
         const Offset(
-          357.912261979376353338,
+          bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 357.912261979376353338 : 357.66579899191856,
           13.5,
         ),
       );
@@ -737,14 +737,14 @@ void main() {
     // Come in from the right and fade in.
     checkOpacity(tester, backChevron, 0.0);
     expect(tester.getTopLeft(backChevron), const Offset(
-      87.2460581221158690823,
+      bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 87.2460581221158690823 : 88.04496401548386,
       7.0,
     ));
 
     await tester.pump(const Duration(milliseconds: 200));
     checkOpacity(tester, backChevron, 0.09497911669313908);
     expect(tester.getTopLeft(backChevron), const Offset(
-      30.8718595298545324113,
+      bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 30.8718595298545324113 : 31.055883467197418,
       7.0,
     ));
   });
@@ -785,7 +785,7 @@ void main() {
     expect(
       tester.getTopRight(backChevron),
       const Offset(
-        687.163941725296126606,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 687.163941725296126606 : 685.9550359845161,
         7.0,
       ),
     );
@@ -795,7 +795,7 @@ void main() {
     expect(
       tester.getTopRight(backChevron),
       const Offset(
-        743.538140317557690651,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 743.538140317557690651 : 742.9441165328026,
         7.0,
       ),
     );
@@ -900,7 +900,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('custom'))),
       const Offset(
-        684.459999084472656250,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 684.459999084472656250 : 684.0,
         13.5,
       ),
     );
@@ -910,7 +910,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('custom'))),
       const Offset(
-        684.459999084472656250,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 684.459999084472656250 : 684.0,
         13.5,
       ),
     );
@@ -942,7 +942,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1'))),
       const Offset(
-        41.3003370761871337891,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 41.3003370761871337891 : 41.71033692359924,
         13.5,
       ),
     );
@@ -952,7 +952,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1'))),
       const Offset(
-        -258.642192125320434570,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? -258.642192125320434570 : -258.2321922779083,
         13.5,
       ),
     );
@@ -985,7 +985,7 @@ void main() {
     expect(
       tester.getTopRight(flying(tester, find.text('Page 1'))),
       const Offset(
-        758.699662923812866211,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 758.699662923812866211 : 758.2896630764008,
         13.5,
       ),
     );
@@ -996,7 +996,7 @@ void main() {
       tester.getTopRight(flying(tester, find.text('Page 1'))),
       // >1000. It's now off the screen.
       const Offset(
-        1058.64219212532043457,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 1058.64219212532043457 : 1058.2321922779083,
         13.5,
       ),
     );
@@ -1022,14 +1022,14 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).first),
       const Offset(
-        16.9155227761479522997,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 16.9155227761479522997 : 16.926069676876068,
         52.73951627314091,
       ),
     );
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).last),
       const Offset(
-        16.9155227761479522997,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 16.9155227761479522997 : 16.926069676876068,
         52.73951627314091,
       ),
     );
@@ -1041,14 +1041,14 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).first),
       const Offset(
-        43.6029094262710827934,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 43.6029094262710827934 : 43.92089730501175,
         22.49655644595623,
       ),
     );
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 1')).last),
       const Offset(
-        43.6029094262710827934,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 43.6029094262710827934 : 43.92089730501175,
         22.49655644595623,
       ),
     );
@@ -1073,14 +1073,14 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('A title too long to fit'))),
       const Offset(
-        16.9155227761479522997,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 16.9155227761479522997 : 16.926069676876068,
         52.73951627314091,
       ),
     );
     expect(
       tester.getTopLeft(flying(tester, find.text('Back'))),
       const Offset(
-        16.9155227761479522997,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 16.9155227761479522997 : 16.926069676876068,
         52.73951627314091,
       ),
     );
@@ -1091,14 +1091,14 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('A title too long to fit'))),
       const Offset(
-        43.6029094262710827934,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 43.6029094262710827934 : 43.92089730501175,
         22.49655644595623,
       ),
     );
     expect(
       tester.getTopLeft(flying(tester, find.text('Back'))),
       const Offset(
-        43.6029094262710827934,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 43.6029094262710827934 : 43.92089730501175,
         22.49655644595623,
       ),
     );
@@ -1157,7 +1157,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        739.940336465835571289,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 739.940336465835571289 : 739.7103369235992,
         13.5,
       ),
     );
@@ -1168,7 +1168,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        504.880443334579467773,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 504.880443334579467773 : 504.65044379234314,
         13.5,
       ),
     );
@@ -1213,7 +1213,7 @@ void main() {
     expect(
       tester.getTopRight(flying(tester, find.text('Page 2'))),
       const Offset(
-        60.0596635341644287109,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 60.0596635341644287109 : 60.28966307640076,
         13.5,
       ),
     );
@@ -1224,7 +1224,7 @@ void main() {
     expect(
       tester.getTopRight(flying(tester, find.text('Page 2'))),
       const Offset(
-        295.119556665420532227,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 295.119556665420532227 : 295.34955620765686,
         13.5,
       ),
     );
@@ -1351,7 +1351,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        353.810205429792404175,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 353.810205429792404175 : 353.5802058875561,
         13.5,
       ),
     );
@@ -1369,7 +1369,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        655.435583114624023438,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 655.435583114624023438 : 655.2055835723877,
         13.5,
       ),
     );
@@ -1377,7 +1377,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        749.863556146621704102,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 749.863556146621704102 : 749.6335566043854,
         13.5,
       ),
     );
@@ -1422,7 +1422,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        353.810205429792404175,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 353.810205429792404175 : 353.5802058875561,
         13.5,
       ),
     );
@@ -1434,7 +1434,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        353.810205429792404175,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 353.810205429792404175 : 353.5802058875561,
         13.5,
       ),
     );
@@ -1442,7 +1442,7 @@ void main() {
     expect(
       tester.getTopLeft(flying(tester, find.text('Page 2'))),
       const Offset(
-        350.231143206357955933,
+        bool.hasEnvironment('SKPARAGRAPH_REMOVE_ROUNDING_HACK') ? 350.231143206357955933 : 350.0011436641216,
         13.5,
       ),
     );

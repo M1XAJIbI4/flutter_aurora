@@ -69,7 +69,8 @@ class TestStepResult {
   );
 
   Widget asWidget(BuildContext context) {
-    return ListView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text('Step: $name', style: bold),
         Text(description),

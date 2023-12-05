@@ -9,12 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import '../widgets/semantics_tester.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('Verify that a tap on modal barrier dismisses an action sheet', (WidgetTester tester) async {
+  testWidgets('Verify that a tap on modal barrier dismisses an action sheet', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         const CupertinoActionSheet(
@@ -33,7 +32,7 @@ void main() {
     expect(find.text('Action Sheet'), findsNothing);
   });
 
-  testWidgetsWithLeakTracking('Verify that a tap on title section (not buttons) does not dismiss an action sheet', (WidgetTester tester) async {
+  testWidgets('Verify that a tap on title section (not buttons) does not dismiss an action sheet', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         const CupertinoActionSheet(
@@ -53,7 +52,7 @@ void main() {
     expect(find.text('Action Sheet'), findsOneWidget);
   });
 
-  testWidgetsWithLeakTracking('Action sheet destructive text style', (WidgetTester tester) async {
+  testWidgets('Action sheet destructive text style', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         CupertinoActionSheetAction(
@@ -74,7 +73,7 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('Action sheet dark mode', (WidgetTester tester) async {
+  testWidgets('Action sheet dark mode', (WidgetTester tester) async {
     final Widget action = CupertinoActionSheetAction(
       child: const Text('action'),
       onPressed: () {},
@@ -131,7 +130,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Action sheet default text style', (WidgetTester tester) async {
+  testWidgets('Action sheet default text style', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         CupertinoActionSheetAction(
@@ -147,7 +146,7 @@ void main() {
     expect(widget.style.fontWeight, equals(FontWeight.w600));
   });
 
-  testWidgetsWithLeakTracking('Action sheet text styles are correct when both title and message are included', (WidgetTester tester) async {
+  testWidgets('Action sheet text styles are correct when both title and message are included', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         const CupertinoActionSheet(
@@ -167,7 +166,7 @@ void main() {
     expect(messageStyle.style.fontWeight, FontWeight.w400);
   });
 
-  testWidgetsWithLeakTracking('Action sheet text styles are correct when title but no message is included', (WidgetTester tester) async {
+  testWidgets('Action sheet text styles are correct when title but no message is included', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         const CupertinoActionSheet(
@@ -184,7 +183,7 @@ void main() {
     expect(titleStyle.style.fontWeight, FontWeight.w400);
   });
 
-  testWidgetsWithLeakTracking('Action sheet text styles are correct when message but no title is included', (WidgetTester tester) async {
+  testWidgets('Action sheet text styles are correct when message but no title is included', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         const CupertinoActionSheet(
@@ -201,9 +200,8 @@ void main() {
     expect(messageStyle.style.fontWeight, FontWeight.w600);
   });
 
-  testWidgetsWithLeakTracking('Content section but no actions', (WidgetTester tester) async {
+  testWidgets('Content section but no actions', (WidgetTester tester) async {
     final ScrollController scrollController = ScrollController();
-    addTearDown(scrollController.dispose);
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -239,9 +237,8 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Actions but no content section', (WidgetTester tester) async {
+  testWidgets('Actions but no content section', (WidgetTester tester) async {
     final ScrollController actionScrollController = ScrollController();
-    addTearDown(actionScrollController.dispose);
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -288,9 +285,8 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Action section is scrollable', (WidgetTester tester) async {
+  testWidgets('Action section is scrollable', (WidgetTester tester) async {
     final ScrollController actionScrollController = ScrollController();
-    addTearDown(actionScrollController.dispose);
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         Builder(builder: (BuildContext context) {
@@ -354,9 +350,8 @@ void main() {
     expect(tester.getSize(find.widgetWithText(CupertinoActionSheetAction, 'Five')).height, equals(92.0));
   });
 
-  testWidgetsWithLeakTracking('Content section is scrollable', (WidgetTester tester) async {
+  testWidgets('Content section is scrollable', (WidgetTester tester) async {
     final ScrollController messageScrollController = ScrollController();
-    addTearDown(messageScrollController.dispose);
     late double screenHeight;
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
@@ -397,7 +392,7 @@ void main() {
     expect(tester.getSize(find.byType(CupertinoActionSheet)).height, screenHeight);
   });
 
-  testWidgetsWithLeakTracking('CupertinoActionSheet scrollbars controllers should be different', (WidgetTester tester) async {
+  testWidgets('CupertinoActionSheet scrollbars controllers should be different', (WidgetTester tester) async {
     // https://github.com/flutter/flutter/pull/81278
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
@@ -427,7 +422,7 @@ void main() {
     expect(scrollbars[0].controller != scrollbars[1].controller, isTrue);
   });
 
-  testWidgetsWithLeakTracking('Tap on button calls onPressed', (WidgetTester tester) async {
+  testWidgets('Tap on button calls onPressed', (WidgetTester tester) async {
     bool wasPressed = false;
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
@@ -464,7 +459,7 @@ void main() {
     expect(find.text('One'), findsNothing);
   });
 
-  testWidgetsWithLeakTracking('Action sheet width is correct when given infinite horizontal space', (WidgetTester tester) async {
+  testWidgets('Action sheet width is correct when given infinite horizontal space', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         Row(
@@ -492,7 +487,7 @@ void main() {
     expect(tester.getSize(find.byType(CupertinoActionSheet)).width, 600.0);
   });
 
-  testWidgetsWithLeakTracking('Action sheet height is correct when given infinite vertical space', (WidgetTester tester) async {
+  testWidgets('Action sheet height is correct when given infinite vertical space', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         Column(
@@ -520,7 +515,7 @@ void main() {
     expect(tester.getSize(find.byType(CupertinoActionSheet)).height, moreOrLessEquals(132.33333333333334));
   });
 
-  testWidgetsWithLeakTracking('1 action button with cancel button', (WidgetTester tester) async {
+  testWidgets('1 action button with cancel button', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -547,7 +542,7 @@ void main() {
     expect(findScrollableActionsSectionRenderBox(tester).size.height, 56.0);
   });
 
-  testWidgetsWithLeakTracking('2 action buttons with cancel button', (WidgetTester tester) async {
+  testWidgets('2 action buttons with cancel button', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -577,7 +572,7 @@ void main() {
     expect(findScrollableActionsSectionRenderBox(tester).size.height, moreOrLessEquals(112.33333333333331));
   });
 
-  testWidgetsWithLeakTracking('3 action buttons with cancel button', (WidgetTester tester) async {
+  testWidgets('3 action buttons with cancel button', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -611,7 +606,7 @@ void main() {
     expect(findScrollableActionsSectionRenderBox(tester).size.height, moreOrLessEquals(168.66666666666669));
   });
 
-  testWidgetsWithLeakTracking('4+ action buttons with cancel button', (WidgetTester tester) async {
+  testWidgets('4+ action buttons with cancel button', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -649,7 +644,7 @@ void main() {
     expect(findScrollableActionsSectionRenderBox(tester).size.height, moreOrLessEquals(84.33333333333337));
   });
 
-  testWidgetsWithLeakTracking('1 action button without cancel button', (WidgetTester tester) async {
+  testWidgets('1 action button without cancel button', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -671,7 +666,7 @@ void main() {
     expect(findScrollableActionsSectionRenderBox(tester).size.height, 56.0);
   });
 
-  testWidgetsWithLeakTracking('2+ action buttons without cancel button', (WidgetTester tester) async {
+  testWidgets('2+ action buttons without cancel button', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -697,7 +692,7 @@ void main() {
     expect(findScrollableActionsSectionRenderBox(tester).size.height, moreOrLessEquals(84.33333333333337));
   });
 
-  testWidgetsWithLeakTracking('Action sheet with just cancel button is correct', (WidgetTester tester) async {
+  testWidgets('Action sheet with just cancel button is correct', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -717,7 +712,7 @@ void main() {
     expect(tester.getSize(find.byType(CupertinoActionSheet)).width, 600.0);
   });
 
-  testWidgetsWithLeakTracking('Cancel button tap calls onPressed', (WidgetTester tester) async {
+  testWidgets('Cancel button tap calls onPressed', (WidgetTester tester) async {
     bool wasPressed = false;
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
@@ -752,7 +747,7 @@ void main() {
     expect(find.text('Cancel'), findsNothing);
   });
 
-  testWidgetsWithLeakTracking('Layout is correct when cancel button is present', (WidgetTester tester) async {
+  testWidgets('Layout is correct when cancel button is present', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -789,7 +784,7 @@ void main() {
     expect(tester.getBottomLeft(find.widgetWithText(CupertinoActionSheetAction, 'Two')).dy, 526.0);
   });
 
-  testWidgetsWithLeakTracking('Enter/exit animation is correct', (WidgetTester tester) async {
+  testWidgets('Enter/exit animation is correct', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -866,7 +861,7 @@ void main() {
     expect(find.byType(CupertinoActionSheet), findsNothing);
   });
 
-  testWidgetsWithLeakTracking('Modal barrier is pressed during transition', (WidgetTester tester) async {
+  testWidgets('Modal barrier is pressed during transition', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(
@@ -924,7 +919,7 @@ void main() {
   });
 
 
-  testWidgetsWithLeakTracking('Action sheet semantics', (WidgetTester tester) async {
+  testWidgets('Action sheet semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(
@@ -1033,10 +1028,9 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Conflicting scrollbars are not applied by ScrollBehavior to CupertinoActionSheet', (WidgetTester tester) async {
+  testWidgets('Conflicting scrollbars are not applied by ScrollBehavior to CupertinoActionSheet', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/83819
     final ScrollController actionScrollController = ScrollController();
-    addTearDown(actionScrollController.dispose);
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         Builder(builder: (BuildContext context) {
@@ -1074,7 +1068,7 @@ void main() {
     expect(find.byType(CupertinoScrollbar), findsNWidgets(2));
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('Hovering over Cupertino action sheet action updates cursor to clickable on Web', (WidgetTester tester) async {
+  testWidgets('Hovering over Cupertino action sheet action updates cursor to clickable on Web', (WidgetTester tester) async {
     await tester.pumpWidget(
       createAppWithButtonThatLaunchesActionSheet(
         CupertinoActionSheet(

@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 class _MockRenderSliver extends RenderSliver {
   @override
@@ -20,13 +19,11 @@ class _MockRenderSliver extends RenderSliver {
 }
 
 Future<void> test(WidgetTester tester, double offset, EdgeInsetsGeometry padding, AxisDirection axisDirection, TextDirection textDirection) {
-  final ViewportOffset viewportOffset = ViewportOffset.fixed(offset);
-  addTearDown(viewportOffset.dispose);
   return tester.pumpWidget(
     Directionality(
       textDirection: textDirection,
       child: Viewport(
-        offset: viewportOffset,
+        offset: ViewportOffset.fixed(offset),
         axisDirection: axisDirection,
         slivers: <Widget>[
           const SliverToBoxAdapter(child: SizedBox(width: 400.0, height: 400.0, child: Text('before'))),
@@ -53,7 +50,7 @@ void verify(WidgetTester tester, List<Rect> answerKey) {
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Viewport+SliverPadding basic test (VISUAL)', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding basic test (VISUAL)', (WidgetTester tester) async {
     const EdgeInsets padding = EdgeInsets.fromLTRB(25.0, 20.0, 15.0, 35.0);
     await test(tester, 0.0, padding, AxisDirection.down, TextDirection.ltr);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -92,7 +89,7 @@ void main() {
     ]);
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding basic test (LTR)', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding basic test (LTR)', (WidgetTester tester) async {
     const EdgeInsetsDirectional padding = EdgeInsetsDirectional.fromSTEB(25.0, 20.0, 15.0, 35.0);
     await test(tester, 0.0, padding, AxisDirection.down, TextDirection.ltr);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -131,7 +128,7 @@ void main() {
     ]);
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding basic test (RTL)', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding basic test (RTL)', (WidgetTester tester) async {
     const EdgeInsetsDirectional padding = EdgeInsetsDirectional.fromSTEB(25.0, 20.0, 15.0, 35.0);
     await test(tester, 0.0, padding, AxisDirection.down, TextDirection.rtl);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -170,7 +167,7 @@ void main() {
     ]);
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding hit testing', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding hit testing', (WidgetTester tester) async {
     const EdgeInsets padding = EdgeInsets.all(30.0);
     await test(tester, 350.0, padding, AxisDirection.down, TextDirection.ltr);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -192,7 +189,7 @@ void main() {
     expectIsTextSpan(result.path.first.target, 'after');
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding hit testing up', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding hit testing up', (WidgetTester tester) async {
     const EdgeInsets padding = EdgeInsets.all(30.0);
     await test(tester, 350.0, padding, AxisDirection.up, TextDirection.ltr);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -214,7 +211,7 @@ void main() {
     expectIsTextSpan(result.path.first.target, 'after');
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding hit testing left', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding hit testing left', (WidgetTester tester) async {
     const EdgeInsets padding = EdgeInsets.all(30.0);
     await test(tester, 350.0, padding, AxisDirection.left, TextDirection.ltr);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -236,7 +233,7 @@ void main() {
     expectIsTextSpan(result.path.first.target, 'after');
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding hit testing right', (WidgetTester tester) async {
+  testWidgets('Viewport+SliverPadding hit testing right', (WidgetTester tester) async {
     const EdgeInsets padding = EdgeInsets.all(30.0);
     await test(tester, 350.0, padding, AxisDirection.right, TextDirection.ltr);
     expect(tester.renderObject<RenderBox>(find.byType(Viewport)).size, equals(const Size(800.0, 600.0)));
@@ -258,15 +255,12 @@ void main() {
     expectIsTextSpan(result.path.first.target, 'after');
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding no child', (WidgetTester tester) async {
-    final ViewportOffset offset = ViewportOffset.fixed(0.0);
-    addTearDown(offset.dispose);
-
+  testWidgets('Viewport+SliverPadding no child', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.all(100.0)),
             SliverToBoxAdapter(child: SizedBox(width: 400.0, height: 400.0, child: Text('x'))),
@@ -277,10 +271,9 @@ void main() {
     expect(tester.renderObject<RenderBox>(find.text('x')).localToGlobal(Offset.zero), const Offset(0.0, 200.0));
   });
 
-  testWidgetsWithLeakTracking('SliverPadding with no child reports correct geometry as scroll offset changes', (WidgetTester tester) async {
+  testWidgets('SliverPadding with no child reports correct geometry as scroll offset changes', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/64506
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -306,16 +299,13 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding changing padding', (WidgetTester tester) async {
-    final ViewportOffset offset1 = ViewportOffset.fixed(0.0);
-    addTearDown(offset1.dispose);
-
+  testWidgets('Viewport+SliverPadding changing padding', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
           axisDirection: AxisDirection.left,
-          offset: offset1,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(90.0, 1.0, 110.0, 2.0)),
             SliverToBoxAdapter(child: SizedBox(width: 201.0, child: Text('x'))),
@@ -323,18 +313,13 @@ void main() {
         ),
       ),
     );
-
     expect(tester.renderObject<RenderBox>(find.text('x')).localToGlobal(Offset.zero), const Offset(399.0, 0.0));
-
-    final ViewportOffset offset2 = ViewportOffset.fixed(0.0);
-    addTearDown(offset2.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
           axisDirection: AxisDirection.left,
-          offset: offset2,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(110.0, 1.0, 80.0, 2.0)),
             SliverToBoxAdapter(child: SizedBox(width: 201.0, child: Text('x'))),
@@ -342,102 +327,77 @@ void main() {
         ),
       ),
     );
-
     expect(tester.renderObject<RenderBox>(find.text('x')).localToGlobal(Offset.zero), const Offset(409.0, 0.0));
   });
 
-  testWidgetsWithLeakTracking('Viewport+SliverPadding changing direction', (WidgetTester tester) async {
-    final ViewportOffset offset1 = ViewportOffset.fixed(0.0);
-    addTearDown(offset1.dispose);
-
+  testWidgets('Viewport+SliverPadding changing direction', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
           axisDirection: AxisDirection.up,
-          offset: offset1,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(1.0, 2.0, 4.0, 8.0)),
           ],
         ),
       ),
     );
-
     expect(tester.renderObject<RenderSliverPadding>(find.byType(SliverPadding)).afterPadding, 2.0);
-
-    final ViewportOffset offset2 = ViewportOffset.fixed(0.0);
-    addTearDown(offset2.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
-          offset: offset2,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(1.0, 2.0, 4.0, 8.0)),
           ],
         ),
       ),
     );
-
     expect(tester.renderObject<RenderSliverPadding>(find.byType(SliverPadding)).afterPadding, 8.0);
-
-    final ViewportOffset offset3 = ViewportOffset.fixed(0.0);
-    addTearDown(offset3.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
           axisDirection: AxisDirection.right,
-          offset: offset3,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(1.0, 2.0, 4.0, 8.0)),
           ],
         ),
       ),
     );
-
     expect(tester.renderObject<RenderSliverPadding>(find.byType(SliverPadding)).afterPadding, 4.0);
-
-    final ViewportOffset offset4 = ViewportOffset.fixed(0.0);
-    addTearDown(offset4.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
           axisDirection: AxisDirection.left,
-          offset: offset4,
+          offset: ViewportOffset.fixed(0.0),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(1.0, 2.0, 4.0, 8.0)),
           ],
         ),
       ),
     );
-
     expect(tester.renderObject<RenderSliverPadding>(find.byType(SliverPadding)).afterPadding, 1.0);
-
-    final ViewportOffset offset5 = ViewportOffset.fixed(99999.9);
-    addTearDown(offset5.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
         child: Viewport(
           axisDirection: AxisDirection.left,
-          offset: offset5,
+          offset: ViewportOffset.fixed(99999.9),
           slivers: const <Widget>[
             SliverPadding(padding: EdgeInsets.fromLTRB(1.0, 2.0, 4.0, 8.0)),
           ],
         ),
       ),
     );
-
     expect(tester.renderObject<RenderSliverPadding>(find.byType(SliverPadding, skipOffstage: false)).afterPadding, 1.0);
   });
 
-  testWidgetsWithLeakTracking('SliverPadding propagates geometry offset corrections', (WidgetTester tester) async {
+  testWidgets('SliverPadding propagates geometry offset corrections', (WidgetTester tester) async {
     Widget listBuilder(IndexedWidgetBuilder sliverChildBuilder) {
       return Directionality(
         textDirection: TextDirection.ltr,
@@ -503,7 +463,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('SliverPadding includes preceding padding in the precedingScrollExtent provided to child', (WidgetTester tester) async {
+  testWidgets('SliverPadding includes preceding padding in the precedingScrollExtent provided to child', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/49195
     final UniqueKey key = UniqueKey();
     await tester.pumpWidget(Directionality(
@@ -536,13 +496,11 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking("SliverPadding consumes only its padding from the overlap of its parent's constraints", (WidgetTester tester) async {
+  testWidgets("SliverPadding consumes only its padding from the overlap of its parent's constraints", (WidgetTester tester) async {
     final _MockRenderSliver mock = _MockRenderSliver();
-    addTearDown(mock.dispose);
     final RenderSliverPadding renderObject = RenderSliverPadding(
       padding: const EdgeInsets.only(top: 20),
     );
-    addTearDown(renderObject.dispose);
     renderObject.child = mock;
     renderObject.layout(const SliverConstraints(
         viewportMainAxisExtent: 100.0,
@@ -563,13 +521,11 @@ void main() {
     expect(mock.constraints.overlap, 80.0);
   });
 
-  testWidgetsWithLeakTracking("SliverPadding passes the overlap to the child if it's negative", (WidgetTester tester) async {
+  testWidgets("SliverPadding passes the overlap to the child if it's negative", (WidgetTester tester) async {
     final _MockRenderSliver mock = _MockRenderSliver();
-    addTearDown(mock.dispose);
     final RenderSliverPadding renderObject = RenderSliverPadding(
       padding: const EdgeInsets.only(top: 20),
     );
-    addTearDown(renderObject.dispose);
     renderObject.child = mock;
     renderObject.layout(const SliverConstraints(
         viewportMainAxisExtent: 100.0,
@@ -590,13 +546,11 @@ void main() {
     expect(mock.constraints.overlap, -100.0);
   });
 
-  testWidgetsWithLeakTracking('SliverPadding passes the paintOrigin of the child on', (WidgetTester tester) async {
+  testWidgets('SliverPadding passes the paintOrigin of the child on', (WidgetTester tester) async {
     final _MockRenderSliver mock = _MockRenderSliver();
-    addTearDown(mock.dispose);
     final RenderSliverPadding renderObject = RenderSliverPadding(
       padding: const EdgeInsets.only(top: 20),
     );
-    addTearDown(renderObject.dispose);
     renderObject.child = mock;
     renderObject.layout(const SliverConstraints(
         viewportMainAxisExtent: 100.0,

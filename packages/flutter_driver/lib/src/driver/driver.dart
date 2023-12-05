@@ -83,11 +83,6 @@ const CommonFinders find = CommonFinders._();
 /// See also [FlutterDriver.waitFor].
 typedef EvaluatorFunction = dynamic Function();
 
-// Examples can assume:
-// import 'package:flutter_driver/flutter_driver.dart';
-// import 'package:test/test.dart';
-// late FlutterDriver driver;
-
 /// Drives a Flutter Application running in another process.
 abstract class FlutterDriver {
   /// Default constructor.
@@ -483,7 +478,7 @@ abstract class FlutterDriver {
   ///
   /// ```dart
   /// test('enters text in a text field', () async {
-  ///   final SerializableFinder textField = find.byValueKey('enter-text-field');
+  ///   var textField = find.byValueKey('enter-text-field');
   ///   await driver.tap(textField);  // acquire focus
   ///   await driver.enterText('Hello!');  // enter text
   ///   await driver.waitFor(find.text('Hello!'));  // verify text appears on UI
@@ -525,7 +520,7 @@ abstract class FlutterDriver {
   ///
   /// ```dart
   /// test('submit text in a text field', () async {
-  ///   final SerializableFinder textField = find.byValueKey('enter-text-field');
+  ///   var textField = find.byValueKey('enter-text-field');
   ///   await driver.tap(textField);  // acquire focus
   ///   await driver.enterText('Hello!');  // enter text
   ///   await driver.waitFor(find.text('Hello!'));  // verify text appears on UI

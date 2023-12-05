@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import '../widgets/clipboard_utils.dart';
 import '../widgets/semantics_tester.dart';
@@ -26,9 +25,8 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, null);
   });
 
-  testWidgetsWithLeakTracking('Changing query moves cursor to the end of query', (WidgetTester tester) async {
+  testWidgets('Changing query moves cursor to the end of query', (WidgetTester tester) async {
     final _TestSearchDelegate delegate = _TestSearchDelegate();
-    addTearDown(() => delegate.dispose());
 
     await tester.pumpWidget(TestHomePage(delegate: delegate));
     await tester.tap(find.byTooltip('Search'));
@@ -607,9 +605,6 @@ void main() {
     const Widget flexibleSpace = Text('FlexibleSpace');
 
     TestSemantics buildExpected({ required String routeName }) {
-      final bool isDesktop = debugDefaultTargetPlatformOverride == TargetPlatform.macOS ||
-          debugDefaultTargetPlatformOverride == TargetPlatform.windows ||
-          debugDefaultTargetPlatformOverride == TargetPlatform.linux;
       return TestSemantics.root(
         children: <TestSemantics>[
           TestSemantics(
@@ -656,10 +651,9 @@ void main() {
                                     debugDefaultTargetPlatformOverride != TargetPlatform.macOS) SemanticsFlag.namesRoute,
                                 ],
                                 actions: <SemanticsAction>[
-                                  if (isDesktop)
+                                  if (debugDefaultTargetPlatformOverride == TargetPlatform.macOS ||
+                                    debugDefaultTargetPlatformOverride == TargetPlatform.windows)
                                     SemanticsAction.didGainAccessibilityFocus,
-                                  if (isDesktop)
-                                    SemanticsAction.didLoseAccessibilityFocus,
                                   SemanticsAction.tap,
                                   SemanticsAction.setSelection,
                                   SemanticsAction.setText,
@@ -754,9 +748,6 @@ void main() {
 
   group('contributes semantics', () {
     TestSemantics buildExpected({ required String routeName }) {
-      final bool isDesktop = debugDefaultTargetPlatformOverride == TargetPlatform.macOS ||
-                             debugDefaultTargetPlatformOverride == TargetPlatform.windows ||
-                             debugDefaultTargetPlatformOverride == TargetPlatform.linux;
       return TestSemantics.root(
         children: <TestSemantics>[
           TestSemantics(
@@ -800,10 +791,9 @@ void main() {
                                 debugDefaultTargetPlatformOverride != TargetPlatform.macOS) SemanticsFlag.namesRoute,
                             ],
                             actions: <SemanticsAction>[
-                              if (isDesktop)
+                              if (debugDefaultTargetPlatformOverride == TargetPlatform.macOS ||
+                                debugDefaultTargetPlatformOverride == TargetPlatform.windows)
                                 SemanticsAction.didGainAccessibilityFocus,
-                              if (isDesktop)
-                                SemanticsAction.didLoseAccessibilityFocus,
                               SemanticsAction.tap,
                               SemanticsAction.setSelection,
                               SemanticsAction.setText,

@@ -21,7 +21,7 @@ import 'tooltip.dart';
 
 /// Data describing a segment of a [SegmentedButton].
 class ButtonSegment<T> {
-  /// Construct a [ButtonSegment].
+  /// Construct a SegmentData
   ///
   /// One of [icon] or [label] must be non-null.
   const ButtonSegment({
@@ -96,7 +96,7 @@ class ButtonSegment<T> {
 ///     [ToggleButtons].
 ///   * [Radio], an alternative way to present the user with a mutually exclusive set of options.
 ///   * [FilterChip], [ChoiceChip], which can be used when you need to show more than five options.
-class SegmentedButton<T> extends StatefulWidget {
+class SegmentedButton<T> extends StatelessWidget {
   /// Creates a const [SegmentedButton].
   ///
   /// [segments] must contain at least one segment, but it is recommended
@@ -235,53 +235,27 @@ class SegmentedButton<T> extends StatefulWidget {
   /// Defaults to an [Icon] with [Icons.check].
   final Widget? selectedIcon;
 
-  @override
-  State<SegmentedButton<T>> createState() => SegmentedButtonState<T>();
-}
-
-/// State for [SegmentedButton].
-@visibleForTesting
-class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
-  bool get _enabled => widget.onSelectionChanged != null;
-
-  /// Controllers for the [ButtonSegment]s.
-  @visibleForTesting
-  final Map<ButtonSegment<T>, MaterialStatesController> statesControllers = <ButtonSegment<T>, MaterialStatesController>{};
-
-  @override
-  void didUpdateWidget(covariant SegmentedButton<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget != widget) {
-      statesControllers.removeWhere((ButtonSegment<T> segment, MaterialStatesController controller) {
-        if (widget.segments.contains(segment)) {
-          return false;
-        } else {
-          controller.dispose();
-          return true;
-        }
-      });
-    }
-  }
+  bool get _enabled => onSelectionChanged != null;
 
   void _handleOnPressed(T segmentValue) {
     if (!_enabled) {
       return;
     }
-    final bool onlySelectedSegment = widget.selected.length == 1 && widget.selected.contains(segmentValue);
-    final bool validChange = widget.emptySelectionAllowed || !onlySelectedSegment;
+    final bool onlySelectedSegment = selected.length == 1 && selected.contains(segmentValue);
+    final bool validChange = emptySelectionAllowed || !onlySelectedSegment;
     if (validChange) {
-      final bool toggle = widget.multiSelectionEnabled || (widget.emptySelectionAllowed && onlySelectedSegment);
+      final bool toggle = multiSelectionEnabled || (emptySelectionAllowed && onlySelectedSegment);
       final Set<T> pressedSegment = <T>{segmentValue};
       late final Set<T> updatedSelection;
       if (toggle) {
-        updatedSelection = widget.selected.contains(segmentValue)
-          ? widget.selected.difference(pressedSegment)
-          : widget.selected.union(pressedSegment);
+        updatedSelection = selected.contains(segmentValue)
+          ? selected.difference(pressedSegment)
+          : selected.union(pressedSegment);
       } else {
         updatedSelection = pressedSegment;
       }
-      if (!setEquals(updatedSelection, widget.selected)) {
-        widget.onSelectionChanged!(updatedSelection);
+      if (!setEquals(updatedSelection, selected)) {
+        onSelectionChanged!(updatedSelection);
       }
     }
   }
@@ -297,7 +271,7 @@ class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
     final Set<MaterialState> currentState = _enabled ? enabledState : disabledState;
 
     P? effectiveValue<P>(P? Function(ButtonStyle? style) getProperty) {
-      late final P? widgetValue  = getProperty(widget.style);
+      late final P? widgetValue  = getProperty(style);
       late final P? themeValue   = getProperty(theme.style);
       late final P? defaultValue = getProperty(defaults.style);
       return widgetValue ?? themeValue ?? defaultValue;
@@ -331,24 +305,25 @@ class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
       );
     }
 
-    final ButtonStyle segmentStyle = segmentStyleFor(widget.style);
+    final ButtonStyle segmentStyle = segmentStyleFor(style);
     final ButtonStyle segmentThemeStyle = segmentStyleFor(theme.style).merge(segmentStyleFor(defaults.style));
-    final Widget? selectedIcon = widget.showSelectedIcon
-      ? widget.selectedIcon ?? theme.selectedIcon ?? defaults.selectedIcon
+    final Widget? selectedIcon = showSelectedIcon
+      ? this.selectedIcon ?? theme.selectedIcon ?? defaults.selectedIcon
       : null;
 
     Widget buttonFor(ButtonSegment<T> segment) {
       final Widget label = segment.label ?? segment.icon ?? const SizedBox.shrink();
-      final bool segmentSelected = widget.selected.contains(segment.value);
-      final Widget? icon = (segmentSelected && widget.showSelectedIcon)
+      final bool segmentSelected = selected.contains(segment.value);
+      final Widget? icon = (segmentSelected && showSelectedIcon)
         ? selectedIcon
         : segment.label != null
           ? segment.icon
           : null;
-      final MaterialStatesController controller = statesControllers.putIfAbsent(segment, () => MaterialStatesController());
-      controller.value = <MaterialState>{
+      final MaterialStatesController controller = MaterialStatesController(
+        <MaterialState>{
           if (segmentSelected) MaterialState.selected,
-      };
+        }
+      );
 
       final Widget button = icon != null
         ? TextButton.icon(
@@ -375,7 +350,7 @@ class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
       return MergeSemantics(
         child: Semantics(
           checked: segmentSelected,
-          inMutuallyExclusiveGroup: widget.multiSelectionEnabled ? null : true,
+          inMutuallyExclusiveGroup: multiSelectionEnabled ? null : true,
           child: buttonWithTooltip,
         ),
       );
@@ -388,7 +363,7 @@ class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
     final OutlinedBorder enabledBorder = resolvedEnabledBorder.copyWith(side: enabledSide);
     final OutlinedBorder disabledBorder = resolvedDisabledBorder.copyWith(side: disabledSide);
 
-    final List<Widget> buttons = widget.segments.map(buttonFor).toList();
+    final List<Widget> buttons = segments.map(buttonFor).toList();
 
     return Material(
       type: MaterialType.transparency,
@@ -399,7 +374,7 @@ class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
       child: TextButtonTheme(
         data: TextButtonThemeData(style: segmentThemeStyle),
         child: _SegmentedButtonRenderWidget<T>(
-          segments: widget.segments,
+          segments: segments,
           enabledBorder: _enabled ? enabledBorder : disabledBorder,
           disabledBorder: disabledBorder,
           direction: direction,
@@ -407,14 +382,6 @@ class SegmentedButtonState<T> extends State<SegmentedButton<T>> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    for (final MaterialStatesController controller in statesControllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
   }
 }
 class _SegmentedButtonRenderWidget<T> extends MultiChildRenderObjectWidget {

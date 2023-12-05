@@ -11,7 +11,7 @@ library dart.ui;
 ///
 /// ```dart
 /// class MyStringBuffer {
-///   error; // error (prefer_typing_uninitialized_variables, inference_failure_on_uninitialized_variable, missing_const_final_var_or_type)
+///   error; // error (missing_const_final_var_or_type, always_specify_types)
 ///
 ///   StringBuffer _buffer = StringBuffer(); // error (prefer_final_fields, unused_field)
 /// }

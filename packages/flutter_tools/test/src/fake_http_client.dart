@@ -147,7 +147,7 @@ class FakeHttpClient implements HttpClient {
   bool Function(X509Certificate cert, String host, int port)? badCertificateCallback;
 
   @override
-  void Function(String line)? keyLog;
+  Function(String line)? keyLog;
 
   @override
   void close({bool force = false}) { }
@@ -341,7 +341,7 @@ class _FakeHttpClientRequest implements HttpClientRequest {
     });
     await completer.future;
     if (_responseError != null) {
-      return Future<HttpClientResponse>.error(_responseError);
+      return Future<HttpClientResponse>.error(_responseError!);
     }
     return _FakeHttpClientResponse(_response);
   }

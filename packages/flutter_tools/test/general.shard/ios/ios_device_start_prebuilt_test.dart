@@ -75,8 +75,6 @@ FakeCommand attachDebuggerCommand({
   String stdout = '(lldb)     run\nsuccess',
   Completer<void>? completer,
   bool isWirelessDevice = false,
-  bool uninstallFirst = false,
-  bool skipInstall = false,
 }) {
   return FakeCommand(
     command: <String>[
@@ -89,10 +87,6 @@ FakeCommand attachDebuggerCommand({
       '123',
       '--bundle',
       '/',
-      if (uninstallFirst)
-        '--uninstall',
-      if (skipInstall)
-        '--noinstall',
       '--debug',
       if (!isWirelessDevice) '--no-wifi',
       '--args',
@@ -213,7 +207,7 @@ void main() {
     completer.complete();
     expect(secondLaunchResult.started, true);
     expect(secondLaunchResult.hasVmService, true);
-    expect(await device.stopApp(iosApp), true);
+    expect(await device.stopApp(iosApp), false);
   });
 
   testWithoutContext('IOSDevice.startApp launches in debug mode via log reading on <iOS 13', () async {
@@ -291,7 +285,7 @@ void main() {
 
     expect(launchResult.started, true);
     expect(launchResult.hasVmService, true);
-    expect(await device.stopApp(iosApp), true);
+    expect(await device.stopApp(iosApp), false);
     expect(logger.errorText, contains('The Dart VM Service was not discovered after 30 seconds. This is taking much longer than expected...'));
     expect(utf8.decoder.convert(stdin.writes.first), contains('process interrupt'));
     completer.complete();
@@ -336,95 +330,13 @@ void main() {
 
     expect(launchResult.started, true);
     expect(launchResult.hasVmService, true);
-    expect(await device.stopApp(iosApp), true);
+    expect(await device.stopApp(iosApp), false);
     expect(logger.errorText, contains('The Dart VM Service was not discovered after 45 seconds. This is taking much longer than expected...'));
     expect(logger.errorText, contains('Click "Allow" to the prompt asking if you would like to find and connect devices on your local network.'));
     completer.complete();
     expect(processManager, hasNoRemainingExpectations);
   }, overrides: <Type, Generator>{
     MDnsVmServiceDiscovery: () => FakeMDnsVmServiceDiscovery(),
-  });
-
-  testWithoutContext('IOSDevice.startApp retries when ios-deploy loses connection the first time in CI', () async {
-    final BufferLogger logger = BufferLogger.test();
-    final FileSystem fileSystem = MemoryFileSystem.test();
-    final Completer<void> completer = Completer<void>();
-    final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-      attachDebuggerCommand(
-        stdout: '(lldb)     run\nsuccess\nProcess 525 exited with status = -1 (0xffffffff) lost connection',
-        uninstallFirst: true,
-      ),
-      attachDebuggerCommand(
-        stdout: '(lldb)     run\nsuccess\nThe Dart VM service is listening on http://127.0.0.1:456',
-        completer: completer,
-        skipInstall: true,
-      ),
-    ]);
-    final IOSDevice device = setUpIOSDevice(
-      processManager: processManager,
-      fileSystem: fileSystem,
-      logger: logger,
-    );
-    final IOSApp iosApp = PrebuiltIOSApp(
-      projectBundleId: 'app',
-      bundleName: 'Runner',
-      uncompressedBundle: fileSystem.currentDirectory,
-      applicationPackage: fileSystem.currentDirectory,
-    );
-
-    device.portForwarder = const NoOpDevicePortForwarder();
-
-    final LaunchResult launchResult = await device.startApp(iosApp,
-      prebuiltApplication: true,
-      debuggingOptions: DebuggingOptions.enabled(
-        BuildInfo.debug,
-        usingCISystem: true,
-        uninstallFirst: true,
-      ),
-      platformArgs: <String, dynamic>{},
-    );
-    completer.complete();
-
-    expect(processManager, hasNoRemainingExpectations);
-    expect(launchResult.started, true);
-    expect(launchResult.hasVmService, true);
-    expect(await device.stopApp(iosApp), true);
-  });
-
-  testWithoutContext('IOSDevice.startApp does not retry when ios-deploy loses connection if not in CI', () async {
-    final BufferLogger logger = BufferLogger.test();
-    final FileSystem fileSystem = MemoryFileSystem.test();
-    final FakeProcessManager processManager = FakeProcessManager.list(<FakeCommand>[
-      attachDebuggerCommand(
-        stdout: '(lldb)     run\nsuccess\nProcess 525 exited with status = -1 (0xffffffff) lost connection',
-      ),
-    ]);
-    final IOSDevice device = setUpIOSDevice(
-      processManager: processManager,
-      fileSystem: fileSystem,
-      logger: logger,
-    );
-    final IOSApp iosApp = PrebuiltIOSApp(
-      projectBundleId: 'app',
-      bundleName: 'Runner',
-      uncompressedBundle: fileSystem.currentDirectory,
-      applicationPackage: fileSystem.currentDirectory,
-    );
-
-    device.portForwarder = const NoOpDevicePortForwarder();
-
-    final LaunchResult launchResult = await device.startApp(iosApp,
-      prebuiltApplication: true,
-      debuggingOptions: DebuggingOptions.enabled(
-        BuildInfo.debug,
-      ),
-      platformArgs: <String, dynamic>{},
-    );
-
-    expect(processManager, hasNoRemainingExpectations);
-    expect(launchResult.started, false);
-    expect(launchResult.hasVmService, false);
-    expect(await device.stopApp(iosApp), false);
   });
 
   testWithoutContext('IOSDevice.startApp succeeds in release mode', () async {
@@ -713,7 +625,6 @@ void main() {
               scheme: 'Runner',
               xcodeWorkspace: temporaryXcodeProjectDirectory.childDirectory('Runner.xcworkspace'),
               xcodeProject: temporaryXcodeProjectDirectory.childDirectory('Runner.xcodeproj'),
-              hostAppProjectName: 'Runner',
             ),
             expectedDeviceId: '123',
             expectedLaunchArguments: <String>['--enable-dart-profiling'],
@@ -758,7 +669,6 @@ void main() {
               scheme: 'Runner',
               xcodeWorkspace: temporaryXcodeProjectDirectory.childDirectory('Runner.xcworkspace'),
               xcodeProject: temporaryXcodeProjectDirectory.childDirectory('Runner.xcodeproj'),
-              hostAppProjectName: 'Runner',
             ),
             expectedDeviceId: '123',
             expectedLaunchArguments: <String>['--enable-dart-profiling'],
@@ -819,7 +729,6 @@ void main() {
               scheme: 'Runner',
               xcodeWorkspace: temporaryXcodeProjectDirectory.childDirectory('Runner.xcworkspace'),
               xcodeProject: temporaryXcodeProjectDirectory.childDirectory('Runner.xcodeproj'),
-              hostAppProjectName: 'Runner',
             ),
             expectedDeviceId: '123',
             expectedLaunchArguments: <String>['--enable-dart-profiling'],
@@ -872,7 +781,6 @@ void main() {
               scheme: 'Runner',
               xcodeWorkspace: temporaryXcodeProjectDirectory.childDirectory('Runner.xcworkspace'),
               xcodeProject: temporaryXcodeProjectDirectory.childDirectory('Runner.xcodeproj'),
-              hostAppProjectName: 'Runner',
             ),
             expectedDeviceId: '123',
             expectedLaunchArguments: <String>['--enable-dart-profiling'],

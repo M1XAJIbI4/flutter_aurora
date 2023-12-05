@@ -51,9 +51,8 @@ void main() {
       FileSystem: () => MemoryFileSystem.test(),
       ProcessManager: () => FakeProcessManager.any(),
     };
-    const TemplatePathProvider templatePathProvider = TemplatePathProvider();
 
-    testUsingContext('templatePathProvider.imageDirectory returns parent template directory if passed null name', () async {
+    testUsingContext('templateImageDirectory returns parent template directory if passed null name', () async {
       final String packageConfigPath = globals.fs.path.join(
         Cache.flutterRoot!,
         'packages',
@@ -78,7 +77,7 @@ void main() {
 }
 ''');
       expect(
-          (await templatePathProvider.imageDirectory(null, globals.fs, globals.logger)).path,
+          (await templateImageDirectory(null, globals.fs, globals.logger)).path,
           globals.fs.path.absolute(
             'flutter_template_images',
             'templates',
@@ -86,7 +85,7 @@ void main() {
       );
     }, overrides: overrides);
 
-    testUsingContext('templatePathProvider.imageDirectory returns the directory containing the `name` template directory', () async {
+    testUsingContext('templateImageDirectory returns the directory containing the `name` template directory', () async {
       final String packageConfigPath = globals.fs.path.join(
         Cache.flutterRoot!,
         'packages',
@@ -110,7 +109,7 @@ void main() {
 }
 ''');
       expect(
-        (await templatePathProvider.imageDirectory('app_shared', globals.fs, globals.logger)).path,
+        (await templateImageDirectory('app_shared', globals.fs, globals.logger)).path,
         globals.fs.path.absolute(
           'flutter_template_images',
           'templates',

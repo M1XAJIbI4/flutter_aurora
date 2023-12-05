@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import 'restoration.dart';
 
@@ -18,13 +17,8 @@ void main() {
     binding._restorationManager = MockRestorationManager();
   });
 
-  tearDown(() {
-    binding._restorationManager.dispose();
-  });
-
-  testWidgetsWithLeakTracking('does not inject root bucket if inside scope', (WidgetTester tester) async {
+  testWidgets('does not inject root bucket if inside scope', (WidgetTester tester) async {
     final MockRestorationManager manager = MockRestorationManager();
-    addTearDown(manager.dispose);
     final Map<String, dynamic> rawData = <String, dynamic>{};
     final RestorationBucket root = RestorationBucket.root(manager: manager, rawData: rawData);
     expect(rawData, isEmpty);
@@ -53,7 +47,7 @@ void main() {
     expect(find.text('Hello'), findsOneWidget);
   });
 
-  testWidgetsWithLeakTracking('waits for root bucket', (WidgetTester tester) async {
+  testWidgets('waits for root bucket', (WidgetTester tester) async {
     final Completer<RestorationBucket> bucketCompleter = Completer<RestorationBucket>();
     binding.restorationManager.rootBucket = bucketCompleter.future;
 
@@ -89,7 +83,7 @@ void main() {
     expect((rawData[childrenMapKey] as Map<Object?, Object?>).containsKey('root-child'), isTrue);
   });
 
-  testWidgetsWithLeakTracking('no delay when root is available synchronously', (WidgetTester tester) async {
+  testWidgets('no delay when root is available synchronously', (WidgetTester tester) async {
     final Map<String, dynamic> rawData = <String, dynamic>{};
     final RestorationBucket root = RestorationBucket.root(manager: binding.restorationManager, rawData: rawData);
     binding.restorationManager.rootBucket = SynchronousFuture<RestorationBucket>(root);
@@ -115,7 +109,7 @@ void main() {
     expect((rawData[childrenMapKey] as Map<Object?, Object?>).containsKey('root-child'), isTrue);
   });
 
-  testWidgetsWithLeakTracking('does not insert root when restoration id is null', (WidgetTester tester) async {
+  testWidgets('does not insert root when restoration id is null', (WidgetTester tester) async {
     await tester.pumpWidget(
       const Directionality(
         textDirection: TextDirection.ltr,
@@ -181,10 +175,9 @@ void main() {
     expect(state.bucket, isNull);
   });
 
-  testWidgetsWithLeakTracking('injects root bucket when moved out of scope', (WidgetTester tester) async {
+  testWidgets('injects root bucket when moved out of scope', (WidgetTester tester) async {
     final Key rootScopeKey = GlobalKey();
     final MockRestorationManager manager = MockRestorationManager();
-    addTearDown(manager.dispose);
     final Map<String, dynamic> inScopeRawData = <String, dynamic>{};
     final RestorationBucket inScopeRootBucket = RestorationBucket.root(manager: manager, rawData: inScopeRawData);
 
@@ -264,7 +257,7 @@ void main() {
     expect((inScopeRawData[childrenMapKey] as Map<Object?, Object?>).containsKey('root-child'), isTrue);
   });
 
-  testWidgetsWithLeakTracking('injects new root when old one is decommissioned', (WidgetTester tester) async {
+  testWidgets('injects new root when old one is decommissioned', (WidgetTester tester) async {
     final Map<String, dynamic> firstRawData = <String, dynamic>{};
     final RestorationBucket firstRoot = RestorationBucket.root(manager: binding.restorationManager, rawData: firstRawData);
     binding.restorationManager.rootBucket = SynchronousFuture<RestorationBucket>(firstRoot);
@@ -307,7 +300,7 @@ void main() {
     expect(state.bucket!.read<int>('foo'), 22);
   });
 
-  testWidgetsWithLeakTracking('injects null when rootBucket is null', (WidgetTester tester) async {
+  testWidgets('injects null when rootBucket is null', (WidgetTester tester) async {
     final Completer<RestorationBucket?> completer = Completer<RestorationBucket?>();
     binding.restorationManager.rootBucket = completer.future;
 
@@ -344,7 +337,7 @@ void main() {
     expect(state.bucket, isNotNull);
   });
 
-  testWidgetsWithLeakTracking('can switch to null', (WidgetTester tester) async {
+  testWidgets('can switch to null', (WidgetTester tester) async {
     final RestorationBucket root = RestorationBucket.root(manager: binding.restorationManager, rawData: null);
     binding.restorationManager.rootBucket = SynchronousFuture<RestorationBucket>(root);
 

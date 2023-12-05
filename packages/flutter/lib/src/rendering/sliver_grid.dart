@@ -13,16 +13,6 @@ import 'sliver_multi_box_adaptor.dart';
 
 /// Describes the placement of a child in a [RenderSliverGrid].
 ///
-/// This class is similar to [Rect], in that it gives a two-dimensional position
-/// and a two-dimensional dimension, but is direction-agnostic.
-///
-/// {@tool dartpad}
-/// This example shows how a custom [SliverGridLayout] uses [SliverGridGeometry]
-/// to lay out the children.
-///
-/// ** See code in examples/api/lib/widgets/scroll_view/grid_view.0.dart **
-/// {@end-tool}
-///
 /// See also:
 ///
 ///  * [SliverGridLayout], which represents the geometry of all the tiles in a
@@ -70,7 +60,7 @@ class SliverGridGeometry {
   double get trailingScrollOffset => scrollOffset + mainAxisExtent;
 
   /// Returns a tight [BoxConstraints] that forces the child to have the
-  /// required size, given a [SliverConstraints].
+  /// required size.
   BoxConstraints getBoxConstraints(SliverConstraints constraints) {
     return constraints.asBoxConstraints(
       minExtent: mainAxisExtent,
@@ -93,22 +83,13 @@ class SliverGridGeometry {
 
 /// The size and position of all the tiles in a [RenderSliverGrid].
 ///
-/// Rather that providing a grid with a [SliverGridLayout] directly, the grid is
-/// provided a [SliverGridDelegate], which computes a [SliverGridLayout] given a
-/// set of [SliverConstraints]. This allows the algorithm to dynamically respond
-/// to changes in the environment (e.g. the user rotating the device).
+/// Rather that providing a grid with a [SliverGridLayout] directly, you instead
+/// provide the grid a [SliverGridDelegate], which can compute a
+/// [SliverGridLayout] given the current [SliverConstraints].
 ///
 /// The tiles can be placed arbitrarily, but it is more efficient to place tiles
-/// roughly in order by scroll offset because grids reify a contiguous sequence
-/// of children.
-///
-/// {@tool dartpad}
-/// This example shows how to construct a custom [SliverGridLayout] to lay tiles
-/// in a grid form with some cells stretched to fit the entire width of the
-/// grid (sometimes called "hero tiles").
-///
-/// ** See code in examples/api/lib/widgets/scroll_view/grid_view.0.dart **
-/// {@end-tool}
+/// in roughly in order by scroll offset because grids reify a contiguous
+/// sequence of children.
 ///
 /// See also:
 ///
@@ -165,8 +146,8 @@ abstract class SliverGridLayout {
 class SliverGridRegularTileLayout extends SliverGridLayout {
   /// Creates a layout that uses equally sized and spaced tiles.
   ///
-  /// All of the arguments must not be negative. The `crossAxisCount` argument
-  /// must be greater than zero.
+  /// All of the arguments must not be null and must not be negative. The
+  /// `crossAxisCount` argument must be greater than zero.
   const SliverGridRegularTileLayout({
     required this.crossAxisCount,
     required this.mainAxisStride,
@@ -259,15 +240,8 @@ class SliverGridRegularTileLayout extends SliverGridLayout {
 ///
 /// Given the current constraints on the grid, a [SliverGridDelegate] computes
 /// the layout for the tiles in the grid. The tiles can be placed arbitrarily,
-/// but it is more efficient to place tiles roughly in order by scroll offset
+/// but it is more efficient to place tiles in roughly in order by scroll offset
 /// because grids reify a contiguous sequence of children.
-///
-/// {@tool dartpad}
-/// This example shows how a [SliverGridDelegate] returns a [SliverGridLayout]
-/// configured based on the provided [SliverConstraints] in [getLayout].
-///
-/// ** See code in examples/api/lib/widgets/scroll_view/grid_view.0.dart **
-/// {@end-tool}
 ///
 /// See also:
 ///
@@ -336,6 +310,7 @@ class SliverGridDelegateWithFixedCrossAxisCount extends SliverGridDelegate {
   /// Creates a delegate that makes grid layouts with a fixed number of tiles in
   /// the cross axis.
   ///
+  /// All of the arguments except [mainAxisExtent] must not be null.
   /// The `mainAxisSpacing`, `mainAxisExtent` and `crossAxisSpacing` arguments
   /// must not be negative. The `crossAxisCount` and `childAspectRatio`
   /// arguments must be greater than zero.
@@ -434,6 +409,7 @@ class SliverGridDelegateWithMaxCrossAxisExtent extends SliverGridDelegate {
   /// Creates a delegate that makes grid layouts with tiles that have a maximum
   /// cross-axis extent.
   ///
+  /// All of the arguments except [mainAxisExtent] must not be null.
   /// The [maxCrossAxisExtent], [mainAxisExtent], [mainAxisSpacing],
   /// and [crossAxisSpacing] arguments must not be negative.
   /// The [childAspectRatio] argument must be greater than zero.
@@ -547,6 +523,8 @@ class SliverGridParentData extends SliverMultiBoxAdaptorParentData {
 class RenderSliverGrid extends RenderSliverMultiBoxAdaptor {
   /// Creates a sliver that contains multiple box children that whose size and
   /// position are determined by a delegate.
+  ///
+  /// The [childManager] and [gridDelegate] arguments must not be null.
   RenderSliverGrid({
     required super.childManager,
     required SliverGridDelegate gridDelegate,
@@ -627,7 +605,6 @@ class RenderSliverGrid extends RenderSliverMultiBoxAdaptor {
     final double leadingScrollOffset = firstChildGridGeometry.scrollOffset;
     double trailingScrollOffset = firstChildGridGeometry.trailingScrollOffset;
     RenderBox? trailingChildWithLayout;
-    bool reachedEnd = false;
 
     for (int index = indexOf(firstChild!) - 1; index >= firstIndex; --index) {
       final SliverGridGeometry gridGeometry = layout.getGeometryForChildIndex(index);
@@ -657,7 +634,6 @@ class RenderSliverGrid extends RenderSliverMultiBoxAdaptor {
       if (child == null || indexOf(child) != index) {
         child = insertAndLayoutChild(childConstraints, after: trailingChildWithLayout);
         if (child == null) {
-          reachedEnd = true;
           // We have run out of children.
           break;
         }
@@ -678,15 +654,13 @@ class RenderSliverGrid extends RenderSliverMultiBoxAdaptor {
     assert(indexOf(firstChild!) == firstIndex);
     assert(targetLastIndex == null || lastIndex <= targetLastIndex);
 
-    final double estimatedTotalExtent = reachedEnd
-      ? trailingScrollOffset
-      : childManager.estimateMaxScrollOffset(
-          constraints,
-          firstIndex: firstIndex,
-          lastIndex: lastIndex,
-          leadingScrollOffset: leadingScrollOffset,
-          trailingScrollOffset: trailingScrollOffset,
-        );
+    final double estimatedTotalExtent = childManager.estimateMaxScrollOffset(
+      constraints,
+      firstIndex: firstIndex,
+      lastIndex: lastIndex,
+      leadingScrollOffset: leadingScrollOffset,
+      trailingScrollOffset: trailingScrollOffset,
+    );
     final double paintExtent = calculatePaintOffset(
       constraints,
       from: math.min(constraints.scrollOffset, leadingScrollOffset),

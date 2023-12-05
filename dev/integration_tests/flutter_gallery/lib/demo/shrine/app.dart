@@ -92,7 +92,6 @@ ThemeData _buildShrineTheme() {
     textTheme: _buildShrineTextTheme(base.textTheme),
     primaryTextTheme: _buildShrineTextTheme(base.primaryTextTheme),
     iconTheme: _customIconTheme(base.iconTheme),
-    appBarTheme: const AppBarTheme(backgroundColor: kShrinePink100),
   );
 }
 

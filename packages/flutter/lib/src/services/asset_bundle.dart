@@ -57,10 +57,11 @@ abstract class AssetBundle {
   /// Throws an exception if the asset is not found.
   ///
   /// The returned [ByteData] can be converted to a [Uint8List] (a list of bytes)
-  /// using [Uint8List.sublistView]. Lists of bytes can be used with APIs that
-  /// accept [Uint8List] objects, such as [decodeImageFromList], as well as any
-  /// API that accepts a [List<int>], such as [File.writeAsBytes] or
-  /// [Utf8Codec.decode] (accessible via [utf8]).
+  /// using [ByteData.buffer] to obtain a [ByteBuffer], and then
+  /// [ByteBuffer.asUint8List] to obtain the byte list. Lists of bytes can be
+  /// used with APIs that accept [Uint8List] objects, such as
+  /// [decodeImageFromList], as well as any API that accepts a [List<int>], such
+  /// as [File.writeAsBytes] or [Utf8Codec.decode] (accessible via [utf8]).
   Future<ByteData> load(String key);
 
   /// Retrieve a binary resource from the asset bundle as an immutable
@@ -69,7 +70,7 @@ abstract class AssetBundle {
   /// Throws an exception if the asset is not found.
   Future<ui.ImmutableBuffer> loadBuffer(String key) async {
     final ByteData data = await load(key);
-    return ui.ImmutableBuffer.fromUint8List(Uint8List.sublistView(data));
+    return ui.ImmutableBuffer.fromUint8List(data.buffer.asUint8List());
   }
 
   /// Retrieve a string from the asset bundle.
@@ -88,9 +89,9 @@ abstract class AssetBundle {
   Future<String> loadString(String key, { bool cache = true }) async {
     final ByteData data = await load(key);
     // 50 KB of data should take 2-3 ms to parse on a Moto G4, and about 400 μs
-    // on a Pixel 4. On the web we can't bail to isolates, though...
-    if (data.lengthInBytes < 50 * 1024 || kIsWeb) {
-      return utf8.decode(Uint8List.sublistView(data));
+    // on a Pixel 4.
+    if (data.lengthInBytes < 50 * 1024) {
+      return utf8.decode(data.buffer.asUint8List());
     }
     // For strings larger than 50 KB, run the computation in an isolate to
     // avoid causing main thread jank.
@@ -98,27 +99,24 @@ abstract class AssetBundle {
   }
 
   static String _utf8decode(ByteData data) {
-    return utf8.decode(Uint8List.sublistView(data));
+    return utf8.decode(data.buffer.asUint8List());
   }
 
   /// Retrieve a string from the asset bundle, parse it with the given function,
   /// and return that function's result.
   ///
-  /// The result is not cached by the default implementation; the parser is run
-  /// each time the resource is fetched. However, some subclasses may implement
-  /// caching (notably, subclasses of [CachingAssetBundle]).
-  Future<T> loadStructuredData<T>(String key, Future<T> Function(String value) parser) async {
-    return parser(await loadString(key));
-  }
+  /// Implementations may cache the result, so a particular key should only be
+  /// used with one parser for the lifetime of the asset bundle.
+  Future<T> loadStructuredData<T>(String key, Future<T> Function(String value) parser);
 
   /// Retrieve [ByteData] from the asset bundle, parse it with the given function,
   /// and return that function's result.
   ///
-  /// The result is not cached by the default implementation; the parser is run
-  /// each time the resource is fetched. However, some subclasses may implement
-  /// caching (notably, subclasses of [CachingAssetBundle]).
+  /// Implementations may cache the result, so a particular key should only be
+  /// used with one parser for the lifetime of the asset bundle.
   Future<T> loadStructuredBinaryData<T>(String key, FutureOr<T> Function(ByteData data) parser) async {
-    return parser(await load(key));
+    final ByteData data = await load(key);
+    return parser(data);
   }
 
   /// If this is a caching asset bundle, and the given key describes a cached
@@ -160,7 +158,27 @@ class NetworkAssetBundle extends AssetBundle {
       ]);
     }
     final Uint8List bytes = await consolidateHttpClientResponseBytes(response);
-    return ByteData.sublistView(bytes);
+    return bytes.buffer.asByteData();
+  }
+
+  /// Retrieve a string from the asset bundle, parse it with the given function,
+  /// and return the function's result.
+  ///
+  /// The result is not cached. The parser is run each time the resource is
+  /// fetched.
+  @override
+  Future<T> loadStructuredData<T>(String key, Future<T> Function(String value) parser) async {
+    return parser(await loadString(key));
+  }
+
+  /// Retrieve [ByteData] from the asset bundle, parse it with the given function,
+  /// and return the function's result.
+  ///
+  /// The result is not cached. The parser is run each time the resource is
+  /// fetched.
+  @override
+  Future<T> loadStructuredBinaryData<T>(String key, FutureOr<T> Function(ByteData data) parser) async {
+    return parser(await load(key));
   }
 
   // TODO(ianh): Once the underlying network logic learns about caching, we
@@ -199,40 +217,30 @@ abstract class CachingAssetBundle extends AssetBundle {
   /// unless you also fetch it with [loadString]). For any given `key`, the
   /// `parser` is only run the first time.
   ///
-  /// Once the value has been successfully parsed, the future returned by this
-  /// function for subsequent calls will be a [SynchronousFuture], which
-  /// resolves its callback synchronously.
-  ///
-  /// Failures are not cached, and are returned as [Future]s with errors.
+  /// Once the value has been parsed, the future returned by this function for
+  /// subsequent calls will be a [SynchronousFuture], which resolves its
+  /// callback synchronously.
   @override
   Future<T> loadStructuredData<T>(String key, Future<T> Function(String value) parser) {
     if (_structuredDataCache.containsKey(key)) {
       return _structuredDataCache[key]! as Future<T>;
     }
-    // loadString can return a SynchronousFuture in certain cases, like in the
-    // flutter_test framework. So, we need to support both async and sync flows.
-    Completer<T>? completer; // For async flow.
-    Future<T>? synchronousResult; // For sync flow.
+    Completer<T>? completer;
+    Future<T>? result;
     loadString(key, cache: false).then<T>(parser).then<void>((T value) {
-      synchronousResult = SynchronousFuture<T>(value);
-      _structuredDataCache[key] = synchronousResult!;
+      result = SynchronousFuture<T>(value);
+      _structuredDataCache[key] = result!;
       if (completer != null) {
         // We already returned from the loadStructuredData function, which means
         // we are in the asynchronous mode. Pass the value to the completer. The
         // completer's future is what we returned.
         completer.complete(value);
       }
-    }, onError: (Object error, StackTrace stack) {
-      assert(completer != null, 'unexpected synchronous failure');
-      // Either loading or parsing failed. We must report the error back to the
-      // caller and anyone waiting on this call. We clear the cache for this
-      // key, however, because we want future attempts to try again.
-      _structuredDataCache.remove(key);
-      completer!.completeError(error, stack);
     });
-    if (synchronousResult != null) {
-      // The above code ran synchronously. We can synchronously return the result.
-      return synchronousResult!;
+    if (result != null) {
+      // The code above ran synchronously, and came up with an answer.
+      // Return the SynchronousFuture that we created above.
+      return result!;
     }
     // The code above hasn't yet run its "then" handler yet. Let's prepare a
     // completer for it to use when it does run.
@@ -247,41 +255,40 @@ abstract class CachingAssetBundle extends AssetBundle {
   /// The result of parsing the bytedata is cached (the bytedata itself is not).
   /// For any given `key`, the `parser` is only run the first time.
   ///
-  /// Once the value has been successfully parsed, the future returned by this
-  /// function for subsequent calls will be a [SynchronousFuture], which
-  /// resolves its callback synchronously.
-  ///
-  /// Failures are not cached, and are returned as [Future]s with errors.
+  /// Once the value has been parsed, the future returned by this function for
+  /// subsequent calls will be a [SynchronousFuture], which resolves its
+  /// callback synchronously.
   @override
   Future<T> loadStructuredBinaryData<T>(String key, FutureOr<T> Function(ByteData data) parser) {
     if (_structuredBinaryDataCache.containsKey(key)) {
       return _structuredBinaryDataCache[key]! as Future<T>;
     }
+
     // load can return a SynchronousFuture in certain cases, like in the
     // flutter_test framework. So, we need to support both async and sync flows.
     Completer<T>? completer; // For async flow.
-    Future<T>? synchronousResult; // For sync flow.
-    load(key).then<T>(parser).then<void>((T value) {
-      synchronousResult = SynchronousFuture<T>(value);
-      _structuredBinaryDataCache[key] = synchronousResult!;
-      if (completer != null) {
-        // The load and parse operation ran asynchronously. We already returned
-        // from the loadStructuredBinaryData function and therefore the caller
-        // was given the future of the completer.
-        completer.complete(value);
-      }
-    }, onError: (Object error, StackTrace stack) {
-      assert(completer != null, 'unexpected synchronous failure');
-      // Either loading or parsing failed. We must report the error back to the
-      // caller and anyone waiting on this call. We clear the cache for this
-      // key, however, because we want future attempts to try again.
-      _structuredBinaryDataCache.remove(key);
-      completer!.completeError(error, stack);
-    });
-    if (synchronousResult != null) {
+    SynchronousFuture<T>? result; // For sync flow.
+
+    load(key)
+      .then<T>(parser)
+      .then<void>((T value) {
+        result = SynchronousFuture<T>(value);
+        _structuredBinaryDataCache[key] = result!;
+        if (completer != null) {
+          // The load and parse operation ran asynchronously. We already returned
+          // from the loadStructuredBinaryData function and therefore the caller
+          // was given the future of the completer.
+          completer.complete(value);
+        }
+      }, onError: (Object error, StackTrace stack) {
+        completer!.completeError(error, stack);
+      });
+
+    if (result != null) {
       // The above code ran synchronously. We can synchronously return the result.
-      return synchronousResult!;
+      return result!;
     }
+
     // Since the above code is being run asynchronously and thus hasn't run its
     // `then` handler yet, we'll return a completer that will be completed
     // when the handler does run.
@@ -307,7 +314,7 @@ abstract class CachingAssetBundle extends AssetBundle {
   @override
   Future<ui.ImmutableBuffer> loadBuffer(String key) async {
     final ByteData data = await load(key);
-    return ui.ImmutableBuffer.fromUint8List(Uint8List.sublistView(data));
+    return ui.ImmutableBuffer.fromUint8List(data.buffer.asUint8List());
   }
 }
 
@@ -315,10 +322,10 @@ abstract class CachingAssetBundle extends AssetBundle {
 class PlatformAssetBundle extends CachingAssetBundle {
   @override
   Future<ByteData> load(String key) {
-    final Uint8List encoded = utf8.encode(Uri(path: Uri.encodeFull(key)).path);
+    final Uint8List encoded = utf8.encoder.convert(Uri(path: Uri.encodeFull(key)).path);
     final Future<ByteData>? future = ServicesBinding.instance.defaultBinaryMessenger.send(
       'flutter/assets',
-      ByteData.sublistView(encoded),
+      encoded.buffer.asByteData(),
     )?.then((ByteData? asset) {
       if (asset == null) {
         throw FlutterError.fromParts(<DiagnosticsNode>[
@@ -341,7 +348,7 @@ class PlatformAssetBundle extends CachingAssetBundle {
   Future<ui.ImmutableBuffer> loadBuffer(String key) async {
     if (kIsWeb) {
       final ByteData bytes = await load(key);
-      return ui.ImmutableBuffer.fromUint8List(Uint8List.sublistView(bytes));
+      return ui.ImmutableBuffer.fromUint8List(bytes.buffer.asUint8List());
     }
     bool debugUsePlatformChannel = false;
     assert(() {
@@ -357,7 +364,7 @@ class PlatformAssetBundle extends CachingAssetBundle {
     }());
     if (debugUsePlatformChannel) {
       final ByteData bytes = await load(key);
-      return ui.ImmutableBuffer.fromUint8List(Uint8List.sublistView(bytes));
+      return ui.ImmutableBuffer.fromUint8List(bytes.buffer.asUint8List());
     }
     try {
       return await ui.ImmutableBuffer.fromAsset(key);

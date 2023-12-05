@@ -242,8 +242,9 @@ class MagnifierController {
     Widget? debugRequiredFor,
     OverlayEntry? below,
   }) async {
-    _overlayEntry?.remove();
-    _overlayEntry?.dispose();
+    if (overlayEntry != null) {
+        overlayEntry!.remove();
+    }
 
     final OverlayState overlayState = Overlay.of(
       context,
@@ -256,7 +257,7 @@ class MagnifierController {
       to: Navigator.maybeOf(context)?.context,
     );
 
-    _overlayEntry = OverlayEntry(
+   _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => capturedThemes.wrap(builder(context)),
     );
     overlayState.insert(overlayEntry!, below: below);
@@ -306,7 +307,6 @@ class MagnifierController {
   @visibleForTesting
   void removeFromOverlay() {
     _overlayEntry?.remove();
-    _overlayEntry?.dispose();
     _overlayEntry = null;
   }
 

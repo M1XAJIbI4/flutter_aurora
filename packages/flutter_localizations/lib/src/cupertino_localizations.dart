@@ -10,10 +10,6 @@ import 'l10n/generated_cupertino_localizations.dart';
 import 'utils/date_localizations.dart' as util;
 import 'widgets_localizations.dart';
 
-// Examples can assume:
-// import 'package:flutter_localizations/flutter_localizations.dart';
-// import 'package:flutter/cupertino.dart';
-
 /// Implementation of localized strings for Cupertino widgets using the `intl`
 /// package for date and time formatting.
 ///
@@ -36,11 +32,11 @@ import 'widgets_localizations.dart';
 /// app supports with [CupertinoApp.supportedLocales]:
 ///
 /// ```dart
-/// const CupertinoApp(
+/// CupertinoApp(
 ///   localizationsDelegates: GlobalCupertinoLocalizations.delegates,
-///   supportedLocales: <Locale>[
-///     Locale('en', 'US'), // American English
-///     Locale('he', 'IL'), // Israeli Hebrew
+///   supportedLocales: [
+///     const Locale('en', 'US'), // American English
+///     const Locale('he', 'IL'), // Israeli Hebrew
 ///     // ...
 ///   ],
 ///   // ...
@@ -98,18 +94,6 @@ abstract class GlobalCupertinoLocalizations implements CupertinoLocalizations {
     // taking advantage of the fact that _fullYearFormat loaded the needed
     // locale's symbols.
     return _fullYearFormat.dateSymbols.MONTHS[monthIndex - 1];
-  }
-
-  @override
-  String datePickerStandaloneMonth(int monthIndex) {
-    // It doesn't actually have anything to do with _fullYearFormat. It's just
-    // taking advantage of the fact that _fullYearFormat loaded the needed
-    // locale's symbols.
-    //
-    // Because this will be used without specifying any day of month,
-    // in most cases it should be capitalized (according to rules in specific language).
-    return intl.toBeginningOfSentenceCase(_fullYearFormat.dateSymbols.STANDALONEMONTHS[monthIndex - 1]) ??
-        _fullYearFormat.dateSymbols.STANDALONEMONTHS[monthIndex - 1];
   }
 
   @override
@@ -448,11 +432,11 @@ abstract class GlobalCupertinoLocalizations implements CupertinoLocalizations {
   /// app supports with [CupertinoApp.supportedLocales]:
   ///
   /// ```dart
-  /// const CupertinoApp(
+  /// CupertinoApp(
   ///   localizationsDelegates: GlobalCupertinoLocalizations.delegates,
-  ///   supportedLocales: <Locale>[
-  ///     Locale('en', 'US'), // English
-  ///     Locale('he', 'IL'), // Hebrew
+  ///   supportedLocales: [
+  ///     const Locale('en', 'US'), // English
+  ///     const Locale('he', 'IL'), // Hebrew
   ///   ],
   ///   // ...
   /// )

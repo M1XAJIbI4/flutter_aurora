@@ -23,8 +23,9 @@ export 'package:flutter/painting.dart' show
 class RenderImage extends RenderBox {
   /// Creates a render box that displays an image.
   ///
-  /// The [textDirection] argument must not be null if [alignment] will need
-  /// resolving or if [matchTextDirection] is true.
+  /// The [scale], [alignment], [repeat], [matchTextDirection] and [filterQuality] arguments
+  /// must not be null. The [textDirection] argument must not be null if
+  /// [alignment] will need resolving or if [matchTextDirection] is true.
   RenderImage({
     ui.Image? image,
     this.debugImageLabel,

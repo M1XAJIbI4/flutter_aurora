@@ -35,6 +35,8 @@ import 'basic_types.dart';
 /// container.
 ///
 /// Used by [Tooltip] to position a tooltip relative to its parent.
+///
+/// The arguments must not be null.
 Offset positionDependentBox({
   required Size size,
   required Size childSize,

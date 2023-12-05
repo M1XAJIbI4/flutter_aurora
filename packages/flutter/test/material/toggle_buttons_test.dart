@@ -11,7 +11,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 import '../widgets/semantics_tester.dart';
 
 const double _defaultBorderWidth = 1.0;
@@ -36,7 +37,7 @@ Widget boilerplate({
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Initial toggle state is reflected', (WidgetTester tester) async {
+  testWidgets('Initial toggle state is reflected', (WidgetTester tester) async {
     TextStyle buttonTextStyle(String text) {
       return tester.widget<DefaultTextStyle>(find.descendant(
         of: find.widgetWithText(TextButton, text),
@@ -67,7 +68,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'onPressed is triggered on button tap',
     (WidgetTester tester) async {
       TextStyle buttonTextStyle(String text) {
@@ -126,7 +127,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'onPressed that is null disables buttons',
     (WidgetTester tester) async {
       TextStyle buttonTextStyle(String text) {
@@ -178,7 +179,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'children and isSelected properties have to be the same length',
     (WidgetTester tester) async {
       await expectLater(
@@ -205,7 +206,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking('Default text style is applied', (WidgetTester tester) async {
+  testWidgets('Default text style is applied', (WidgetTester tester) async {
     final ThemeData theme = ThemeData();
     await tester.pumpWidget(
       boilerplate(
@@ -236,7 +237,7 @@ void main() {
     expect(textStyle.decoration, theme.textTheme.bodyMedium!.decoration);
   });
 
-  testWidgetsWithLeakTracking('Custom text style except color is applied', (WidgetTester tester) async {
+  testWidgets('Custom text style except color is applied', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         child: ToggleButtons(
@@ -273,7 +274,7 @@ void main() {
     expect(textStyle.color, isNot(Colors.orange));
   });
 
-  testWidgetsWithLeakTracking('Default BoxConstraints', (WidgetTester tester) async {
+  testWidgets('Default BoxConstraints', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         child: ToggleButtons(
@@ -299,7 +300,7 @@ void main() {
     expect(thirdRect.height, 48.0);
   });
 
-  testWidgetsWithLeakTracking('Custom BoxConstraints', (WidgetTester tester) async {
+  testWidgets('Custom BoxConstraints', (WidgetTester tester) async {
     // Test for minimum constraints
     await tester.pumpWidget(
       boilerplate(
@@ -360,7 +361,7 @@ void main() {
     expect(thirdRect.height, 10.0);
   });
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'Default text/icon colors for enabled, selected and disabled states',
     (WidgetTester tester) async {
       TextStyle buttonTextStyle(String text) {
@@ -452,7 +453,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'Custom text/icon colors for enabled, selected and disabled states',
     (WidgetTester tester) async {
       TextStyle buttonTextStyle(String text) {
@@ -538,7 +539,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking('Default button fillColor - unselected', (WidgetTester tester) async {
+  testWidgets('Default button fillColor - unselected', (WidgetTester tester) async {
     final ThemeData theme = ThemeData();
     await tester.pumpWidget(
       boilerplate(
@@ -565,7 +566,7 @@ void main() {
     expect(material.type, MaterialType.button);
   });
 
-  testWidgetsWithLeakTracking('Default button fillColor - selected', (WidgetTester tester) async {
+  testWidgets('Default button fillColor - selected', (WidgetTester tester) async {
     final ThemeData theme = ThemeData();
     await tester.pumpWidget(
       boilerplate(
@@ -592,7 +593,7 @@ void main() {
     expect(material.type, MaterialType.button);
   });
 
-  testWidgetsWithLeakTracking('Default button fillColor - disabled', (WidgetTester tester) async {
+  testWidgets('Default button fillColor - disabled', (WidgetTester tester) async {
     final ThemeData theme = ThemeData();
     await tester.pumpWidget(
       boilerplate(
@@ -618,7 +619,7 @@ void main() {
     expect(material.type, MaterialType.button);
   });
 
-  testWidgetsWithLeakTracking('Custom button fillColor', (WidgetTester tester) async {
+  testWidgets('Custom button fillColor', (WidgetTester tester) async {
     const Color customFillColor = Colors.green;
     await tester.pumpWidget(
       boilerplate(
@@ -643,7 +644,7 @@ void main() {
     expect(material.type, MaterialType.button);
   });
 
-  testWidgetsWithLeakTracking('Custom button fillColor - Non MaterialState', (WidgetTester tester) async {
+  testWidgets('Custom button fillColor - Non MaterialState', (WidgetTester tester) async {
     Material buttonColor(String text) {
       return tester.widget<Material>(
         find.descendant(
@@ -694,7 +695,7 @@ void main() {
     expect(buttonColor('Second child').color, theme.colorScheme.surface.withOpacity(0.0));
   });
 
-  testWidgetsWithLeakTracking('Custom button fillColor - MaterialState', (WidgetTester tester) async {
+  testWidgets('Custom button fillColor - MaterialState', (WidgetTester tester) async {
     Material buttonColor(String text) {
       return tester.widget<Material>(
         find.descendant(
@@ -753,7 +754,7 @@ void main() {
     expect(buttonColor('Second child').color, defaultFillColor);
   });
 
-  testWidgetsWithLeakTracking('Default InkWell colors - unselected', (WidgetTester tester) async {
+  testWidgets('Default InkWell colors - unselected', (WidgetTester tester) async {
     final ThemeData theme = ThemeData();
     final FocusNode focusNode = FocusNode();
     await tester.pumpWidget(
@@ -816,11 +817,9 @@ void main() {
     expect(inkFeatures, paints..rect(color: theme.colorScheme.onSurface.withOpacity(0.12)));
 
     await hoverGesture.removePointer();
-
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('Default InkWell colors - selected', (WidgetTester tester) async {
+  testWidgets('Default InkWell colors - selected', (WidgetTester tester) async {
     final ThemeData theme = ThemeData();
     final FocusNode focusNode = FocusNode();
     await tester.pumpWidget(
@@ -883,11 +882,9 @@ void main() {
     expect(inkFeatures, paints..rect(color: theme.colorScheme.primary.withOpacity(0.12)));
 
     await hoverGesture.removePointer();
-
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('Custom InkWell colors', (WidgetTester tester) async {
+  testWidgets('Custom InkWell colors', (WidgetTester tester) async {
     const Color splashColor = Color(0xff4caf50);
     const Color highlightColor = Color(0xffcddc39);
     const Color hoverColor = Color(0xffffeb3b);
@@ -954,11 +951,9 @@ void main() {
     expect(inkFeatures, paints..rect(color: focusColor));
 
     await hoverGesture.removePointer();
-
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'Default border width and border colors for enabled, selected and disabled states',
     (WidgetTester tester) async {
       final ThemeData theme = ThemeData();
@@ -1046,7 +1041,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'Custom border width and border colors for enabled, selected and disabled states',
     (WidgetTester tester) async {
       const Color borderColor = Color(0xff4caf50);
@@ -1143,7 +1138,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking('Height of segmented control is determined by tallest widget', (WidgetTester tester) async {
+  testWidgets('Height of segmented control is determined by tallest widget', (WidgetTester tester) async {
     final List<Widget> children = <Widget>[
       Container(
         constraints: const BoxConstraints.tightFor(height: 100.0),
@@ -1175,7 +1170,7 @@ void main() {
     }
   });
 
-  testWidgetsWithLeakTracking('Sizes of toggle buttons rebuilds with the correct dimensions', (WidgetTester tester) async {
+  testWidgets('Sizes of toggle buttons rebuilds with the correct dimensions', (WidgetTester tester) async {
     final List<Widget> children = <Widget>[
       Container(
         constraints: const BoxConstraints.tightFor(
@@ -1274,7 +1269,7 @@ void main() {
     }
   });
 
-  testWidgetsWithLeakTracking('ToggleButtons text baseline alignment', (WidgetTester tester) async {
+  testWidgets('ToggleButtons text baseline alignment', (WidgetTester tester) async {
     // The point size of the fonts must be a multiple of 4 until
     // https://github.com/flutter/flutter/issues/122066 is resolved.
     await tester.pumpWidget(
@@ -1324,7 +1319,7 @@ void main() {
     expect(firstToggleButtonDy, textDy - 5.0);
   });
 
-  testWidgetsWithLeakTracking('Directionality test', (WidgetTester tester) async {
+  testWidgets('Directionality test', (WidgetTester tester) async {
     await tester.pumpWidget(
       Material(
         child: Directionality(
@@ -1372,7 +1367,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'Properly draws borders based on state',
     (WidgetTester tester) async {
       final ThemeData theme = ThemeData();
@@ -1452,7 +1447,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'Properly draws borders based on state when direction is vertical and verticalDirection is down.',
         (WidgetTester tester) async {
       final ThemeData theme = ThemeData();
@@ -1539,7 +1534,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking(
+  testWidgets(
     'VerticalDirection test when direction is vertical.',
     (WidgetTester tester) async {
       await tester.pumpWidget(
@@ -1565,7 +1560,7 @@ void main() {
     },
   );
 
-  testWidgetsWithLeakTracking('Tap target size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
+  testWidgets('Tap target size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
     Widget buildFrame(MaterialTapTargetSize tapTargetSize, Key key) {
       return boilerplate(
         useMaterial3: false,
@@ -1593,7 +1588,7 @@ void main() {
     expect(tester.getSize(find.byKey(key2)), const Size(228.0, 34.0));
   });
 
-  testWidgetsWithLeakTracking('Tap target size is configurable', (WidgetTester tester) async {
+  testWidgets('Tap target size is configurable', (WidgetTester tester) async {
     Widget buildFrame(MaterialTapTargetSize tapTargetSize, Key key) {
       return boilerplate(
         useMaterial3: false,
@@ -1621,7 +1616,7 @@ void main() {
     expect(tester.getSize(find.byKey(key2)), const Size(228.0, 34.0));
   });
 
-  testWidgetsWithLeakTracking('Tap target size is configurable for vertical axis', (WidgetTester tester) async {
+  testWidgets('Tap target size is configurable for vertical axis', (WidgetTester tester) async {
     Widget buildFrame(MaterialTapTargetSize tapTargetSize, Key key) {
      return boilerplate(
        child: ToggleButtons(
@@ -1650,7 +1645,7 @@ void main() {
   });
 
   // Regression test for https://github.com/flutter/flutter/issues/73725
-  testWidgetsWithLeakTracking('Border radius paint test when there is only one button', (WidgetTester tester) async {
+  testWidgets('Border radius paint test when there is only one button', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: false);
     await tester.pumpWidget(
       boilerplate(
@@ -1695,7 +1690,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Border radius paint test when Radius.x or Radius.y equal 0.0', (WidgetTester tester) async {
+  testWidgets('Border radius paint test when Radius.x or Radius.y equal 0.0', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         useMaterial3: false,
@@ -1723,7 +1718,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('ToggleButtons implements debugFillProperties', (WidgetTester tester) async {
+  testWidgets('ToggleButtons implements debugFillProperties', (WidgetTester tester) async {
     final DiagnosticPropertiesBuilder builder = DiagnosticPropertiesBuilder();
 
     ToggleButtons(
@@ -1761,7 +1756,7 @@ void main() {
     ]);
   });
 
-  testWidgetsWithLeakTracking('ToggleButtons changes mouse cursor when the button is hovered', (WidgetTester tester) async {
+  testWidgets('ToggleButtons changes mouse cursor when the button is hovered', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         child: MouseRegion(
@@ -1824,7 +1819,7 @@ void main() {
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.basic);
   });
 
-  testWidgetsWithLeakTracking('ToggleButtons focus, hover, and highlight elevations are 0', (WidgetTester tester) async {
+  testWidgets('ToggleButtons focus, hover, and highlight elevations are 0', (WidgetTester tester) async {
     final List<FocusNode> focusNodes = <FocusNode>[FocusNode(), FocusNode()];
     await tester.pumpWidget(
       boilerplate(
@@ -1868,13 +1863,9 @@ void main() {
     expect(toggleButtonElevation('two'), 0);
 
     await hoverGesture.removePointer();
-
-    for (final FocusNode n in focusNodes) {
-      n.dispose();
-    }
   });
 
-  testWidgetsWithLeakTracking('Toggle buttons height matches MaterialTapTargetSize.padded height', (WidgetTester tester) async {
+  testWidgets('Toggle buttons height matches MaterialTapTargetSize.padded height', (WidgetTester tester) async {
     await tester.pumpWidget(
       boilerplate(
         child: ToggleButtons(
@@ -1897,7 +1888,7 @@ void main() {
     expect(thirdRect.height, 48.0);
   });
 
-  testWidgetsWithLeakTracking('Toggle buttons constraints size does not affect minimum input padding', (WidgetTester tester) async {
+  testWidgets('Toggle buttons constraints size does not affect minimum input padding', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/97302
     final SemanticsTester semantics = SemanticsTester(tester);
 
@@ -1984,7 +1975,7 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('Toggle buttons have correct semantics', (WidgetTester tester) async {
+  testWidgets('Toggle buttons have correct semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
 
     await tester.pumpWidget(

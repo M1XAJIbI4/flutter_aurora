@@ -22,9 +22,5 @@
   "tabSemanticsLabel": "Sekme $tabIndex/$tabCount",
   "modalBarrierDismissLabel": "Kapat",
   "searchTextFieldPlaceholderLabel": "Ara",
-  "noSpellCheckReplacementsLabel": "Yerine Kelime Bulunamadı",
-  "menuDismissLabel": "Menüyü kapat",
-  "lookUpButtonLabel": "Look Up",
-  "searchWebButtonLabel": "Search Web",
-  "shareButtonLabel": "Share..."
+  "noSpellCheckReplacementsLabel": "No Replacements Found"
 }

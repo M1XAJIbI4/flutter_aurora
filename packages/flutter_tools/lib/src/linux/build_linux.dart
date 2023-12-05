@@ -17,7 +17,6 @@ import '../convert.dart';
 import '../flutter_plugins.dart';
 import '../globals.dart' as globals;
 import '../migrations/cmake_custom_command_migration.dart';
-import '../migrations/cmake_native_assets_migration.dart';
 
 // Matches the following error and warning patterns:
 // - <file path>:<line>:<column>: (fatal) error: <error...>
@@ -30,13 +29,12 @@ final RegExp errorMatcher = RegExp(r'(?:(?:.*:\d+:\d+|clang):\s)?(fatal\s)?(?:er
 Future<void> buildLinux(
   LinuxProject linuxProject,
   BuildInfo buildInfo, {
-  String? target,
-  SizeAnalyzer? sizeAnalyzer,
-  bool needCrossBuild = false,
-  required TargetPlatform targetPlatform,
-  String targetSysroot = '/',
-  required Logger logger,
-}) async {
+    String? target,
+    SizeAnalyzer? sizeAnalyzer,
+    bool needCrossBuild = false,
+    required TargetPlatform targetPlatform,
+    String targetSysroot = '/',
+  }) async {
   target ??= 'lib/main.dart';
   if (!linuxProject.cmakeFile.existsSync()) {
     throwToolExit('No Linux desktop project configured. See '
@@ -45,8 +43,7 @@ Future<void> buildLinux(
   }
 
   final List<ProjectMigrator> migrators = <ProjectMigrator>[
-    CmakeCustomCommandMigration(linuxProject, logger),
-    CmakeNativeAssetsMigration(linuxProject, 'linux', logger),
+    CmakeCustomCommandMigration(linuxProject, globals.logger),
   ];
 
   final ProjectMigration migration = ProjectMigration(migrators);
@@ -58,17 +55,15 @@ Future<void> buildLinux(
   environmentConfig['FLUTTER_TARGET'] = target;
   final LocalEngineInfo? localEngineInfo = globals.artifacts?.localEngineInfo;
   if (localEngineInfo != null) {
-    final String targetOutPath = localEngineInfo.targetOutPath;
-    // $ENGINE/src/out/foo_bar_baz -> $ENGINE/src
-    environmentConfig['FLUTTER_ENGINE'] = globals.fs.path.dirname(globals.fs.path.dirname(targetOutPath));
-    environmentConfig['LOCAL_ENGINE'] = localEngineInfo.localTargetName;
-    environmentConfig['LOCAL_ENGINE_HOST'] = localEngineInfo.localHostName;
+    final String engineOutPath = localEngineInfo.engineOutPath;
+    environmentConfig['FLUTTER_ENGINE'] = globals.fs.path.dirname(globals.fs.path.dirname(engineOutPath));
+    environmentConfig['LOCAL_ENGINE'] = localEngineInfo.localEngineName;
   }
-  writeGeneratedCmakeConfig(Cache.flutterRoot!, linuxProject, buildInfo, environmentConfig, logger);
+  writeGeneratedCmakeConfig(Cache.flutterRoot!, linuxProject, buildInfo, environmentConfig);
 
   createPluginSymlinks(linuxProject.parent);
 
-  final Status status = logger.startProgress(
+  final Status status = globals.logger.startProgress(
     'Building Linux application...',
   );
   try {
@@ -102,13 +97,13 @@ Future<void> buildLinux(
         .childDirectory('.flutter-devtools'), 'linux-code-size-analysis', 'json',
     )..writeAsStringSync(jsonEncode(output));
     // This message is used as a sentinel in analyze_apk_size_test.dart
-    logger.printStatus(
+    globals.printStatus(
       'A summary of your Linux bundle analysis can be found at: ${outputFile.path}',
     );
 
     // DevTools expects a file path relative to the .flutter-devtools/ dir.
     final String relativeAppSizePath = outputFile.path.split('.flutter-devtools/').last.trim();
-    logger.printStatus(
+    globals.printStatus(
       '\nTo analyze your app size in Dart DevTools, run the following command:\n'
       'dart devtools --appSizeBase=$relativeAppSizePath'
     );

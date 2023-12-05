@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     // of Shrine completely.
                     Navigator.of(context, rootNavigator: true).pop();
                   },
-                  child: Text('CANCEL', style: Theme.of(context).textTheme.bodySmall),
+                  child: const Text('CANCEL'),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('NEXT', style: Theme.of(context).textTheme.bodySmall),
+                  child: const Text('NEXT'),
                 ),
               ],
             ),

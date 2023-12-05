@@ -62,9 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return const Text('Continue in macOS view');
       case TargetPlatform.aurora:
         return const Text('Continue in Aurora OS view');
-      case TargetPlatform.linux:
-        return const Text('Continue in Linux view');
       case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
         throw UnimplementedError('Platform not yet implemented');
     }
   }

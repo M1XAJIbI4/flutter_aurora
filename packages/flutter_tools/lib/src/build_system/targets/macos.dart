@@ -80,7 +80,7 @@ abstract class UnpackMacOS extends Target {
     if (!frameworkBinary.existsSync()) {
       throw Exception('Binary $frameworkBinaryPath does not exist, cannot thin');
     }
-    await _thinFramework(environment, frameworkBinaryPath);
+    _thinFramework(environment, frameworkBinaryPath);
   }
 
   static const List<String> _copyDenylist = <String>['entitlements.txt', 'without_entitlements.txt'];
@@ -96,21 +96,17 @@ abstract class UnpackMacOS extends Target {
     }
   }
 
-  Future<void> _thinFramework(
-    Environment environment,
-    String frameworkBinaryPath,
-  ) async {
+  void _thinFramework(Environment environment, String frameworkBinaryPath) {
     final String archs = environment.defines[kDarwinArchs] ?? 'x86_64 arm64';
     final List<String> archList = archs.split(' ').toList();
-    final ProcessResult infoResult =
-        await environment.processManager.run(<String>[
+    final ProcessResult infoResult = environment.processManager.runSync(<String>[
       'lipo',
       '-info',
       frameworkBinaryPath,
     ]);
     final String lipoInfo = infoResult.stdout as String;
 
-    final ProcessResult verifyResult = await environment.processManager.run(<String>[
+    final ProcessResult verifyResult = environment.processManager.runSync(<String>[
       'lipo',
       frameworkBinaryPath,
       '-verify_arch',

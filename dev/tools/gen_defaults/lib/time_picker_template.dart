@@ -84,28 +84,44 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
   @override
   Color get dayPeriodTextColor {
     return MaterialStateColor.resolveWith((Set<MaterialState> states) {
+      return _dayPeriodForegroundColor.resolve(states);
+    });
+  }
+
+  MaterialStateProperty<Color> get _dayPeriodForegroundColor {
+    return MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      Color? textColor;
       if (states.contains(MaterialState.selected)) {
-        if (states.contains(MaterialState.focused)) {
-          return ${componentColor("$dayPeriodComponent.selected.focus.label-text")};
-        }
-        if (states.contains(MaterialState.hovered)) {
-          return ${componentColor("$dayPeriodComponent.selected.hover.label-text")};
-        }
         if (states.contains(MaterialState.pressed)) {
-          return ${componentColor("$dayPeriodComponent.selected.pressed.label-text")};
+          textColor = ${componentColor("$dayPeriodComponent.selected.pressed.label-text")};
+        } else {
+          // not pressed
+          if (states.contains(MaterialState.hovered)) {
+            textColor = ${componentColor("$dayPeriodComponent.selected.hover.label-text")};
+          } else {
+            // not hovered
+            if (states.contains(MaterialState.focused)) {
+              textColor = ${componentColor("$dayPeriodComponent.selected.focus.label-text")};
+            }
+          }
         }
-        return ${componentColor("$dayPeriodComponent.selected.label-text")};
+      } else {
+        // unselected
+        if (states.contains(MaterialState.pressed)) {
+          textColor = ${componentColor("$dayPeriodComponent.unselected.pressed.label-text")};
+        } else {
+          // not pressed
+          if (states.contains(MaterialState.hovered)) {
+            textColor = ${componentColor("$dayPeriodComponent.unselected.hover.label-text")};
+          } else {
+            // not hovered
+            if (states.contains(MaterialState.focused)) {
+              textColor = ${componentColor("$dayPeriodComponent.unselected.focus.label-text")};
+            }
+          }
+        }
       }
-      if (states.contains(MaterialState.focused)) {
-        return ${componentColor("$dayPeriodComponent.unselected.focus.label-text")};
-      }
-      if (states.contains(MaterialState.hovered)) {
-        return ${componentColor("$dayPeriodComponent.unselected.hover.label-text")};
-      }
-      if (states.contains(MaterialState.pressed)) {
-        return ${componentColor("$dayPeriodComponent.unselected.pressed.label-text")};
-      }
-      return ${componentColor("$dayPeriodComponent.unselected.label-text")};
+      return textColor ?? ${componentColor("$dayPeriodComponent.selected.label-text")};
     });
   }
 
@@ -116,7 +132,7 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
 
   @override
   Color get dialBackgroundColor {
-    return ${componentColor(dialComponent)};
+    return ${componentColor(dialComponent)}.withOpacity(_colors.brightness == Brightness.dark ? 0.12 : 0.08);
   }
 
   @override
@@ -281,10 +297,7 @@ class _${blockName}DefaultsM3 extends _TimePickerDefaults {
   @override
   TextStyle get hourMinuteTextStyle {
     return MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
-      // TODO(tahatesser): Update this when https://github.com/flutter/flutter/issues/131247 is fixed.
-      // This is using the correct text style from Material 3 spec.
-      // https://m3.material.io/components/time-pickers/specs#fd0b6939-edab-4058-82e1-93d163945215
-      return _textTheme.displayMedium!.copyWith(color: _hourMinuteTextColor.resolve(states));
+      return ${textStyle('$hourMinuteComponent.label-text')}!.copyWith(color: _hourMinuteTextColor.resolve(states));
     });
   }
 

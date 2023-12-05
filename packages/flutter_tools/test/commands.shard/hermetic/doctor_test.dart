@@ -1228,7 +1228,4 @@ class FakeDevice extends Fake implements Device {
 class FakeTerminal extends Fake implements AnsiTerminal {
   @override
   final bool supportsColor = false;
-
-  @override
-  bool get isCliAnimationEnabled => supportsColor;
 }

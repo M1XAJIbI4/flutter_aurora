@@ -58,7 +58,8 @@ import 'theme.dart';
 class Card extends StatelessWidget {
   /// Creates a Material Design card.
   ///
-  /// The [elevation] must be null or non-negative.
+  /// The [elevation] must be null or non-negative. The [borderOnForeground]
+  /// must not be null.
   const Card({
     super.key,
     this.color,
@@ -76,12 +77,6 @@ class Card extends StatelessWidget {
   /// The card's background color.
   ///
   /// Defines the card's [Material.color].
-  ///
-  /// In Material 3, [surfaceTintColor] is drawn on top of this color
-  /// when the card is elevated. This might make the appearance of
-  /// the card slightly different than in Material 2. To disable this
-  /// feature, set [surfaceTintColor] to [Colors.transparent].
-  /// See [Material.surfaceTintColor] for more details.
   ///
   /// If this property is null then the ambient [CardTheme.color] is used. If that is null,
   /// and [ThemeData.useMaterial3] is true, then [ColorScheme.surface] of

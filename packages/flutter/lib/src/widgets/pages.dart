@@ -11,9 +11,6 @@ import 'routes.dart';
 /// The [PageRouteBuilder] subclass provides a way to create a [PageRoute] using
 /// callbacks rather than by defining a new class via subclassing.
 ///
-/// If `barrierDismissible` is true, then pressing the escape key on the keyboard
-/// will cause the current route to be popped with null as the value.
-///
 /// See also:
 ///
 ///  * [Route], which documents the meaning of the `T` generic type argument.
@@ -23,8 +20,7 @@ abstract class PageRoute<T> extends ModalRoute<T> {
     super.settings,
     this.fullscreenDialog = false,
     this.allowSnapshotting = true,
-    bool barrierDismissible = false,
-  }) : _barrierDismissible = barrierDismissible;
+  });
 
   /// {@template flutter.widgets.PageRoute.fullscreenDialog}
   /// Whether this page route is a full-screen dialog.
@@ -43,8 +39,7 @@ abstract class PageRoute<T> extends ModalRoute<T> {
   bool get opaque => true;
 
   @override
-  bool get barrierDismissible => _barrierDismissible;
-  final bool _barrierDismissible;
+  bool get barrierDismissible => false;
 
   @override
   bool canTransitionTo(TransitionRoute<dynamic> nextRoute) => nextRoute is PageRoute;
@@ -70,6 +65,9 @@ Widget _defaultTransitionsBuilder(BuildContext context, Animation<double> animat
 ///  * [Route], which documents the meaning of the `T` generic type argument.
 class PageRouteBuilder<T> extends PageRoute<T> {
   /// Creates a route that delegates to builder callbacks.
+  ///
+  /// The [pageBuilder], [transitionsBuilder], [opaque], [barrierDismissible],
+  /// [maintainState], and [fullscreenDialog] arguments must not be null.
   PageRouteBuilder({
     super.settings,
     required this.pageBuilder,

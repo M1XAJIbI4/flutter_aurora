@@ -8,15 +8,15 @@
 /// ```dart
 /// class A {
 ///   const A(this.i);
-///   final int? i;
+///   int i;
 /// }
 ///
-/// void main () {
+/// main () {
 ///   // prevent prefer_const_constructors lint
 ///   A(nonconst(null));
 ///
 ///   // prevent prefer_const_declarations lint
-///   final int? $null = nonconst(null);
+///   final int $null = nonconst(null);
 ///   final A a = nonconst(const A(null));
 /// }
 /// ```

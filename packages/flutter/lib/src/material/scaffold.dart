@@ -282,12 +282,6 @@ class ScaffoldMessengerState extends State<ScaffoldMessenger> with TickerProvide
   /// the SnackBar to be visible.
   ///
   /// {@tool dartpad}
-  /// Here is an example showing how to display a [SnackBar] with [showSnackBar]
-  ///
-  /// ** See code in examples/api/lib/material/scaffold/scaffold_messenger_state.show_snack_bar.0.dart **
-  /// {@end-tool}
-  ///
-  /// {@tool dartpad}
   /// Here is an example showing that a floating [SnackBar] appears above [Scaffold.floatingActionButton].
   ///
   /// ** See code in examples/api/lib/material/scaffold/scaffold_messenger_state.show_snack_bar.1.dart **
@@ -1145,29 +1139,7 @@ class _ScaffoldLayout extends MultiChildLayoutDelegate {
       }
 
       final double snackBarYOffsetBase;
-      final bool showAboveFab = switch (currentFloatingActionButtonLocation) {
-        FloatingActionButtonLocation.startTop
-        || FloatingActionButtonLocation.centerTop
-        || FloatingActionButtonLocation.endTop
-        || FloatingActionButtonLocation.miniStartTop
-        || FloatingActionButtonLocation.miniCenterTop
-        || FloatingActionButtonLocation.miniEndTop => false,
-        FloatingActionButtonLocation.startDocked
-        || FloatingActionButtonLocation.startFloat
-        || FloatingActionButtonLocation.centerDocked
-        || FloatingActionButtonLocation.centerFloat
-        || FloatingActionButtonLocation.endContained
-        || FloatingActionButtonLocation.endDocked
-        || FloatingActionButtonLocation.endFloat
-        || FloatingActionButtonLocation.miniStartDocked
-        || FloatingActionButtonLocation.miniStartFloat
-        || FloatingActionButtonLocation.miniCenterDocked
-        || FloatingActionButtonLocation.miniCenterFloat
-        || FloatingActionButtonLocation.miniEndDocked
-        || FloatingActionButtonLocation.miniEndFloat => true,
-        FloatingActionButtonLocation() => true,
-      };
-      if (floatingActionButtonRect.size != Size.zero && isSnackBarFloating && showAboveFab) {
+      if (floatingActionButtonRect.size != Size.zero && isSnackBarFloating) {
         snackBarYOffsetBase = floatingActionButtonRect.top;
       } else {
         // SnackBarBehavior.fixed applies a SafeArea automatically.
@@ -1645,7 +1617,7 @@ class Scaffold extends StatefulWidget {
   /// This is useful if the app bar's [AppBar.backgroundColor] is not
   /// completely opaque.
   ///
-  /// This property is false by default.
+  /// This property is false by default. It must not be null.
   ///
   /// See also:
   ///
@@ -2519,7 +2491,7 @@ class ScaffoldState extends State<Scaffold> with TickerProviderStateMixin, Resto
   double get _floatingActionButtonVisibilityValue => _floatingActionButtonVisibilityController.value;
 
   /// Sets the current value of the visibility animation for the
-  /// [Scaffold.floatingActionButton].
+  /// [Scaffold.floatingActionButton]. This value must not be null.
   set _floatingActionButtonVisibilityValue(double newValue) {
     _floatingActionButtonVisibilityController.value = clampDouble(newValue,
       _floatingActionButtonVisibilityController.lowerBound,
@@ -2755,6 +2727,8 @@ class ScaffoldState extends State<Scaffold> with TickerProviderStateMixin, Resto
   Color _bodyScrimColor = Colors.black;
 
   /// Whether to show a [ModalBarrier] over the body of the scaffold.
+  ///
+  /// The `value` parameter must not be null.
   void showBodyScrim(bool value, double opacity) {
     if (_showBodyScrim == value && _bodyScrimColor.opacity == opacity) {
       return;
@@ -3082,6 +3056,8 @@ class ScaffoldFeatureController<T extends Widget, U> {
 /// curve specified with the [curve] argument, after the finger is released. In
 /// such a case, the value of [startingPoint] would be the progress of the
 /// animation at the time when the finger was released.
+///
+/// The [startingPoint] and [curve] arguments must not be null.
 class _BottomSheetSuspendedCurve extends ParametricCurve<double> {
   /// Creates a suspended curve.
   const _BottomSheetSuspendedCurve(

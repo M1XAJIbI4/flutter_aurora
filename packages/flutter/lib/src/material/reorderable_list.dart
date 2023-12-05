@@ -8,7 +8,6 @@
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import 'debug.dart';
@@ -80,7 +79,6 @@ class ReorderableListView extends StatefulWidget {
     this.onReorderStart,
     this.onReorderEnd,
     this.itemExtent,
-    this.itemExtentBuilder,
     this.prototypeItem,
     this.proxyDecorator,
     this.buildDefaultDragHandles = true,
@@ -101,10 +99,8 @@ class ReorderableListView extends StatefulWidget {
     this.clipBehavior = Clip.hardEdge,
     this.autoScrollerVelocityScalar,
   }) : assert(
-        (itemExtent == null && prototypeItem == null) ||
-        (itemExtent == null && itemExtentBuilder == null) ||
-        (prototypeItem == null && itemExtentBuilder == null),
-        'You can only pass one of itemExtent, prototypeItem and itemExtentBuilder.',
+         itemExtent == null || prototypeItem == null,
+         'You can only pass itemExtent or prototypeItem, not both',
        ),
        assert(
          children.every((Widget w) => w.key != null),
@@ -149,7 +145,6 @@ class ReorderableListView extends StatefulWidget {
     this.onReorderStart,
     this.onReorderEnd,
     this.itemExtent,
-    this.itemExtentBuilder,
     this.prototypeItem,
     this.proxyDecorator,
     this.buildDefaultDragHandles = true,
@@ -171,10 +166,8 @@ class ReorderableListView extends StatefulWidget {
     this.autoScrollerVelocityScalar,
   }) : assert(itemCount >= 0),
        assert(
-         (itemExtent == null && prototypeItem == null) ||
-         (itemExtent == null && itemExtentBuilder == null) ||
-         (prototypeItem == null && itemExtentBuilder == null),
-         'You can only pass one of itemExtent, prototypeItem and itemExtentBuilder.',
+         itemExtent == null || prototypeItem == null,
+         'You can only pass itemExtent or prototypeItem, not both',
        );
 
   /// {@macro flutter.widgets.reorderable_list.itemBuilder}
@@ -278,9 +271,6 @@ class ReorderableListView extends StatefulWidget {
 
   /// {@macro flutter.widgets.list_view.itemExtent}
   final double? itemExtent;
-
-  /// {@macro flutter.widgets.list_view.itemExtentBuilder}
-  final ItemExtentBuilder? itemExtentBuilder;
 
   /// {@macro flutter.widgets.list_view.prototypeItem}
   final Widget? prototypeItem;
@@ -454,7 +444,6 @@ class _ReorderableListViewState extends State<ReorderableListView> {
           sliver: SliverReorderableList(
             itemBuilder: _itemBuilder,
             itemExtent: widget.itemExtent,
-            itemExtentBuilder: widget.itemExtentBuilder,
             prototypeItem: widget.prototypeItem,
             itemCount: widget.itemCount,
             onReorder: widget.onReorder,

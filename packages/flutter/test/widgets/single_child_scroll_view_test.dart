@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import '../rendering/rendering_tester.dart' show TestClipPaintingContext;
 import 'semantics_tester.dart';
@@ -120,32 +119,16 @@ void main() {
     renderObject.paint(context, Offset.zero); // ignore: avoid_dynamic_calls
     expect(context.clipBehavior, equals(Clip.hardEdge));
 
-    // 3rd, check that the underlying Scrollable has the same clipBehavior
-    // Regression test for https://github.com/flutter/flutter/issues/133330
-    Finder scrollable = find.byWidgetPredicate((Widget widget) => widget is Scrollable);
-    expect(
-      (tester.widget(scrollable) as Scrollable).clipBehavior,
-      Clip.hardEdge,
-    );
-
-    // 4th, pump a new widget to check that the render object can update its clip behavior.
+    // 3rd, pump a new widget to check that the render object can update its clip behavior.
     await tester.pumpWidget(SingleChildScrollView(clipBehavior: Clip.antiAlias, child: Container(height: 2000.0)));
     expect(renderObject.clipBehavior, equals(Clip.antiAlias)); // ignore: avoid_dynamic_calls
 
-    // 5th, check that a non-default clip behavior can be sent to the painting context.
+    // 4th, check that a non-default clip behavior can be sent to the painting context.
     renderObject.paint(context, Offset.zero); // ignore: avoid_dynamic_calls
     expect(context.clipBehavior, equals(Clip.antiAlias));
-
-    // 6th, check that the underlying Scrollable has the same clipBehavior
-    // Regression test for https://github.com/flutter/flutter/issues/133330
-    scrollable = find.byWidgetPredicate((Widget widget) => widget is Scrollable);
-    expect(
-      (tester.widget(scrollable) as Scrollable).clipBehavior,
-      Clip.antiAlias,
-    );
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView control test', (WidgetTester tester) async {
+  testWidgets('SingleChildScrollView control test', (WidgetTester tester) async {
     await tester.pumpWidget(SingleChildScrollView(
       child: Container(
         height: 2000.0,
@@ -161,9 +144,8 @@ void main() {
     expect(box.localToGlobal(Offset.zero), equals(const Offset(0.0, -200.0)));
   });
 
-  testWidgetsWithLeakTracking('Changing controllers changes scroll position', (WidgetTester tester) async {
+  testWidgets('Changing controllers changes scroll position', (WidgetTester tester) async {
     final TestScrollController controller = TestScrollController();
-    addTearDown(controller.dispose);
 
     await tester.pumpWidget(SingleChildScrollView(
       child: Container(
@@ -184,9 +166,8 @@ void main() {
     expect(scrollable.position, isA<TestScrollPosition>());
   });
 
-  testWidgetsWithLeakTracking('Sets PrimaryScrollController when primary', (WidgetTester tester) async {
+  testWidgets('Sets PrimaryScrollController when primary', (WidgetTester tester) async {
     final ScrollController primaryScrollController = ScrollController();
-    addTearDown(primaryScrollController.dispose);
     await tester.pumpWidget(PrimaryScrollController(
       controller: primaryScrollController,
       child: SingleChildScrollView(
@@ -203,9 +184,8 @@ void main() {
   });
 
 
-  testWidgetsWithLeakTracking('Changing scroll controller inside dirty layout builder does not assert', (WidgetTester tester) async {
+  testWidgets('Changing scroll controller inside dirty layout builder does not assert', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
 
     await tester.pumpWidget(Center(
       child: SizedBox(
@@ -241,28 +221,25 @@ void main() {
     ));
   });
 
-  testWidgetsWithLeakTracking('Vertical SingleChildScrollViews are not primary by default', (WidgetTester tester) async {
+  testWidgets('Vertical SingleChildScrollViews are not primary by default', (WidgetTester tester) async {
     const SingleChildScrollView view = SingleChildScrollView();
     expect(view.primary, isNull);
   });
 
-  testWidgetsWithLeakTracking('Horizontal SingleChildScrollViews are not primary by default', (WidgetTester tester) async {
+  testWidgets('Horizontal SingleChildScrollViews are not primary by default', (WidgetTester tester) async {
     const SingleChildScrollView view = SingleChildScrollView(scrollDirection: Axis.horizontal);
     expect(view.primary, isNull);
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollViews with controllers are not primary by default', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
+  testWidgets('SingleChildScrollViews with controllers are not primary by default', (WidgetTester tester) async {
     final SingleChildScrollView view = SingleChildScrollView(
-      controller: controller,
+      controller: ScrollController(),
     );
     expect(view.primary, isNull);
   });
 
-  testWidgetsWithLeakTracking('Vertical SingleChildScrollViews use PrimaryScrollController by default on mobile', (WidgetTester tester) async {
+  testWidgets('Vertical SingleChildScrollViews use PrimaryScrollController by default on mobile', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     await tester.pumpWidget(primaryScrollControllerBoilerplate(
       child: const SingleChildScrollView(),
       controller: controller,
@@ -270,9 +247,8 @@ void main() {
     expect(controller.hasClients, isTrue);
   }, variant: TargetPlatformVariant.mobile());
 
-  testWidgetsWithLeakTracking("Vertical SingleChildScrollViews don't use PrimaryScrollController by default on desktop", (WidgetTester tester) async {
+  testWidgets("Vertical SingleChildScrollViews don't use PrimaryScrollController by default on desktop", (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     await tester.pumpWidget(primaryScrollControllerBoilerplate(
       child: const SingleChildScrollView(),
       controller: controller,
@@ -280,10 +256,9 @@ void main() {
     expect(controller.hasClients, isFalse);
   }, variant: TargetPlatformVariant.desktop());
 
-  testWidgetsWithLeakTracking('Nested scrollables have a null PrimaryScrollController', (WidgetTester tester) async {
+  testWidgets('Nested scrollables have a null PrimaryScrollController', (WidgetTester tester) async {
     const Key innerKey = Key('inner');
     final ScrollController primaryScrollController = ScrollController();
-    addTearDown(primaryScrollController.dispose);
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -309,10 +284,9 @@ void main() {
     expect(innerScrollable.controller, isNull);
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView semantics', (WidgetTester tester) async {
+  testWidgets('SingleChildScrollView semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
 
     await tester.pumpWidget(
       Directionality(
@@ -405,9 +379,8 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView semantics clips cover entire child vertical', (WidgetTester tester) async {
+  testWidgets('SingleChildScrollView semantics clips cover entire child vertical', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     final UniqueKey scrollView = UniqueKey();
     final UniqueKey childBox = UniqueKey();
     const double length = 10000;
@@ -445,9 +418,8 @@ void main() {
     expect(semanticsClip.size.height, length);
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView semantics clips cover entire child', (WidgetTester tester) async {
+  testWidgets('SingleChildScrollView semantics clips cover entire child', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     final UniqueKey scrollView = UniqueKey();
     final UniqueKey childBox = UniqueKey();
     const double length = 10000;
@@ -486,9 +458,7 @@ void main() {
     expect(semanticsClip.size.width, length);
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView getOffsetToReveal - will not assert on axis mismatch', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-    addTearDown(controller.dispose);
+  testWidgets('SingleChildScrollView getOffsetToReveal - down', (WidgetTester tester) async {
     List<Widget> children;
     await tester.pumpWidget(
       Directionality(
@@ -498,41 +468,7 @@ void main() {
             height: 200.0,
             width: 300.0,
             child: SingleChildScrollView(
-              controller: controller,
-              child: Column(
-                children: children = List<Widget>.generate(20, (int i) {
-                  return SizedBox(
-                    height: 100.0,
-                    width: 300.0,
-                    child: Text('Tile $i'),
-                  );
-                }),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    final RenderAbstractViewport viewport = tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
-
-    final RenderObject target = tester.renderObject(find.byWidget(children[5]));
-    viewport.getOffsetToReveal(target, 0.0, axis: Axis.horizontal);
-  });
-
-  testWidgetsWithLeakTracking('SingleChildScrollView getOffsetToReveal - down', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-    addTearDown(controller.dispose);
-    List<Widget> children;
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Center(
-          child: SizedBox(
-            height: 200.0,
-            width: 300.0,
-            child: SingleChildScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 300.0),
               child: Column(
                 children: children = List<Widget>.generate(20, (int i) {
                   return SizedBox(
@@ -568,9 +504,7 @@ void main() {
     expect(revealed.rect, const Rect.fromLTWH(40.0, 190.0, 10.0, 10.0));
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView getOffsetToReveal - up', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-    addTearDown(controller.dispose);
+  testWidgets('SingleChildScrollView getOffsetToReveal - up', (WidgetTester tester) async {
     final List<Widget> children = List<Widget>.generate(20, (int i) {
       return SizedBox(
         height: 100.0,
@@ -586,7 +520,7 @@ void main() {
             height: 200.0,
             width: 300.0,
             child: SingleChildScrollView(
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 300.0),
               reverse: true,
               child: Column(
                 children: children.reversed.toList(),
@@ -617,9 +551,7 @@ void main() {
     expect(revealed.rect, const Rect.fromLTWH(40.0, 0.0, 10.0, 10.0));
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView getOffsetToReveal - right', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-    addTearDown(controller.dispose);
+  testWidgets('SingleChildScrollView getOffsetToReveal - right', (WidgetTester tester) async {
     List<Widget> children;
 
     await tester.pumpWidget(
@@ -631,7 +563,7 @@ void main() {
             width: 200.0,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 300.0),
               child: Row(
                 children: children = List<Widget>.generate(20, (int i) {
                   return SizedBox(
@@ -667,9 +599,7 @@ void main() {
     expect(revealed.rect, const Rect.fromLTWH(190.0, 40.0, 10.0, 10.0));
   });
 
-  testWidgetsWithLeakTracking('SingleChildScrollView getOffsetToReveal - left', (WidgetTester tester) async {
-    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
-    addTearDown(controller.dispose);
+  testWidgets('SingleChildScrollView getOffsetToReveal - left', (WidgetTester tester) async {
     final List<Widget> children = List<Widget>.generate(20, (int i) {
       return SizedBox(
         height: 300.0,
@@ -688,7 +618,7 @@ void main() {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               reverse: true,
-              controller: controller,
+              controller: ScrollController(initialScrollOffset: 300.0),
               child: Row(
                 children: children.reversed.toList(),
               ),
@@ -718,7 +648,7 @@ void main() {
     expect(revealed.rect, const Rect.fromLTWH(0.0, 40.0, 10.0, 10.0));
   });
 
-  testWidgetsWithLeakTracking('Nested SingleChildScrollView showOnScreen', (WidgetTester tester) async {
+  testWidgets('Nested SingleChildScrollView showOnScreen', (WidgetTester tester) async {
     final List<List<Widget>> children = List<List<Widget>>.generate(10, (int x) {
       return List<Widget>.generate(10, (int y) {
         return SizedBox(
@@ -728,10 +658,8 @@ void main() {
         );
       });
     });
-    late ScrollController controllerX;
-    addTearDown(() => controllerX.dispose());
-    late ScrollController controllerY;
-    addTearDown(() => controllerY.dispose());
+    ScrollController controllerX;
+    ScrollController controllerY;
 
     /// Builds a gird:
     ///
@@ -930,11 +858,9 @@ void main() {
       );
     }
 
-    testWidgetsWithLeakTracking('in view in inner, but not in outer', (WidgetTester tester) async {
+    testWidgets('in view in inner, but not in outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
-      addTearDown(inner.dispose);
       final ScrollController outer = ScrollController();
-      addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
         inner: inner,
@@ -949,11 +875,9 @@ void main() {
       expect(outer.offset, 100.0);
     });
 
-    testWidgetsWithLeakTracking('not in view of neither inner nor outer', (WidgetTester tester) async {
+    testWidgets('not in view of neither inner nor outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
-      addTearDown(inner.dispose);
       final ScrollController outer = ScrollController();
-      addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
         inner: inner,
@@ -968,11 +892,9 @@ void main() {
       expect(outer.offset, 200.0);
     });
 
-    testWidgetsWithLeakTracking('in view in inner and outer', (WidgetTester tester) async {
+    testWidgets('in view in inner and outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController(initialScrollOffset: 200.0);
-      addTearDown(inner.dispose);
       final ScrollController outer = ScrollController(initialScrollOffset: 200.0);
-      addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
         inner: inner,
@@ -987,11 +909,9 @@ void main() {
       expect(inner.offset, 200.0);
     });
 
-    testWidgetsWithLeakTracking('inner shown in outer, but item not visible', (WidgetTester tester) async {
+    testWidgets('inner shown in outer, but item not visible', (WidgetTester tester) async {
       final ScrollController inner = ScrollController(initialScrollOffset: 200.0);
-      addTearDown(inner.dispose);
       final ScrollController outer = ScrollController(initialScrollOffset: 200.0);
-      addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
         inner: inner,
@@ -1006,11 +926,9 @@ void main() {
       expect(inner.offset, 400.0);
     });
 
-    testWidgetsWithLeakTracking('inner half shown in outer, item only visible in inner', (WidgetTester tester) async {
+    testWidgets('inner half shown in outer, item only visible in inner', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
-      addTearDown(inner.dispose);
       final ScrollController outer = ScrollController(initialScrollOffset: 100.0);
-      addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
         inner: inner,
@@ -1026,13 +944,8 @@ void main() {
     });
   });
 
-  testWidgetsWithLeakTracking('keyboardDismissBehavior tests', (WidgetTester tester) async {
+  testWidgets('keyboardDismissBehavior tests', (WidgetTester tester) async {
     final List<FocusNode> focusNodes = List<FocusNode>.generate(50, (int i) => FocusNode());
-    addTearDown(() {
-      for (final FocusNode node in focusNodes) {
-        node.dispose();
-      }
-    });
 
     Future<void> boilerplate(ScrollViewKeyboardDismissBehavior behavior) {
       return tester.pumpWidget(

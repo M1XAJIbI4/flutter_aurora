@@ -1,53 +1,83 @@
-<!-- when updating this file also update https://github.com/flutter/.github/blob/main/CODE_OF_CONDUCT.md -->
+# Code of Conduct
 
-# Code of conduct
+## What is this code of conduct for?
 
-The Flutter project expects Flutter's contributors to act professionally
-and respectfully. Flutter contributors are expected to maintain the safety
-and dignity of Flutter's social environments (such as GitHub and Discord).
+Code of conduct is a current set of rules of the Open Mobile Platform
+which informs you how we expect
+the members of the Open Mobile Platform community
+will interact while contributing and communicating.
+We are committed to providing a friendly, safe and welcoming
+environment for all, regardless of gender, gender identity and expression,
+sexual orientation, ability, physical appearance, body size, race, age,
+socioeconomic status, religion (or lack thereof),
+or other marginalized aspect of community members.
+We expect all members of the Open Mobile Platform community
+to abide by this Code of Conduct whenever interacting
+in Open Mobile Platform venues
+(merge requests, pull requests, issues, 1-1 or group chat, meetups, conferences, etc.)
 
-Specifically:
+## Examples of appropriate behavior
 
-* Respect people, their identities, their culture, and their work.
-* Be kind. Be courteous. Be welcoming.
-* Listen. Consider and acknowledge people's points before responding.
+* Using welcoming and inclusive language.
+* Being respectful of differing viewpoints and experiences.
+* Gracefully accepting constructive criticism.
+* Focusing on what is best for the community.
+* Showing empathy towards other community members.
 
-Should you experience anything that makes you feel unwelcome in Flutter's
-community, please contact [conduct@flutter.dev](mailto:conduct@flutter.dev)
-or, if you prefer, directly contact someone on the project, for instance
-[Hixie](mailto:ian@hixie.ch).
+## Examples of inappropriate behavior
 
-The Flutter project will not tolerate harassment in Flutter's
-community, even outside of Flutter's public communication channels.
+Because we come from a variety of backgrounds,
+we do not want to assume that everyone has the same assumptions
+about what is and is not appropriate.
+Here are some examples of inappropriate behavior
+that are incompatible with our community's ethos:
 
-## Conflict resolution
+* spamming, trolling, intentionally disrupting conversations,
+  or irrelevant solicitation or advertisement;
+* making demeaning or discriminatory comments;
+* making negative assumptions about someone's background,
+  abilities, or intentions;
+* harassing or stalking individuals (online or in person).
 
-When multiple contributors disagree on the direction for a particular
-patch or the general direction of the project, the conflict should be
-resolved by communication. The people who disagree should get
-together, try to understand each other's points of view, and work to
-find a design that addresses everyone's concerns.
+In general: treat others how you would like to be treated,
+were you in their place.
+Do ask questions.
+Do keep conflicts productively focused on technical issues.
+Do remember that we are all people, not robots,
+and all equally deserving of sensitivity and respect.
 
-This is usually sufficient to resolve issues. If you cannot come to an
-agreement, ask for the advice of a more senior member of the project.
+## What will organizers do about inappropriate behavior?
 
-Be wary of agreement by attrition, where one person argues a point
-repeatedly until other participants give up in the interests of moving
-on. This is not conflict resolution, as it does not address everyone's
-concerns. Be wary of agreement by compromise, where two good competing
-solutions are merged into one mediocre solution. A conflict is
-addressed when the participants agree that the final solution is
-_better_ than all the conflicting proposals. Sometimes the solution is
-more work than either of the proposals. [Embrace the yak
-shave](https://github.com/flutter/flutter/wiki/Style-guide-for-Flutter-repo#lazy-programming).
+If we notice you doing or saying something inappropriate,
+an organizer will ask you to stop.
+We will not demonize you.
+But please do stop the inappropriate behavior
+so we can get back to writing and discussing code in a safe environment.
+If you have philosophical disagreements about what is actually inappropriate,
+please take them to a separate public or private conversation
+with an Open Mobile Platform maintainer
+so we don't turn pull requests into an ethics debate.
+If you keep doing unacceptable things,
+we will likely ban you, report you to the administration,
+or take other appropriate action.
 
-## Questions
+## What if I see or am subject to what feels like inappropriate behavior?
 
-It's always ok to ask questions. Our systems are large, and nobody will be
-an expert in all the systems. Once you find the answer, document it in
-the first place you looked. That way, the next person will be brought
-up to speed even quicker.
+Let us know.
+Please notify a community organizer as soon as possible.
+Full contact information is listed in the Contact Info section of this document.
+All communications will be kept strictly confidential,
+unless otherwise required by law.
+No issue will be considered too inconsequential or unimportant for us
+to have a conversation about.
 
-!["I try not to make fun of people for admitting they don't know things, because for each thing 'everyone knows' by the time they're adults, every day there are, on average, 10,000 people in the US hearing about it for the first time. If I make fun of people, I train them not to tell me when they have those moments. And I miss out on the fun." "Diet coke and mentos thing? What's that?" "Oh, man! We're going to the grocery store." "Why?" "You're one of today's lucky 10,000."](https://imgs.xkcd.com/comics/ten_thousand.png)
+## Contact Info
 
-Source: _[xkcd, May 2012](https://xkcd.com/1053/)_
+If you need to report an incident,
+please contact <community@omp.ru>.
+
+This work is licensed under a Creative Commons Attribution 3.0 Unported License
+For attribution requirements:
+«Open Mobile Platform Code of Conduct»
+Copyright (C) 2023 Open Mobile Platform LLC,
+used under a [Creative Commons Attribution Unported license](http://creativecommons.org/licenses/by/3.0/).

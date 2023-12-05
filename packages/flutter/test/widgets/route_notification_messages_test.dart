@@ -9,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 class OnTapPage extends StatelessWidget {
   const OnTapPage({super.key, required this.id, required this.onTap});
@@ -33,7 +32,7 @@ class OnTapPage extends StatelessWidget {
 }
 
 void main() {
-  testWidgetsWithLeakTracking('Push and Pop should send platform messages', (WidgetTester tester) async {
+  testWidgets('Push and Pop should send platform messages', (WidgetTester tester) async {
     final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
       '/': (BuildContext context) => OnTapPage(
           id: '/',
@@ -108,7 +107,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Navigator does not report route name by default', (WidgetTester tester) async {
+  testWidgets('Navigator does not report route name by default', (WidgetTester tester) async {
     final List<MethodCall> log = <MethodCall>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.navigation, (MethodCall methodCall) async {
       log.add(methodCall);
@@ -142,7 +141,7 @@ void main() {
     expect(log, hasLength(0));
   });
 
-  testWidgetsWithLeakTracking('Replace should send platform messages', (WidgetTester tester) async {
+  testWidgets('Replace should send platform messages', (WidgetTester tester) async {
     final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
       '/': (BuildContext context) => OnTapPage(
           id: '/',
@@ -218,7 +217,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Nameless routes should send platform messages', (WidgetTester tester) async {
+  testWidgets('Nameless routes should send platform messages', (WidgetTester tester) async {
     final List<MethodCall> log = <MethodCall>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.navigation, (MethodCall methodCall) async {
       log.add(methodCall);
@@ -262,7 +261,7 @@ void main() {
     expect(log, isEmpty);
   });
 
-  testWidgetsWithLeakTracking('PlatformRouteInformationProvider reports URL', (WidgetTester tester) async {
+  testWidgets('PlatformRouteInformationProvider reports URL', (WidgetTester tester) async {
     final List<MethodCall> log = <MethodCall>[];
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.navigation, (MethodCall methodCall) async {
       log.add(methodCall);
@@ -274,14 +273,12 @@ void main() {
         uri: Uri.parse('initial'),
       ),
     );
-    addTearDown(provider.dispose);
     final SimpleRouterDelegate delegate = SimpleRouterDelegate(
       reportConfiguration: true,
       builder: (BuildContext context, RouteInformation information) {
         return Text(information.uri.toString());
       },
     );
-    addTearDown(delegate.dispose);
 
     await tester.pumpWidget(MaterialApp.router(
       routeInformationProvider: provider,
@@ -316,12 +313,7 @@ void main() {
         'replace': false,
       }),
     ]);
-  },
-  leakTrackingTestConfig: const LeakTrackingTestConfig(
-    // TODO(ksokolovskyi): remove after fixing
-    // https://github.com/flutter/flutter/issues/134205
-    notDisposedAllowList: <String, int?> {'_RestorableRouteInformation': 1},
-  ));
+  });
 }
 
 typedef SimpleRouterDelegateBuilder = Widget Function(BuildContext, RouteInformation);
@@ -346,11 +338,7 @@ class SimpleRouterDelegate extends RouterDelegate<RouteInformation> with ChangeN
     required this.builder,
     this.onPopRoute,
     this.reportConfiguration = false,
-  }) {
-    if (kFlutterMemoryAllocationsEnabled) {
-      ChangeNotifier.maybeDispatchObjectCreation(this);
-    }
-  }
+  });
 
   RouteInformation get routeInformation => _routeInformation;
   late RouteInformation _routeInformation;

@@ -7,10 +7,12 @@
 @Tags(<String>['reduced-test-set'])
 library;
 
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
+import '../foundation/leak_tracking.dart';
 
 void main() {
   /*
@@ -18,26 +20,8 @@ void main() {
    * because [matchesGoldenFile] does not use Skia Gold in its native package.
    */
 
-  testWidgetsWithLeakTracking('recording disposes images',
-  (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('correctly records frames using collate', (WidgetTester tester) async {
     final AnimationSheetBuilder builder = AnimationSheetBuilder(frameSize: _DecuplePixels.size);
-    addTearDown(builder.dispose);
-
-    await tester.pumpFrames(
-      builder.record(
-        const _DecuplePixels(Duration(seconds: 1)),
-      ),
-      const Duration(milliseconds: 200),
-      const Duration(milliseconds: 100),
-    );
-  },
-    skip: isBrowser, // [intended] https://github.com/flutter/flutter/issues/56001
-  );
-
-  testWidgetsWithLeakTracking('correctly records frames using collate',
-  (WidgetTester tester) async {
-    final AnimationSheetBuilder builder = AnimationSheetBuilder(frameSize: _DecuplePixels.size);
-    addTearDown(builder.dispose);
 
     await tester.pumpFrames(
       builder.record(
@@ -64,20 +48,20 @@ void main() {
       const Duration(milliseconds: 100),
     );
 
+    final ui.Image image = await builder.collate(5);
+
     await expectLater(
-      builder.collate(5),
+      image,
       matchesGoldenFile('test.animation_sheet_builder.collate.png'),
     );
-  },
-    skip: isBrowser, // [intended] https://github.com/flutter/flutter/issues/56001
-  ); // https://github.com/flutter/flutter/issues/56001
+    image.dispose();
+  }, skip: isBrowser); // https://github.com/flutter/flutter/issues/56001
 
   testWidgetsWithLeakTracking('use allLayers to record out-of-subtree contents', (WidgetTester tester) async {
     final AnimationSheetBuilder builder = AnimationSheetBuilder(
       frameSize: const Size(8, 2),
       allLayers: true,
     );
-    addTearDown(builder.dispose);
 
     // The `record` (sized 8, 2) is placed on top of `_DecuplePixels`
     // (sized 12, 3), aligned at its top left.
@@ -98,13 +82,14 @@ void main() {
       const Duration(milliseconds: 100),
     );
 
+    final ui.Image image = await builder.collate(5);
+
     await expectLater(
-      builder.collate(5),
+      image,
       matchesGoldenFile('test.animation_sheet_builder.out_of_tree.png'),
     );
-  },
-    skip: isBrowser, // [intended] https://github.com/flutter/flutter/issues/56001
-  );
+    image.dispose();
+  }, skip: isBrowser); // https://github.com/flutter/flutter/issues/56001
 }
 
 // An animation of a yellow pixel moving from left to right, in a container of

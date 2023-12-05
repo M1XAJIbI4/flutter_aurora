@@ -45,7 +45,6 @@ export 'package:flutter/rendering.dart' show RenderBox, RenderObject, debugDumpL
 // late Object? _myState, newValue;
 // int _counter = 0;
 // Future<Directory> getApplicationDocumentsDirectory() async => Directory('');
-// late AnimationController animation;
 
 // An annotation used by test_analysis package to verify patterns are followed
 // that allow for tree-shaking of both fields and their initializers. This
@@ -994,7 +993,7 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   ///
   /// {@endtemplate}
   ///
-  /// You should not use [BuildContext.dependOnInheritedWidgetOfExactType] from this
+  /// You cannot use [BuildContext.dependOnInheritedWidgetOfExactType] from this
   /// method. However, [didChangeDependencies] will be called immediately
   /// following this method, and [BuildContext.dependOnInheritedWidgetOfExactType] can
   /// be used there.
@@ -1093,73 +1092,9 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   /// }
   /// ```
   ///
-  /// Sometimes, the changed state is in some other object not owned by the
-  /// widget [State], but the widget nonetheless needs to be updated to react to
-  /// the new state. This is especially common with [Listenable]s, such as
-  /// [AnimationController]s.
-  ///
-  /// In such cases, it is good practice to leave a comment in the callback
-  /// passed to [setState] that explains what state changed:
-  ///
-  /// ```dart
-  /// void _update() {
-  ///   setState(() { /* The animation changed. */ });
-  /// }
-  /// //...
-  /// animation.addListener(_update);
-  /// ```
-  ///
   /// It is an error to call this method after the framework calls [dispose].
   /// You can determine whether it is legal to call this method by checking
-  /// whether the [mounted] property is true. That said, it is better practice
-  /// to cancel whatever work might trigger the [setState] rather than merely
-  /// checking for [mounted] before calling [setState], as otherwise CPU cycles
-  /// will be wasted.
-  ///
-  /// ## Design discussion
-  ///
-  /// The original version of this API was a method called `markNeedsBuild`, for
-  /// consistency with [RenderObject.markNeedsLayout],
-  /// [RenderObject.markNeedsPaint], _et al_.
-  ///
-  /// However, early user testing of the Flutter framework revealed that people
-  /// would call `markNeedsBuild()` much more often than necessary. Essentially,
-  /// people used it like a good luck charm, any time they weren't sure if they
-  /// needed to call it, they would call it, just in case.
-  ///
-  /// Naturally, this led to performance issues in applications.
-  ///
-  /// When the API was changed to take a callback instead, this practice was
-  /// greatly reduced. One hypothesis is that prompting developers to actually
-  /// update their state in a callback caused developers to think more carefully
-  /// about what exactly was being updated, and thus improved their understanding
-  /// of the appropriate times to call the method.
-  ///
-  /// In practice, the [setState] method's implementation is trivial: it calls
-  /// the provided callback synchronously, then calls [Element.markNeedsBuild].
-  ///
-  /// ## Performance considerations
-  ///
-  /// There is minimal _direct_ overhead to calling this function, and as it is
-  /// expected to be called at most once per frame, the overhead is irrelevant
-  /// anyway. Nonetheless, it is best to avoid calling this function redundantly
-  /// (e.g. in a tight loop), as it does involve creating a closure and calling
-  /// it. The method is idempotent, there is no benefit to calling it more than
-  /// once per [State] per frame.
-  ///
-  /// The _indirect_ cost of causing this function, however, is high: it causes
-  /// the widget to rebuild, possibly triggering rebuilds for the entire subtree
-  /// rooted at this widget, and further triggering a relayout and repaint of
-  /// the entire corresponding [RenderObject] subtree.
-  ///
-  /// For this reason, this method should only be called when the [build] method
-  /// will, as a result of whatever state change was detected, change its result
-  /// meaningfully.
-  ///
-  /// See also:
-  ///
-  ///  * [StatefulWidget], the API documentation for which has a section on
-  ///    performance considerations that are relevant here.
+  /// whether the [mounted] property is true.
   @protected
   void setState(VoidCallback fn) {
     assert(() {
@@ -1302,23 +1237,6 @@ abstract class State<T extends StatefulWidget> with Diagnosticable {
   ///
   /// Implementations of this method should end with a call to the inherited
   /// method, as in `super.dispose()`.
-  ///
-  /// ## Application shutdown
-  ///
-  /// This method is _not_ invoked when the application shuts down, because
-  /// there is no way to predict when that will happen. For example, a user's
-  /// battery could catch fire, or the user could drop the device into a
-  /// swimming pool, or the operating system could unilaterally terminate the
-  /// application process due to memory pressure.
-  ///
-  /// Applications are responsible for ensuring that they are well-behaved
-  /// even in the face of a rapid unscheduled termination.
-  ///
-  /// To artificially cause the entire widget tree to be disposed, consider
-  /// calling [runApp] with a widget such as [SizedBox.shrink].
-  ///
-  /// To listen for platform shutdown messages (and other lifecycle changes),
-  /// consider the [AppLifecycleListener] API.
   ///
   /// See also:
   ///
@@ -1592,39 +1510,12 @@ abstract class ParentDataWidget<T extends ParentData> extends ProxyWidget {
     return renderObject.parentData is T;
   }
 
-  /// Describes the [RenderObjectWidget] that is typically used to set up the
-  /// [ParentData] that [applyParentData] will write to.
+  /// The [RenderObjectWidget] that is typically used to set up the [ParentData]
+  /// that [applyParentData] will write to.
   ///
   /// This is only used in error messages to tell users what widget typically
-  /// wraps this [ParentDataWidget] through
-  /// [debugTypicalAncestorWidgetDescription].
-  ///
-  /// ## Implementations
-  ///
-  /// The returned Type should describe a subclass of `RenderObjectWidget`. If
-  /// more than one Type is supported, use
-  /// [debugTypicalAncestorWidgetDescription], which typically inserts this
-  /// value but can be overridden to describe more than one Type.
-  ///
-  /// ```dart
-  ///   @override
-  ///   Type get debugTypicalAncestorWidgetClass => FrogJar;
-  /// ```
-  ///
-  /// If the "typical" parent is generic (`Foo<T>`), consider specifying either
-  /// a typical type argument (e.g. `Foo<int>` if `int` is typically how the
-  /// type is specialized), or specifying the upper bound (e.g. `Foo<Object?>`).
+  /// wraps this ParentDataWidget.
   Type get debugTypicalAncestorWidgetClass;
-
-  /// Describes the [RenderObjectWidget] that is typically used to set up the
-  /// [ParentData] that [applyParentData] will write to.
-  ///
-  /// This is only used in error messages to tell users what widget typically
-  /// wraps this [ParentDataWidget].
-  ///
-  /// Returns [debugTypicalAncestorWidgetClass] by default as a String. This can
-  /// be overridden to describe more than one Type of valid parent.
-  String get debugTypicalAncestorWidgetDescription => '$debugTypicalAncestorWidgetClass';
 
   Iterable<DiagnosticsNode> _debugDescribeIncorrectParentDataType({
     required ParentData? parentData,
@@ -1646,7 +1537,7 @@ abstract class ParentDataWidget<T extends ParentData> extends ProxyWidget {
         ),
       ErrorHint(
         'Usually, this means that the $runtimeType widget has the wrong ancestor RenderObjectWidget. '
-        'Typically, $runtimeType widgets are placed directly inside $debugTypicalAncestorWidgetDescription widgets.',
+        'Typically, $runtimeType widgets are placed directly inside $debugTypicalAncestorWidgetClass widgets.',
       ),
       if (parentDataCreator != null)
         ErrorHint(
@@ -1860,20 +1751,16 @@ abstract class InheritedWidget extends ProxyWidget {
   bool updateShouldNotify(covariant InheritedWidget oldWidget);
 }
 
-/// [RenderObjectWidget]s provide the configuration for [RenderObjectElement]s,
+/// RenderObjectWidgets provide the configuration for [RenderObjectElement]s,
 /// which wrap [RenderObject]s, which provide the actual rendering of the
 /// application.
 ///
-/// Usually, rather than subclassing [RenderObjectWidget] directly, render
-/// object widgets subclass one of:
+/// See also:
 ///
-///  * [LeafRenderObjectWidget], if the widget has no children.
-///  * [SingleChildRenderObjectElement], if the widget has exactly one child.
-///  * [MultiChildRenderObjectWidget], if the widget takes a list of children.
-///  * [SlottedMultiChildRenderObjectWidget], if the widget organizes its
-///    children in different named slots.
-///
-/// Subclasses must implement [createRenderObject] and [updateRenderObject].
+///  * [MultiChildRenderObjectWidget], which configures a [RenderObject] with
+///    a single list of children.
+///  * [SlottedMultiChildRenderObjectWidget], which configures a
+///    [RenderObject] that organizes its children in different named slots.
 abstract class RenderObjectWidget extends Widget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
@@ -1916,10 +1803,8 @@ abstract class RenderObjectWidget extends Widget {
   void didUnmountRenderObject(covariant RenderObject renderObject) { }
 }
 
-/// A superclass for [RenderObjectWidget]s that configure [RenderObject] subclasses
+/// A superclass for RenderObjectWidgets that configure RenderObject subclasses
 /// that have no children.
-///
-/// Subclasses must implement [createRenderObject] and [updateRenderObject].
 abstract class LeafRenderObjectWidget extends RenderObjectWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
@@ -1930,14 +1815,13 @@ abstract class LeafRenderObjectWidget extends RenderObjectWidget {
 }
 
 /// A superclass for [RenderObjectWidget]s that configure [RenderObject] subclasses
-/// that have a single child slot.
+/// that have a single child slot. (This superclass only provides the storage
+/// for that child, it doesn't actually provide the updating logic.)
 ///
-/// The render object assigned to this widget should make use of
+/// Typically, the render object assigned to this widget will make use of
 /// [RenderObjectWithChildMixin] to implement a single-child model. The mixin
-/// exposes a [RenderObjectWithChildMixin.child] property that allows retrieving
-/// the render object belonging to the [child] widget.
-///
-/// Subclasses must implement [createRenderObject] and [updateRenderObject].
+/// exposes a [RenderObjectWithChildMixin.child] property that allows
+/// retrieving the render object belonging to the [child] widget.
 abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
@@ -1957,14 +1841,12 @@ abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
 /// storage for that child list, it doesn't actually provide the updating
 /// logic.)
 ///
-/// Subclasses must use a [RenderObject] that mixes in
+/// Subclasses must return a [RenderObject] that mixes in
 /// [ContainerRenderObjectMixin], which provides the necessary functionality to
 /// visit the children of the container render object (the render object
-/// belonging to the [children] widgets). Typically, subclasses will use a
+/// belonging to the [children] widgets). Typically, subclasses will return a
 /// [RenderBox] that mixes in both [ContainerRenderObjectMixin] and
 /// [RenderBoxContainerDefaultsMixin].
-///
-/// Subclasses must implement [createRenderObject] and [updateRenderObject].
 ///
 /// See also:
 ///
@@ -1976,6 +1858,9 @@ abstract class SingleChildRenderObjectWidget extends RenderObjectWidget {
 ///    its children in named slots.
 abstract class MultiChildRenderObjectWidget extends RenderObjectWidget {
   /// Initializes fields for subclasses.
+  ///
+  /// The [children] argument must not be null and must not contain any null
+  /// objects.
   const MultiChildRenderObjectWidget({ super.key, this.children = const <Widget>[] });
 
   /// The widgets below this widget in the tree.
@@ -2355,8 +2240,7 @@ abstract class BuildContext {
   /// again if the inherited value were to change. To ensure that the widget
   /// correctly updates itself when the inherited value changes, only call this
   /// (directly or indirectly) from build methods, layout and paint callbacks,
-  /// or from [State.didChangeDependencies] (which is called immediately after
-  /// [State.initState]).
+  /// or from [State.didChangeDependencies].
   ///
   /// This method should not be called from [State.dispose] because the element
   /// tree is no longer stable at that time. To refer to an ancestor from that
@@ -3121,7 +3005,7 @@ class BuildOwner {
           assert(_globalKeyRegistry.containsKey(key));
           duplicates ??= <GlobalKey, Set<Element>>{};
           // Uses ordered set to produce consistent error message.
-          final Set<Element> elements = duplicates.putIfAbsent(key, () => <Element>{});
+          final Set<Element> elements = duplicates.putIfAbsent(key, () => LinkedHashSet<Element>());
           elements.add(element);
           elements.add(_globalKeyRegistry[key]!);
         }
@@ -3266,13 +3150,14 @@ class BuildOwner {
   /// changed implementations.
   ///
   /// This is expensive and should not be called except during development.
-  void reassemble(Element root) {
+  void reassemble(Element root, DebugReassembleConfig? reassembleConfig) {
     if (!kReleaseMode) {
       FlutterTimeline.startSync('Preparing Hot Reload (widgets)');
     }
     try {
       assert(root._parent == null);
       assert(root.owner == this);
+      root._debugReassembleConfig = reassembleConfig;
       root.reassemble();
     } finally {
       if (!kReleaseMode) {
@@ -3387,6 +3272,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   }
 
   Element? _parent;
+  DebugReassembleConfig? _debugReassembleConfig;
   _NotificationNode? _notificationTree;
 
   /// Compare two widgets for equality.
@@ -3538,10 +3424,15 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   @mustCallSuper
   @protected
   void reassemble() {
-    markNeedsBuild();
+    if (_debugShouldReassemble(_debugReassembleConfig, _widget)) {
+      markNeedsBuild();
+      _debugReassembleConfig = null;
+    }
     visitChildren((Element child) {
+      child._debugReassembleConfig = _debugReassembleConfig;
       child.reassemble();
     });
+    _debugReassembleConfig = null;
   }
 
   bool _debugIsInScope(Element target) {
@@ -3560,11 +3451,6 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   /// If this object is a [RenderObjectElement], the render object is the one at
   /// this location in the tree. Otherwise, this getter will walk down the tree
   /// until it finds a [RenderObjectElement].
-  ///
-  /// Some locations in the tree are not backed by a render object. In those
-  /// cases, this getter returns null. This can happen, if the element is
-  /// located outside of a [View] since only the element subtree rooted in a
-  /// view has a render tree associated with it.
   RenderObject? get renderObject {
     Element? current = this;
     while (current != null) {
@@ -3573,31 +3459,15 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
       } else if (current is RenderObjectElement) {
         return current.renderObject;
       } else {
-        current = current.renderObjectAttachingChild;
+        Element? next;
+        current.visitChildren((Element child) {
+          assert(next == null);  // This verifies that there's only one child.
+          next = child;
+        });
+        current = next;
       }
     }
     return null;
-  }
-
-  /// Returns the child of this [Element] that will insert a [RenderObject] into
-  /// an ancestor of this Element to construct the render tree.
-  ///
-  /// Returns null if this Element doesn't have any children who need to attach
-  /// a [RenderObject] to an ancestor of this [Element]. A [RenderObjectElement]
-  /// will therefore return null because its children insert their
-  /// [RenderObject]s into the [RenderObjectElement] itself and not into an
-  /// ancestor of the [RenderObjectElement].
-  ///
-  /// Furthermore, this may return null for [Element]s that hoist their own
-  /// independent render tree and do not extend the ancestor render tree.
-  @protected
-  Element? get renderObjectAttachingChild {
-    Element? next;
-    visitChildren((Element child) {
-      assert(next == null);  // This verifies that there's only one child.
-      next = child;
-    });
-    return next;
   }
 
   @override
@@ -4150,20 +4020,15 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     assert(_lifecycleState == _ElementLifecycle.active);
     assert(child._parent == this);
     void visit(Element element) {
-      element.updateSlot(newSlot);
-      final Element? descendant = element.renderObjectAttachingChild;
-      if (descendant != null) {
-        visit(descendant);
+      element._updateSlot(newSlot);
+      if (element is! RenderObjectElement) {
+        element.visitChildren(visit);
       }
     }
     visit(child);
   }
 
-  /// Called by [updateSlotForChild] when the framework needs to change the slot
-  /// that this [Element] occupies in its ancestor.
-  @protected
-  @mustCallSuper
-  void updateSlot(Object? newSlot) {
+  void _updateSlot(Object? newSlot) {
     assert(_lifecycleState == _ElementLifecycle.active);
     assert(_parent != null);
     assert(_parent!._lifecycleState == _ElementLifecycle.active);
@@ -4204,7 +4069,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   ///
   /// The `newSlot` argument specifies the new value for this element's [slot].
   void attachRenderObject(Object? newSlot) {
-    assert(slot == null);
+    assert(_slot == null);
     visitChildren((Element child) {
       child.attachRenderObject(newSlot);
     });
@@ -4277,6 +4142,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
   @protected
   @pragma('vm:prefer-inline')
   Element inflateWidget(Widget newWidget, Object? newSlot) {
+
     final bool isTimelineTracked = !kReleaseMode && _isProfileBuildsEnabledFor(newWidget);
     if (isTimelineTracked) {
       Map<String, String>? debugTimelineArguments;
@@ -4302,17 +4168,7 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
             _debugCheckForCycles(newChild);
             return true;
           }());
-          try {
-            newChild._activateWithParent(this, newSlot);
-          } catch (_) {
-            // Attempt to do some clean-up if activation fails to leave tree in a reasonable state.
-            try {
-              deactivateChild(newChild);
-            } catch (_) {
-              // Clean-up failed. Only surface original exception.
-            }
-            rethrow;
-          }
+          newChild._activateWithParent(this, newSlot);
           final Element? updatedChild = updateChild(newChild, newWidget, newSlot);
           assert(newChild == updatedChild);
           return updatedChild!;
@@ -4546,33 +4402,6 @@ abstract class Element extends DiagnosticableTree implements BuildContext {
     _dependencies = null;
     _lifecycleState = _ElementLifecycle.defunct;
   }
-
-  /// Whether the child in the provided `slot` (or one of its descendants) must
-  /// insert a [RenderObject] into its ancestor [RenderObjectElement] by calling
-  /// [RenderObjectElement.insertRenderObjectChild] on it.
-  ///
-  /// This method is used to define non-rendering zones in the element tree (see
-  /// [WidgetsBinding] for an explanation of rendering and non-rendering zones):
-  ///
-  /// Most branches of the [Element] tree are expected to eventually insert a
-  /// [RenderObject] into their [RenderObjectElement] ancestor to construct the
-  /// render tree. However, there is a notable exception: an [Element] may
-  /// expect that the occupant of a certain child slot creates a new independent
-  /// render tree and therefore is not allowed to insert a render object into
-  /// the existing render tree. Those elements must return false from this
-  /// method for the slot in question to signal to the child in that slot that
-  /// it must not call [RenderObjectElement.insertRenderObjectChild] on its
-  /// ancestor.
-  ///
-  /// As an example, the element backing the [ViewAnchor] returns false from
-  /// this method for the [ViewAnchor.view] slot to enforce that it is occupied
-  /// by e.g. a [View] widget, which will ultimately bootstrap a separate
-  /// render tree for that view. Another example is the [ViewCollection] widget,
-  /// which returns false for all its slots for the same reason.
-  ///
-  /// Overriding this method is not common, as elements behaving in the way
-  /// described above are rare.
-  bool debugExpectsRenderObjectForSlot(Object? slot) => true;
 
   @override
   RenderObject? findRenderObject() {
@@ -5356,7 +5185,7 @@ class ErrorWidget extends LeafRenderObjectWidget {
     if (_flutterError == null) {
       properties.add(StringProperty('message', message, quoted: false));
     } else {
-      properties.add(_flutterError.toDiagnosticsNode(style: DiagnosticsTreeStyle.whitespace));
+      properties.add(_flutterError!.toDiagnosticsNode(style: DiagnosticsTreeStyle.whitespace));
     }
   }
 }
@@ -5435,9 +5264,6 @@ abstract class ComponentElement extends Element {
   bool _debugDoingBuild = false;
   @override
   bool get debugDoingBuild => _debugDoingBuild;
-
-  @override
-  Element? get renderObjectAttachingChild => _child;
 
   @override
   void mount(Element? parent, Object? newSlot) {
@@ -5592,7 +5418,9 @@ class StatefulElement extends ComponentElement {
 
   @override
   void reassemble() {
-    state.reassemble();
+    if (_debugShouldReassemble(_debugReassembleConfig, _widget)) {
+      state.reassemble();
+    }
     super.reassemble();
   }
 
@@ -5824,28 +5652,12 @@ class ParentDataElement<T extends ParentData> extends ProxyElement {
   /// Creates an element that uses the given widget as its configuration.
   ParentDataElement(ParentDataWidget<T> super.widget);
 
-  /// Returns the [Type] of [ParentData] that this element has been configured
-  /// for.
-  ///
-  /// This is only available in debug mode. It will throw in profile and
-  /// release modes.
-  Type get debugParentDataType {
-    Type? type;
-    assert(() {
-      type = T;
-      return true;
-    }());
-    if (type != null) {
-      return type!;
-    }
-    throw UnsupportedError('debugParentDataType is only supported in debug builds');
-  }
-
   void _applyParentData(ParentDataWidget<T> widget) {
     void applyParentDataToChild(Element child) {
       if (child is RenderObjectElement) {
         child._updateParentData(widget);
       } else {
+        assert(child is! ParentDataElement<ParentData>);
         child.visitChildren(applyParentDataToChild);
       }
     }
@@ -6260,9 +6072,6 @@ abstract class RenderObjectElement extends Element {
   }
   RenderObject? _renderObject;
 
-  @override
-  Element? get renderObjectAttachingChild => null;
-
   bool _debugDoingBuild = false;
   @override
   bool get debugDoingBuild => _debugDoingBuild;
@@ -6272,144 +6081,53 @@ abstract class RenderObjectElement extends Element {
   RenderObjectElement? _findAncestorRenderObjectElement() {
     Element? ancestor = _parent;
     while (ancestor != null && ancestor is! RenderObjectElement) {
-      // In debug mode we check whether the ancestor accepts RenderObjects to
-      // produce a better error message in attachRenderObject. In release mode,
-      // we assume only correct trees are built (i.e.
-      // debugExpectsRenderObjectForSlot always returns true) and don't check
-      // explicitly.
-      assert(() {
-        if (!ancestor!.debugExpectsRenderObjectForSlot(slot)) {
-          ancestor = null;
-        }
-        return true;
-      }());
-      ancestor = ancestor?._parent;
+      ancestor = ancestor._parent;
     }
-    assert(() {
-      if (ancestor?.debugExpectsRenderObjectForSlot(slot) == false) {
-        ancestor = null;
-      }
-      return true;
-    }());
     return ancestor as RenderObjectElement?;
   }
 
-  void _debugCheckCompetingAncestors(
-    List<ParentDataElement<ParentData>> result,
-    Set<Type> debugAncestorTypes,
-    Set<Type> debugParentDataTypes,
-    List<Type> debugAncestorCulprits,
-  ) {
+  ParentDataElement<ParentData>? _findAncestorParentDataElement() {
+    Element? ancestor = _parent;
+    ParentDataElement<ParentData>? result;
+    while (ancestor != null && ancestor is! RenderObjectElement) {
+      if (ancestor is ParentDataElement<ParentData>) {
+        result = ancestor;
+        break;
+      }
+      ancestor = ancestor._parent;
+    }
     assert(() {
-      // Check that no other ParentDataWidgets of the same
-      // type want to provide parent data.
-      if (debugAncestorTypes.length != result.length || debugParentDataTypes.length != result.length) {
-        // This can only occur if the Sets of ancestors and parent data types was
-        // provided a dupe and did not add it.
-        assert(debugAncestorTypes.length < result.length || debugParentDataTypes.length < result.length);
+      if (result == null || ancestor == null) {
+        return true;
+      }
+      // Check that no other ParentDataWidgets want to provide parent data.
+      final List<ParentDataElement<ParentData>> badAncestors = <ParentDataElement<ParentData>>[];
+      ancestor = ancestor!._parent;
+      while (ancestor != null && ancestor is! RenderObjectElement) {
+        if (ancestor is ParentDataElement<ParentData>) {
+          badAncestors.add(ancestor! as ParentDataElement<ParentData>);
+        }
+        ancestor = ancestor!._parent;
+      }
+      if (badAncestors.isNotEmpty) {
+        badAncestors.insert(0, result);
         try {
           // We explicitly throw here (even though we immediately redirect the
           // exception elsewhere) so that debuggers will notice it when they
           // have "break on exception" enabled.
           throw FlutterError.fromParts(<DiagnosticsNode>[
             ErrorSummary('Incorrect use of ParentDataWidget.'),
-            ErrorDescription(
-              'Competing ParentDataWidgets are providing parent data to the '
-              'same RenderObject:'
-            ),
-            for (final ParentDataElement<ParentData> ancestor in result.where((ParentDataElement<ParentData> ancestor) {
-              return debugAncestorCulprits.contains(ancestor.runtimeType);
-            }))
-              ErrorDescription(
-                '- ${ancestor.widget}, which writes ParentData of type '
-                '${ancestor.debugParentDataType}, (typically placed directly '
-                'inside a '
-                '${(ancestor.widget as ParentDataWidget<ParentData>).debugTypicalAncestorWidgetClass} '
-                'widget)'
-              ),
-            ErrorDescription(
-              'A RenderObject can receive parent data from multiple '
-              'ParentDataWidgets, but the Type of ParentData must be unique to '
-              'prevent one overwriting another.'
-            ),
-            ErrorHint(
-              'Usually, this indicates that one or more of the offending '
-              "ParentDataWidgets listed above isn't placed inside a dedicated "
-              "compatible ancestor widget that it isn't sharing with another "
-              'ParentDataWidget of the same type.'
-            ),
-            ErrorHint(
-              'Otherwise, separating aspects of ParentData to prevent '
-              'conflicts can be done using mixins, mixing them all in on the '
-              'full ParentData Object, such as KeepAlive does with '
-              'KeepAliveParentDataMixin.'
-            ),
-            ErrorDescription(
-              'The ownership chain for the RenderObject that received the '
-              'parent data was:\n  ${debugGetCreatorChain(10)}'
-            ),
+            ErrorDescription('The following ParentDataWidgets are providing parent data to the same RenderObject:'),
+            for (final ParentDataElement<ParentData> ancestor in badAncestors)
+              ErrorDescription('- ${ancestor.widget} (typically placed directly inside a ${(ancestor.widget as ParentDataWidget<ParentData>).debugTypicalAncestorWidgetClass} widget)'),
+            ErrorDescription('However, a RenderObject can only receive parent data from at most one ParentDataWidget.'),
+            ErrorHint('Usually, this indicates that at least one of the offending ParentDataWidgets listed above is not placed directly inside a compatible ancestor widget.'),
+            ErrorDescription('The ownership chain for the RenderObject that received the parent data was:\n  ${debugGetCreatorChain(10)}'),
           ]);
-        } on FlutterError catch (error) {
-          _reportException(
-            ErrorSummary('while looking for parent data.'),
-            error,
-            error.stackTrace,
-          );
+        } on FlutterError catch (e) {
+          _reportException(ErrorSummary('while looking for parent data.'), e, e.stackTrace);
         }
       }
-      return true;
-    }());
-  }
-
-  List<ParentDataElement<ParentData>> _findAncestorParentDataElements() {
-    Element? ancestor = _parent;
-    final List<ParentDataElement<ParentData>> result = <ParentDataElement<ParentData>>[];
-    final Set<Type> debugAncestorTypes = <Type>{};
-    final Set<Type> debugParentDataTypes = <Type>{};
-    final List<Type> debugAncestorCulprits = <Type>[];
-
-    // More than one ParentDataWidget can contribute ParentData, but there are
-    // some constraints.
-    // 1. ParentData can only be written by unique ParentDataWidget types.
-    //    For example, two KeepAlive ParentDataWidgets trying to write to the
-    //    same child is not allowed.
-    // 2. Each contributing ParentDataWidget must contribute to a unique
-    //    ParentData type, less ParentData be overwritten.
-    //    For example, there cannot be two ParentDataWidgets that both write
-    //    ParentData of type KeepAliveParentDataMixin, if the first check was
-    //    subverted by a subclassing of the KeepAlive ParentDataWidget.
-    // 3. The ParentData itself must be compatible with all ParentDataWidgets
-    //    writing to it.
-    //    For example, TwoDimensionalViewportParentData uses the
-    //    KeepAliveParentDataMixin, so it could be compatible with both
-    //    KeepAlive, and another ParentDataWidget with ParentData type
-    //    TwoDimensionalViewportParentData or a subclass thereof.
-    // The first and second cases are verified here. The third is verified in
-    // debugIsValidRenderObject.
-
-    while (ancestor != null && ancestor is! RenderObjectElement) {
-      if (ancestor is ParentDataElement<ParentData>) {
-        assert((ParentDataElement<ParentData> ancestor) {
-          if (!debugAncestorTypes.add(ancestor.runtimeType) || !debugParentDataTypes.add(ancestor.debugParentDataType)) {
-            debugAncestorCulprits.add(ancestor.runtimeType);
-          }
-          return true;
-        }(ancestor));
-        result.add(ancestor);
-      }
-      ancestor = ancestor._parent;
-    }
-    assert(() {
-      if (result.isEmpty || ancestor == null) {
-        return true;
-      }
-      // Validate points 1 and 2 from above.
-      _debugCheckCompetingAncestors(
-        result,
-        debugAncestorTypes,
-        debugParentDataTypes,
-        debugAncestorCulprits,
-      );
       return true;
     }());
     return result;
@@ -6432,7 +6150,7 @@ abstract class RenderObjectElement extends Element {
       _debugUpdateRenderObjectOwner();
       return true;
     }());
-    assert(slot == newSlot);
+    assert(_slot == newSlot);
     attachRenderObject(newSlot);
     super.performRebuild(); // clears the "dirty" flag
   }
@@ -6533,13 +6251,12 @@ abstract class RenderObjectElement extends Element {
   }
 
   @override
-  void updateSlot(Object? newSlot) {
+  void _updateSlot(Object? newSlot) {
     final Object? oldSlot = slot;
     assert(oldSlot != newSlot);
-    super.updateSlot(newSlot);
+    super._updateSlot(newSlot);
     assert(slot == newSlot);
-    assert(_ancestorRenderObjectElement == _findAncestorRenderObjectElement());
-    _ancestorRenderObjectElement?.moveRenderObjectChild(renderObject, oldSlot, slot);
+    _ancestorRenderObjectElement!.moveRenderObjectChild(renderObject, oldSlot, slot);
   }
 
   @override
@@ -6547,28 +6264,9 @@ abstract class RenderObjectElement extends Element {
     assert(_ancestorRenderObjectElement == null);
     _slot = newSlot;
     _ancestorRenderObjectElement = _findAncestorRenderObjectElement();
-    assert(() {
-      if (_ancestorRenderObjectElement == null) {
-        FlutterError.reportError(FlutterErrorDetails(exception: FlutterError.fromParts(
-        <DiagnosticsNode>[
-          ErrorSummary(
-            'The render object for ${toStringShort()} cannot find ancestor render object to attach to.',
-          ),
-          ErrorDescription(
-            'The ownership chain for the RenderObject in question was:\n  ${debugGetCreatorChain(10)}',
-          ),
-          ErrorHint(
-            'Try wrapping your widget in a View widget or any other widget that is backed by '
-            'a $RenderTreeRootElement to serve as the root of the render tree.',
-          ),
-        ]
-        )));
-      }
-      return true;
-    }());
     _ancestorRenderObjectElement?.insertRenderObjectChild(renderObject, newSlot);
-    final List<ParentDataElement<ParentData>> parentDataElements = _findAncestorParentDataElements();
-    for (final ParentDataElement<ParentData> parentDataElement in parentDataElements) {
+    final ParentDataElement<ParentData>? parentDataElement = _findAncestorParentDataElement();
+    if (parentDataElement != null) {
       _updateParentData(parentDataElement.widget as ParentDataWidget<ParentData>);
     }
   }
@@ -6707,8 +6405,8 @@ class LeafRenderObjectElement extends RenderObjectElement {
 ///
 /// The child is optional.
 ///
-/// This element subclass can be used for [RenderObjectWidget]s whose
-/// [RenderObject]s use the [RenderObjectWithChildMixin] mixin. Such widgets are
+/// This element subclass can be used for RenderObjectWidgets whose
+/// RenderObjects use the [RenderObjectWithChildMixin] mixin. Such widgets are
 /// expected to inherit from [SingleChildRenderObjectWidget].
 class SingleChildRenderObjectElement extends RenderObjectElement {
   /// Creates an element that uses the given widget as its configuration.
@@ -6769,8 +6467,8 @@ class SingleChildRenderObjectElement extends RenderObjectElement {
 
 /// An [Element] that uses a [MultiChildRenderObjectWidget] as its configuration.
 ///
-/// This element subclass can be used for [RenderObjectWidget]s whose
-/// [RenderObject]s use the [ContainerRenderObjectMixin] mixin with a parent data
+/// This element subclass can be used for RenderObjectWidgets whose
+/// RenderObjects use the [ContainerRenderObjectMixin] mixin with a parent data
 /// type that implements [ContainerParentDataMixin<RenderObject>]. Such widgets
 /// are expected to inherit from [MultiChildRenderObjectWidget].
 ///
@@ -6898,67 +6596,6 @@ class MultiChildRenderObjectElement extends RenderObjectElement {
   }
 }
 
-/// A [RenderObjectElement] used to manage the root of a render tree.
-///
-/// Unlike any other render object element this element does not attempt to
-/// attach its [renderObject] to the closest ancestor [RenderObjectElement].
-/// Instead, subclasses must override [attachRenderObject] and
-/// [detachRenderObject] to attach/detach the [renderObject] to whatever
-/// instance manages the render tree (e.g. by assigning it to
-/// [PipelineOwner.rootNode]).
-abstract class RenderTreeRootElement extends RenderObjectElement {
-  /// Creates an element that uses the given widget as its configuration.
-  RenderTreeRootElement(super.widget);
-
-  @override
-  @mustCallSuper
-  void attachRenderObject(Object? newSlot) {
-    _slot = newSlot;
-    assert(_debugCheckMustNotAttachRenderObjectToAncestor());
-  }
-
-  @override
-  @mustCallSuper
-  void detachRenderObject() {
-    _slot = null;
-  }
-
-  @override
-  void updateSlot(Object? newSlot) {
-    super.updateSlot(newSlot);
-    assert(_debugCheckMustNotAttachRenderObjectToAncestor());
-  }
-
-  bool _debugCheckMustNotAttachRenderObjectToAncestor() {
-    if (!kDebugMode) {
-      return true;
-    }
-    if (_findAncestorRenderObjectElement() != null) {
-      throw FlutterError.fromParts(
-        <DiagnosticsNode>[
-          ErrorSummary(
-            'The RenderObject for ${toStringShort()} cannot maintain an independent render tree at its current location.',
-          ),
-          ErrorDescription(
-            'The ownership chain for the RenderObject in question was:\n  ${debugGetCreatorChain(10)}',
-          ),
-          ErrorDescription(
-            'This RenderObject is the root of an independent render tree and it cannot '
-            'attach itself to an ancestor in an existing tree. The ancestor RenderObject, '
-            'however, expects that a child will be attached.',
-          ),
-          ErrorHint(
-            'Try moving the subtree that contains the ${toStringShort()} widget into the '
-            'view property of a ViewAnchor widget or to the root of the widget tree, where '
-            'it is not expected to attach its RenderObject to a parent.',
-          ),
-        ],
-      );
-    }
-    return true;
-  }
-}
-
 /// A wrapper class for the [Element] that is the creator of a [RenderObject].
 ///
 /// Setting a [DebugCreator] as [RenderObject.debugCreator] will lead to better
@@ -7046,4 +6683,10 @@ class _NullWidget extends Widget {
 
   @override
   Element createElement() => throw UnimplementedError();
+}
+
+// Whether a [DebugReassembleConfig] indicates that an element holding [widget] can skip
+// a reassemble.
+bool _debugShouldReassemble(DebugReassembleConfig? config, Widget? widget) {
+  return config == null || config.widgetName == null || widget?.runtimeType.toString() == config.widgetName;
 }

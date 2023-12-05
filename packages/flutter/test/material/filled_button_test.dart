@@ -7,11 +7,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+import '../rendering/mock_canvas.dart';
 import '../widgets/semantics_tester.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('FilledButton, FilledButton.icon defaults', (WidgetTester tester) async {
+  testWidgets('FilledButton, FilledButton.icon defaults', (WidgetTester tester) async {
     const ColorScheme colorScheme = ColorScheme.light();
     final ThemeData theme = ThemeData.from(useMaterial3: false, colorScheme: colorScheme);
 
@@ -124,7 +125,7 @@ void main() {
     expect(material.type, MaterialType.button);
   });
 
-  testWidgetsWithLeakTracking('FilledButton.tonal, FilledButton.tonalIcon defaults', (WidgetTester tester) async {
+  testWidgets('FilledButton.tonal, FilledButton.tonalIcon defaults', (WidgetTester tester) async {
     const ColorScheme colorScheme = ColorScheme.light();
     final ThemeData theme = ThemeData.from(colorScheme: colorScheme);
 
@@ -237,9 +238,8 @@ void main() {
     expect(material.type, MaterialType.button);
   });
 
-  testWidgetsWithLeakTracking('Default FilledButton meets a11y contrast guidelines', (WidgetTester tester) async {
+  testWidgets('Default FilledButton meets a11y contrast guidelines', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
-    addTearDown(focusNode.dispose);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -277,7 +277,7 @@ void main() {
     skip: isBrowser, // https://github.com/flutter/flutter/issues/44115
   );
 
-  testWidgetsWithLeakTracking('FilledButton default overlayColor and elevation resolve pressed state', (WidgetTester tester) async {
+  testWidgets('FilledButton default overlayColor and elevation resolve pressed state', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
     final ThemeData theme = ThemeData(useMaterial3: true);
 
@@ -340,10 +340,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(elevation(), 0.0);
     expect(overlayColor(), paints..rect(color: theme.colorScheme.onPrimary.withOpacity(0.12)));
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('FilledButton.tonal default overlayColor and elevation resolve pressed state', (WidgetTester tester) async {
+  testWidgets('FilledButton.tonal default overlayColor and elevation resolve pressed state', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
     final ThemeData theme = ThemeData(useMaterial3: true);
 
@@ -406,10 +405,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(elevation(), 0.0);
     expect(overlayColor(), paints..rect(color: theme.colorScheme.onSecondaryContainer.withOpacity(0.12)));
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('FilledButton uses stateful color for text color in different states', (WidgetTester tester) async {
+  testWidgets('FilledButton uses stateful color for text color in different states', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
 
     const Color pressedColor = Color(0x00000001);
@@ -482,11 +480,10 @@ void main() {
     await tester.pump(); // Start the splash and highlight animations.
     await tester.pump(const Duration(milliseconds: 800)); // Wait for splash and highlight to be well under way.
     expect(textColor(), pressedColor);
-    focusNode.dispose();
   });
 
 
-  testWidgetsWithLeakTracking('FilledButton uses stateful color for icon color in different states', (WidgetTester tester) async {
+  testWidgets('FilledButton uses stateful color for icon color in different states', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
     final Key buttonKey = UniqueKey();
 
@@ -559,10 +556,9 @@ void main() {
     await tester.pump(); // Start the splash and highlight animations.
     await tester.pump(const Duration(milliseconds: 800)); // Wait for splash and highlight to be well under way.
     expect(iconColor(), pressedColor);
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('FilledButton onPressed and onLongPress callbacks are correctly called when non-null', (WidgetTester tester) async {
+  testWidgets('FilledButton onPressed and onLongPress callbacks are correctly called when non-null', (WidgetTester tester) async {
     bool wasPressed;
     Finder filledButton;
 
@@ -605,7 +601,7 @@ void main() {
     expect(tester.widget<FilledButton>(filledButton).enabled, false);
   });
 
-  testWidgetsWithLeakTracking('FilledButton onPressed and onLongPress callbacks are distinctly recognized', (WidgetTester tester) async {
+  testWidgets('FilledButton onPressed and onLongPress callbacks are distinctly recognized', (WidgetTester tester) async {
     bool didPressButton = false;
     bool didLongPressButton = false;
 
@@ -636,7 +632,7 @@ void main() {
     expect(didLongPressButton, isTrue);
   });
 
-  testWidgetsWithLeakTracking("FilledButton response doesn't hover when disabled", (WidgetTester tester) async {
+  testWidgets("FilledButton response doesn't hover when disabled", (WidgetTester tester) async {
     FocusManager.instance.highlightStrategy = FocusHighlightStrategy.alwaysTouch;
     final FocusNode focusNode = FocusNode(debugLabel: 'FilledButton Focus');
     final GlobalKey childKey = GlobalKey();
@@ -684,10 +680,9 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(focusNode.hasPrimaryFocus, isFalse);
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('disabled and hovered FilledButton responds to mouse-exit', (WidgetTester tester) async {
+  testWidgets('disabled and hovered FilledButton responds to mouse-exit', (WidgetTester tester) async {
     int onHoverCount = 0;
     late bool hover;
 
@@ -749,7 +744,7 @@ void main() {
     expect(hover, false);
   });
 
-  testWidgetsWithLeakTracking('Can set FilledButton focus and Can set unFocus.', (WidgetTester tester) async {
+  testWidgets('Can set FilledButton focus and Can set unFocus.', (WidgetTester tester) async {
     final FocusNode node = FocusNode(debugLabel: 'FilledButton Focus');
     bool gotFocus = false;
     await tester.pumpWidget(
@@ -776,10 +771,9 @@ void main() {
 
     expect(gotFocus, isFalse);
     expect(node.hasFocus, isFalse);
-    node.dispose();
   });
 
-  testWidgetsWithLeakTracking('When FilledButton disable, Can not set FilledButton focus.', (WidgetTester tester) async {
+  testWidgets('When FilledButton disable, Can not set FilledButton focus.', (WidgetTester tester) async {
     final FocusNode node = FocusNode(debugLabel: 'FilledButton Focus');
     bool gotFocus = false;
     await tester.pumpWidget(
@@ -800,10 +794,9 @@ void main() {
 
     expect(gotFocus, isFalse);
     expect(node.hasFocus, isFalse);
-    node.dispose();
   });
 
-  testWidgetsWithLeakTracking('Does FilledButton work with hover', (WidgetTester tester) async {
+  testWidgets('Does FilledButton work with hover', (WidgetTester tester) async {
     const Color hoverColor = Color(0xff001122);
 
     await tester.pumpWidget(
@@ -830,7 +823,7 @@ void main() {
     expect(inkFeatures, paints..rect(color: hoverColor));
   });
 
-  testWidgetsWithLeakTracking('Does FilledButton work with focus', (WidgetTester tester) async {
+  testWidgets('Does FilledButton work with focus', (WidgetTester tester) async {
     const Color focusColor = Color(0xff001122);
 
     final FocusNode focusNode = FocusNode(debugLabel: 'FilledButton Node');
@@ -856,10 +849,9 @@ void main() {
 
     final RenderObject inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
     expect(inkFeatures, paints..rect(color: focusColor));
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('Does FilledButton work with autofocus', (WidgetTester tester) async {
+  testWidgets('Does FilledButton work with autofocus', (WidgetTester tester) async {
     const Color focusColor = Color(0xff001122);
 
     Color? getOverlayColor(Set<MaterialState> states) {
@@ -887,10 +879,9 @@ void main() {
 
     final RenderObject inkFeatures = tester.allRenderObjects.firstWhere((RenderObject object) => object.runtimeType.toString() == '_RenderInkFeatures');
     expect(inkFeatures, paints..rect(color: focusColor));
-    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('Does FilledButton contribute semantics', (WidgetTester tester) async {
+  testWidgets('Does FilledButton contribute semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
     await tester.pumpWidget(
       Theme(
@@ -938,7 +929,7 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgetsWithLeakTracking('FilledButton size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
+  testWidgets('FilledButton size is configurable by ThemeData.materialTapTargetSize', (WidgetTester tester) async {
     const ButtonStyle style = ButtonStyle(
       // Specifying minimumSize to mimic the original minimumSize for
       // RaisedButton so that the corresponding button size matches
@@ -972,7 +963,7 @@ void main() {
     expect(tester.getSize(find.byKey(key2)), const Size(88.0, 36.0));
   });
 
-  testWidgetsWithLeakTracking('FilledButton has no clip by default', (WidgetTester tester) async {
+  testWidgets('FilledButton has no clip by default', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -989,7 +980,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('FilledButton responds to density changes.', (WidgetTester tester) async {
+  testWidgets('FilledButton responds to density changes.', (WidgetTester tester) async {
     const Key key = Key('test');
     const Key childKey = Key('test child');
 
@@ -1058,7 +1049,7 @@ void main() {
     expect(childRect, equals(const Rect.fromLTRB(372.0, 293.0, 428.0, 307.0)));
   });
 
-  testWidgetsWithLeakTracking('FilledButton.icon responds to applied padding', (WidgetTester tester) async {
+  testWidgets('FilledButton.icon responds to applied padding', (WidgetTester tester) async {
     const Key buttonKey = Key('test');
     const Key labelKey = Key('label');
     await tester.pumpWidget(
@@ -1185,7 +1176,7 @@ void main() {
             if (textDirection == TextDirection.rtl)
               'RTL',
           ].join(', ');
-          testWidgetsWithLeakTracking(testName, (WidgetTester tester) async {
+          testWidgets(testName, (WidgetTester tester) async {
             await tester.pumpWidget(
               MaterialApp(
                 theme: ThemeData(
@@ -1326,7 +1317,7 @@ void main() {
     }
   });
 
-  testWidgetsWithLeakTracking('Override FilledButton default padding', (WidgetTester tester) async {
+  testWidgets('Override FilledButton default padding', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData.from(colorScheme: const ColorScheme.light()),
@@ -1360,7 +1351,7 @@ void main() {
     expect(paddingWidget.padding, const EdgeInsets.all(22));
   });
 
-  testWidgetsWithLeakTracking('M3 FilledButton has correct padding', (WidgetTester tester) async {
+  testWidgets('M3 FilledButton has correct padding', (WidgetTester tester) async {
     final Key key = UniqueKey();
     await tester.pumpWidget(
       MaterialApp(
@@ -1386,7 +1377,7 @@ void main() {
     expect(paddingWidget.padding, const EdgeInsets.symmetric(horizontal: 24));
   });
 
-  testWidgetsWithLeakTracking('M3 FilledButton.icon has correct padding', (WidgetTester tester) async {
+  testWidgets('M3 FilledButton.icon has correct padding', (WidgetTester tester) async {
     final Key key = UniqueKey();
     await tester.pumpWidget(
       MaterialApp(
@@ -1413,7 +1404,7 @@ void main() {
    expect(paddingWidget.padding, const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 24.0, 0.0));
   });
 
-  testWidgetsWithLeakTracking('By default, FilledButton shape outline is defined by shape.side', (WidgetTester tester) async {
+  testWidgets('By default, FilledButton shape outline is defined by shape.side', (WidgetTester tester) async {
     const Color borderColor = Color(0xff4caf50);
     await tester.pumpWidget(
       MaterialApp(
@@ -1442,7 +1433,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('Fixed size FilledButtons', (WidgetTester tester) async {
+  testWidgets('Fixed size FilledButtons', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -1475,7 +1466,7 @@ void main() {
     expect(tester.getSize(find.widgetWithText(FilledButton, 'wx200')).height, 200);
   });
 
-  testWidgetsWithLeakTracking('FilledButton with NoSplash splashFactory paints nothing', (WidgetTester tester) async {
+  testWidgets('FilledButton with NoSplash splashFactory paints nothing', (WidgetTester tester) async {
     Widget buildFrame({ InteractiveInkFeatureFactory? splashFactory }) {
       return MaterialApp(
         home: Scaffold(
@@ -1515,7 +1506,7 @@ void main() {
     }
   });
 
-  testWidgetsWithLeakTracking('FilledButton uses InkSparkle only for Android non-web when useMaterial3 is true', (WidgetTester tester) async {
+  testWidgets('FilledButton uses InkSparkle only for Android non-web when useMaterial3 is true', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
 
     await tester.pumpWidget(
@@ -1542,7 +1533,7 @@ void main() {
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('FilledButton.icon does not overflow', (WidgetTester tester) async {
+  testWidgets('FilledButton.icon does not overflow', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/77815
     await tester.pumpWidget(
       MaterialApp(
@@ -1563,7 +1554,7 @@ void main() {
     expect(tester.takeException(), null);
   });
 
-  testWidgetsWithLeakTracking('FilledButton.icon icon,label layout', (WidgetTester tester) async {
+  testWidgets('FilledButton.icon icon,label layout', (WidgetTester tester) async {
     final Key buttonKey = UniqueKey();
     final Key iconKey = UniqueKey();
     final Key labelKey = UniqueKey();
@@ -1600,7 +1591,7 @@ void main() {
     expect(tester.getRect(find.byKey(labelKey)), const Rect.fromLTRB(104.0, 0.0, 154.0, 100.0));
   });
 
-  testWidgetsWithLeakTracking('FilledButton maximumSize', (WidgetTester tester) async {
+  testWidgets('FilledButton maximumSize', (WidgetTester tester) async {
     final Key key0 = UniqueKey();
     final Key key1 = UniqueKey();
 
@@ -1642,7 +1633,7 @@ void main() {
     expect(tester.getSize(find.byKey(key1)), const Size(104.0, 224.0));
   });
 
-  testWidgetsWithLeakTracking('Fixed size FilledButton, same as minimumSize == maximumSize', (WidgetTester tester) async {
+  testWidgets('Fixed size FilledButton, same as minimumSize == maximumSize', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -1672,7 +1663,7 @@ void main() {
     expect(tester.getSize(find.widgetWithText(FilledButton, '200,200')), const Size(200, 200));
   });
 
-  testWidgetsWithLeakTracking('FilledButton changes mouse cursor when hovered', (WidgetTester tester) async {
+  testWidgets('FilledButton changes mouse cursor when hovered', (WidgetTester tester) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -1750,7 +1741,7 @@ void main() {
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.basic);
   });
 
-  testWidgetsWithLeakTracking('FilledButton in SelectionArea changes mouse cursor when hovered', (WidgetTester tester) async {
+  testWidgets('FilledButton in SelectionArea changes mouse cursor when hovered', (WidgetTester tester) async {
     // Regression test for https://github.com/flutter/flutter/issues/104595.
     await tester.pumpWidget(MaterialApp(
       home: SelectionArea(
@@ -1773,7 +1764,7 @@ void main() {
     expect(RendererBinding.instance.mouseTracker.debugDeviceActiveCursor(1), SystemMouseCursors.click);
   });
 
-  testWidgetsWithLeakTracking('Ink Response shape matches Material shape', (WidgetTester tester) async {
+  testWidgets('Ink Response shape matches Material shape', (WidgetTester tester) async {
     Widget buildFrame({BorderSide? side}) {
       return MaterialApp(
        home: Scaffold(
@@ -1816,7 +1807,7 @@ void main() {
     );
   });
 
-  testWidgetsWithLeakTracking('FilledButton.styleFrom can be used to set foreground and background colors', (WidgetTester tester) async {
+  testWidgets('FilledButton.styleFrom can be used to set foreground and background colors', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -1846,7 +1837,6 @@ void main() {
       count += 1;
     }
     final MaterialStatesController controller = MaterialStatesController();
-    addTearDown(controller.dispose);
     controller.addListener(valueChanged);
 
     await tester.pumpWidget(
@@ -1947,21 +1937,20 @@ void main() {
     await gesture.removePointer();
   }
 
-  testWidgetsWithLeakTracking('FilledButton statesController', (WidgetTester tester) async {
+  testWidgets('FilledButton statesController', (WidgetTester tester) async {
     testStatesController(null, tester);
   });
 
-  testWidgetsWithLeakTracking('FilledButton.icon statesController', (WidgetTester tester) async {
+  testWidgets('FilledButton.icon statesController', (WidgetTester tester) async {
     testStatesController(const Icon(Icons.add), tester);
   });
 
-  testWidgetsWithLeakTracking('Disabled FilledButton statesController', (WidgetTester tester) async {
+  testWidgets('Disabled FilledButton statesController', (WidgetTester tester) async {
     int count = 0;
     void valueChanged() {
       count += 1;
     }
     final MaterialStatesController controller = MaterialStatesController();
-    addTearDown(controller.dispose);
     controller.addListener(valueChanged);
     await tester.pumpWidget(
       MaterialApp(

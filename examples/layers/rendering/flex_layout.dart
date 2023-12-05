@@ -7,7 +7,6 @@
 
 import 'package:flutter/rendering.dart';
 
-import 'src/binding.dart';
 import 'src/solid_color_box.dart';
 
 void main() {
@@ -87,5 +86,5 @@ void main() {
     child: RenderPadding(child: table, padding: const EdgeInsets.symmetric(vertical: 50.0)),
   );
 
-  ViewRenderingFlutterBinding(root: root).scheduleFrame();
+  RenderingFlutterBinding(root: root).scheduleFrame();
 }

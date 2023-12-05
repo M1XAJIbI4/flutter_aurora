@@ -25,7 +25,8 @@ const String _kFlutterFirstRunMessage = '''
   ║ Flutter tool.                                                              ║
   ║                                                                            ║
   ║ By downloading the Flutter SDK, you agree to the Google Terms of Service.  ║
-  ║ The Google Privacy Policy describes how data is handled in this service.   ║
+  ║ Note: The Google Privacy Policy describes how data is handled in this      ║
+  ║ service.                                                                   ║
   ║                                                                            ║
   ║ Moreover, Flutter includes the Dart SDK, which may send usage metrics and  ║
   ║ crash reports to Google.                                                   ║
@@ -35,8 +36,6 @@ const String _kFlutterFirstRunMessage = '''
   ║                                                                            ║
   ║ See Google's privacy policy:                                               ║
   ║ https://policies.google.com/privacy                                        ║
-  ║                                                                            ║
-  ║ To disable animations in this tool, use 'flutter config --no-animations'.  ║
   ╚════════════════════════════════════════════════════════════════════════════╝
 ''';
 

@@ -5,22 +5,19 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('Can dispose without keyboard', (WidgetTester tester) async {
+  testWidgets('Can dispose without keyboard', (WidgetTester tester) async {
     final FocusNode focusNode = FocusNode();
-    addTearDown(focusNode.dispose);
     await tester.pumpWidget(KeyboardListener(focusNode: focusNode, child: Container()));
     await tester.pumpWidget(KeyboardListener(focusNode: focusNode, child: Container()));
     await tester.pumpWidget(Container());
   });
 
-  testWidgetsWithLeakTracking('Fuchsia key event', (WidgetTester tester) async {
+  testWidgets('Fuchsia key event', (WidgetTester tester) async {
     final List<KeyEvent> events = <KeyEvent>[];
 
     final FocusNode focusNode = FocusNode();
-    addTearDown(focusNode.dispose);
 
     await tester.pumpWidget(
       KeyboardListener(
@@ -42,13 +39,13 @@ void main() {
     expect(events[0].logicalKey, LogicalKeyboardKey.metaLeft);
 
     await tester.pumpWidget(Container());
+    focusNode.dispose();
   }, skip: isBrowser); // [intended] This is a Fuchsia-specific test.
 
-  testWidgetsWithLeakTracking('Web key event', (WidgetTester tester) async {
+  testWidgets('Web key event', (WidgetTester tester) async {
     final List<KeyEvent> events = <KeyEvent>[];
 
     final FocusNode focusNode = FocusNode();
-    addTearDown(focusNode.dispose);
 
     await tester.pumpWidget(
       KeyboardListener(
@@ -70,13 +67,13 @@ void main() {
     expect(events[0].logicalKey, LogicalKeyboardKey.metaLeft);
 
     await tester.pumpWidget(Container());
+    focusNode.dispose();
   });
 
-  testWidgetsWithLeakTracking('Defunct listeners do not receive events', (WidgetTester tester) async {
+  testWidgets('Defunct listeners do not receive events', (WidgetTester tester) async {
     final List<KeyEvent> events = <KeyEvent>[];
 
     final FocusNode focusNode = FocusNode();
-    addTearDown(focusNode.dispose);
 
     await tester.pumpWidget(
       KeyboardListener(
@@ -104,5 +101,6 @@ void main() {
     expect(events.length, 0);
 
     await tester.pumpWidget(Container());
+    focusNode.dispose();
   });
 }

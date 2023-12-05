@@ -22,8 +22,8 @@ import 'object.dart';
 class StackFrame {
   /// Creates a new StackFrame instance.
   ///
-  /// The [className] may be the empty string if there is no class (e.g. for a
-  /// top level library method).
+  /// All parameters must not be null. The [className] may be the empty string
+  /// if there is no class (e.g. for a top level library method).
   const StackFrame({
     required this.number,
     required this.column,
@@ -78,45 +78,32 @@ class StackFrame {
         // On the Web in non-debug builds the stack trace includes the exception
         // message that precedes the stack trace itself. fromStackTraceLine will
         // return null in that case. We will skip it here.
-        // TODO(polina-c): if one of lines was parsed to null, the entire stack trace
-        // is in unexpected format and should be returned as is, without partial parsing.
-        // https://github.com/flutter/flutter/issues/131877
         .whereType<StackFrame>()
         .toList();
   }
 
-  /// Parses a single [StackFrame] from a line of a [StackTrace].
-  ///
-  /// Returns null if format is not as expected.
-  static StackFrame? _tryParseWebFrame(String line) {
+  static StackFrame? _parseWebFrame(String line) {
     if (kDebugMode) {
-      return _tryParseWebDebugFrame(line);
+      return _parseWebDebugFrame(line);
     } else {
-      return _tryParseWebNonDebugFrame(line);
+      return _parseWebNonDebugFrame(line);
     }
   }
 
-  /// Parses a single [StackFrame] from a line of a [StackTrace].
-  ///
-  /// Returns null if format is not as expected.
-  static StackFrame? _tryParseWebDebugFrame(String line) {
+  static StackFrame _parseWebDebugFrame(String line) {
     // This RegExp is only partially correct for flutter run/test differences.
     // https://github.com/flutter/flutter/issues/52685
     final bool hasPackage = line.startsWith('package');
     final RegExp parser = hasPackage
         ? RegExp(r'^(package.+) (\d+):(\d+)\s+(.+)$')
         : RegExp(r'^(.+) (\d+):(\d+)\s+(.+)$');
-
-    final Match? match = parser.firstMatch(line);
-
-    if (match == null) {
-      return null;
-    }
+    Match? match = parser.firstMatch(line);
+    assert(match != null, 'Expected $line to match $parser.');
+    match = match!;
 
     String package = '<unknown>';
     String packageScheme = '<unknown>';
     String packagePath = '<unknown>';
-
     if (hasPackage) {
       packageScheme = 'package';
       final Uri packageUri = Uri.parse(match.group(1)!);
@@ -145,7 +132,7 @@ class StackFrame {
 
   // Parses `line` as a stack frame in profile and release Web builds. If not
   // recognized as a stack frame, returns null.
-  static StackFrame? _tryParseWebNonDebugFrame(String line) {
+  static StackFrame? _parseWebNonDebugFrame(String line) {
     final Match? match = _webNonDebugFramePattern.firstMatch(line);
     if (match == null) {
       // On the Web in non-debug builds the stack trace includes the exception
@@ -182,8 +169,6 @@ class StackFrame {
   }
 
   /// Parses a single [StackFrame] from a single line of a [StackTrace].
-  ///
-  /// Returns null if format is not as expected.
   static StackFrame? fromStackTraceLine(String line) {
     if (line == '<asynchronous suspension>') {
       return asynchronousSuspension;
@@ -200,7 +185,7 @@ class StackFrame {
 
     // Web frames.
     if (!line.startsWith('#')) {
-      return _tryParseWebFrame(line);
+      return _parseWebFrame(line);
     }
 
     final RegExp parser = RegExp(r'^#(\d+) +(.+) \((.+?):?(\d+){0,1}:?(\d+){0,1}\)$');

@@ -103,9 +103,9 @@ class ImageCache {
     if (value == maximumSize) {
       return;
     }
-    TimelineTask? debugTimelineTask;
+    TimelineTask? timelineTask;
     if (!kReleaseMode) {
-      debugTimelineTask = TimelineTask()..start(
+      timelineTask = TimelineTask()..start(
         'ImageCache.setMaximumSize',
         arguments: <String, dynamic>{'value': value},
       );
@@ -114,10 +114,10 @@ class ImageCache {
     if (maximumSize == 0) {
       clear();
     } else {
-      _checkCacheSize(debugTimelineTask);
+      _checkCacheSize(timelineTask);
     }
     if (!kReleaseMode) {
-      debugTimelineTask!.finish();
+      timelineTask!.finish();
     }
   }
 
@@ -142,9 +142,9 @@ class ImageCache {
     if (value == _maximumSizeBytes) {
       return;
     }
-    TimelineTask? debugTimelineTask;
+    TimelineTask? timelineTask;
     if (!kReleaseMode) {
-      debugTimelineTask = TimelineTask()..start(
+      timelineTask = TimelineTask()..start(
         'ImageCache.setMaximumSizeBytes',
         arguments: <String, dynamic>{'value': value},
       );
@@ -153,10 +153,10 @@ class ImageCache {
     if (_maximumSizeBytes == 0) {
       clear();
     } else {
-      _checkCacheSize(debugTimelineTask);
+      _checkCacheSize(timelineTask);
     }
     if (!kReleaseMode) {
-      debugTimelineTask!.finish();
+      timelineTask!.finish();
     }
   }
 
@@ -231,7 +231,8 @@ class ImageCache {
   /// completely discarded by the cache. It should be set to false when calls
   /// to evict are trying to relieve memory pressure, since an image with a
   /// listener will not actually be evicted from memory, and subsequent attempts
-  /// to load it will end up allocating more memory for the image again.
+  /// to load it will end up allocating more memory for the image again. The
+  /// argument must not be null.
   ///
   /// See also:
   ///
@@ -282,6 +283,7 @@ class ImageCache {
   /// Resizes the cache as appropriate to maintain the constraints of
   /// [maximumSize] and [maximumSizeBytes].
   void _touch(Object key, _CachedImage image, TimelineTask? timelineTask) {
+    assert(timelineTask != null);
     if (image.sizeBytes != null && image.sizeBytes! <= maximumSizeBytes && maximumSize > 0) {
       _currentSizeBytes += image.sizeBytes!;
       _cache[key] = image;
@@ -312,6 +314,8 @@ class ImageCache {
   /// if not, calls the given callback to obtain it first. In either case, the
   /// key is moved to the 'most recently used' position.
   ///
+  /// The arguments must not be null. The `loader` cannot return null.
+  ///
   /// In the event that the loader throws an exception, it will be caught only if
   /// `onError` is also provided. When an exception is caught resolving an image,
   /// no completers are cached and `null` is returned instead of a new
@@ -320,9 +324,9 @@ class ImageCache {
   /// Images that are larger than [maximumSizeBytes] are not cached, and do not
   /// cause other images in the cache to be evicted.
   ImageStreamCompleter? putIfAbsent(Object key, ImageStreamCompleter Function() loader, { ImageErrorListener? onError }) {
-    TimelineTask? debugTimelineTask;
+    TimelineTask? timelineTask;
     if (!kReleaseMode) {
-      debugTimelineTask = TimelineTask()..start(
+      timelineTask = TimelineTask()..start(
         'ImageCache.putIfAbsent',
         arguments: <String, dynamic>{
           'key': key.toString(),
@@ -333,7 +337,7 @@ class ImageCache {
     // Nothing needs to be done because the image hasn't loaded yet.
     if (result != null) {
       if (!kReleaseMode) {
-        debugTimelineTask!.finish(arguments: <String, dynamic>{'result': 'pending'});
+        timelineTask!.finish(arguments: <String, dynamic>{'result': 'pending'});
       }
       return result;
     }
@@ -344,7 +348,7 @@ class ImageCache {
     final _CachedImage? image = _cache.remove(key);
     if (image != null) {
       if (!kReleaseMode) {
-        debugTimelineTask!.finish(arguments: <String, dynamic>{'result': 'keepAlive'});
+        timelineTask!.finish(arguments: <String, dynamic>{'result': 'keepAlive'});
       }
       // The image might have been keptAlive but had no listeners (so not live).
       // Make sure the cache starts tracking it as live again.
@@ -365,10 +369,10 @@ class ImageCache {
           liveImage.completer,
           sizeBytes: liveImage.sizeBytes,
         ),
-        debugTimelineTask,
+        timelineTask,
       );
       if (!kReleaseMode) {
-        debugTimelineTask!.finish(arguments: <String, dynamic>{'result': 'keepAlive'});
+        timelineTask!.finish(arguments: <String, dynamic>{'result': 'keepAlive'});
       }
       return liveImage.completer;
     }
@@ -378,7 +382,7 @@ class ImageCache {
       _trackLiveImage(key, result, null);
     } catch (error, stackTrace) {
       if (!kReleaseMode) {
-        debugTimelineTask!.finish(arguments: <String, dynamic>{
+        timelineTask!.finish(arguments: <String, dynamic>{
           'result': 'error',
           'error': error.toString(),
           'stackTrace': stackTrace.toString(),
@@ -393,7 +397,7 @@ class ImageCache {
     }
 
     if (!kReleaseMode) {
-      debugTimelineTask!.start('listener');
+      timelineTask!.start('listener');
     }
     // A multi-frame provider may call the listener more than once. We need do make
     // sure that some cleanup works won't run multiple times, such as finishing the
@@ -420,7 +424,7 @@ class ImageCache {
 
       // Only touch if the cache was enabled when resolve was initially called.
       if (trackPendingImage) {
-        _touch(key, image, debugTimelineTask);
+        _touch(key, image, timelineTask);
       } else {
         image.dispose();
       }
@@ -430,7 +434,7 @@ class ImageCache {
         pendingImage.removeListener();
       }
       if (!kReleaseMode && !listenedOnce) {
-        debugTimelineTask!
+        timelineTask!
           ..finish(arguments: <String, dynamic>{
             'syncCall': syncCall,
             'sizeInBytes': sizeBytes,

@@ -39,6 +39,7 @@ class HotEvent extends UsageEvent {
     required this.sdkName,
     required this.emulator,
     required this.fullRestart,
+    required this.fastReassemble,
     this.reason,
     this.finalLibraryCount,
     this.syncedLibraryCount,
@@ -53,15 +54,14 @@ class HotEvent extends UsageEvent {
     this.scannedSourcesCount,
     this.reassembleTimeInMs,
     this.reloadVMTimeInMs,
-    // TODO(fujino): make this required
-    Usage? usage,
-  }) : super('hot', parameter, flutterUsage: usage ?? globals.flutterUsage);
+  }) : super('hot', parameter, flutterUsage: globals.flutterUsage);
 
   final String? reason;
   final String targetPlatform;
   final String sdkName;
   final bool emulator;
   final bool fullRestart;
+  final bool fastReassemble;
   final int? finalLibraryCount;
   final int? syncedLibraryCount;
   final int? syncedClassesCount;
@@ -92,6 +92,7 @@ class HotEvent extends UsageEvent {
       hotEventInvalidatedSourcesCount: invalidatedSourcesCount,
       hotEventTransferTimeInMs: transferTimeInMs,
       hotEventOverallTimeInMs: overallTimeInMs,
+      fastReassemble: fastReassemble,
       hotEventCompileTimeInMs: compileTimeInMs,
       hotEventFindInvalidatedTimeInMs: findInvalidatedTimeInMs,
       hotEventScannedSourcesCount: scannedSourcesCount,

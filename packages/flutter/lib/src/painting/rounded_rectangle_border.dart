@@ -25,6 +25,8 @@ import 'circle_border.dart';
 ///    describe a rounded rectangle.
 class RoundedRectangleBorder extends OutlinedBorder {
   /// Creates a rounded rectangle border.
+  ///
+  /// The arguments must not be null.
   const RoundedRectangleBorder({
     super.side,
     this.borderRadius = BorderRadius.zero,

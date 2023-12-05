@@ -130,6 +130,8 @@ class CircularNotchedRectangle extends NotchedShape {
 class AutomaticNotchedShape extends NotchedShape {
   /// Creates a [NotchedShape] that is defined by two [ShapeBorder]s.
   ///
+  /// The [host] must not be null.
+  ///
   /// The [guest] may be null, in which case no notch is created even
   /// if a guest rectangle is provided to [getOuterPath].
   const AutomaticNotchedShape(this.host, [ this.guest ]);

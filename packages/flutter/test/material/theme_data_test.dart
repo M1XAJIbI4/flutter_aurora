@@ -8,7 +8,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
   test('Theme data control test', () {
@@ -87,7 +86,7 @@ void main() {
     expect(fallbackTheme.typography, Typography.material2021(colorScheme: fallbackTheme.colorScheme));
   });
 
-  testWidgetsWithLeakTracking('Defaults to MaterialTapTargetBehavior.padded on mobile platforms and MaterialTapTargetBehavior.shrinkWrap on desktop', (WidgetTester tester) async {
+  testWidgets('Defaults to MaterialTapTargetBehavior.padded on mobile platforms and MaterialTapTargetBehavior.shrinkWrap on desktop', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData(platform: defaultTargetPlatform);
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -375,7 +374,7 @@ void main() {
     expect(theme.applyElevationOverlayColor, true);
   });
 
-  testWidgetsWithLeakTracking('ThemeData.from a light color scheme sets appropriate values', (WidgetTester tester) async {
+  testWidgets('ThemeData.from a light color scheme sets appropriate values', (WidgetTester tester) async {
     const ColorScheme lightColors = ColorScheme.light();
     final ThemeData theme = ThemeData.from(colorScheme: lightColors);
 
@@ -390,7 +389,7 @@ void main() {
     expect(theme.applyElevationOverlayColor, isFalse);
   });
 
-  testWidgetsWithLeakTracking('ThemeData.from a dark color scheme sets appropriate values', (WidgetTester tester) async {
+  testWidgets('ThemeData.from a dark color scheme sets appropriate values', (WidgetTester tester) async {
     const ColorScheme darkColors = ColorScheme.dark();
     final ThemeData theme = ThemeData.from(colorScheme: darkColors);
 
@@ -406,7 +405,7 @@ void main() {
     expect(theme.applyElevationOverlayColor, isTrue);
   });
 
-  testWidgetsWithLeakTracking('splashFactory is InkSparkle only for Android non-web when useMaterial3 is true', (WidgetTester tester) async {
+  testWidgets('splashFactory is InkSparkle only for Android non-web when useMaterial3 is true', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: true);
 
     // Basic check that this theme is in fact using material 3.
@@ -429,7 +428,7 @@ void main() {
      }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('splashFactory is InkSplash for every platform scenario, including Android non-web, when useMaterial3 is false', (WidgetTester tester) async {
+  testWidgets('splashFactory is InkSplash for every platform scenario, including Android non-web, when useMaterial3 is false', (WidgetTester tester) async {
     final ThemeData theme = ThemeData(useMaterial3: false);
 
     switch (debugDefaultTargetPlatformOverride!) {
@@ -444,7 +443,7 @@ void main() {
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('VisualDensity.adaptivePlatformDensity returns adaptive values', (WidgetTester tester) async {
+  testWidgets('VisualDensity.adaptivePlatformDensity returns adaptive values', (WidgetTester tester) async {
     switch (debugDefaultTargetPlatformOverride!) {
       case TargetPlatform.android:
       case TargetPlatform.iOS:
@@ -458,7 +457,7 @@ void main() {
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('VisualDensity.getDensityForPlatform returns adaptive values', (WidgetTester tester) async {
+  testWidgets('VisualDensity.getDensityForPlatform returns adaptive values', (WidgetTester tester) async {
     switch (debugDefaultTargetPlatformOverride!) {
       case TargetPlatform.android:
       case TargetPlatform.iOS:
@@ -472,7 +471,7 @@ void main() {
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('VisualDensity in ThemeData defaults to "compact" on desktop and "standard" on mobile', (WidgetTester tester) async {
+  testWidgets('VisualDensity in ThemeData defaults to "compact" on desktop and "standard" on mobile', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData();
     switch (debugDefaultTargetPlatformOverride!) {
       case TargetPlatform.android:
@@ -487,7 +486,7 @@ void main() {
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('VisualDensity in ThemeData defaults to the right thing when a platform is supplied to it', (WidgetTester tester) async {
+  testWidgets('VisualDensity in ThemeData defaults to the right thing when a platform is supplied to it', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData(platform: debugDefaultTargetPlatformOverride! == TargetPlatform.android ? TargetPlatform.linux : TargetPlatform.android);
     switch (debugDefaultTargetPlatformOverride!) {
       case TargetPlatform.iOS:
@@ -502,7 +501,7 @@ void main() {
     }
   }, variant: TargetPlatformVariant.all());
 
-  testWidgetsWithLeakTracking('Ensure Visual Density effective constraints are clamped', (WidgetTester tester) async {
+  testWidgets('Ensure Visual Density effective constraints are clamped', (WidgetTester tester) async {
     const BoxConstraints square = BoxConstraints.tightFor(width: 35, height: 35);
     BoxConstraints expanded = const VisualDensity(horizontal: 4.0, vertical: 4.0).effectiveConstraints(square);
     expect(expanded.minWidth, equals(35));
@@ -530,7 +529,7 @@ void main() {
     expect(expanded.maxHeight, equals(4));
   });
 
-  testWidgetsWithLeakTracking('Ensure Visual Density effective constraints expand and contract', (WidgetTester tester) async {
+  testWidgets('Ensure Visual Density effective constraints expand and contract', (WidgetTester tester) async {
     const BoxConstraints square = BoxConstraints();
     final BoxConstraints expanded = const VisualDensity(horizontal: 4.0, vertical: 4.0).effectiveConstraints(square);
     expect(expanded.minWidth, equals(16));
@@ -548,7 +547,7 @@ void main() {
   group('Theme extensions', () {
     const Key containerKey = Key('container');
 
-    testWidgetsWithLeakTracking('can be obtained', (WidgetTester tester) async {
+    testWidgets('can be obtained', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(
@@ -575,7 +574,7 @@ void main() {
       expect(theme.extension<MyThemeExtensionB>()!.textStyle, const TextStyle(fontSize: 50));
     });
 
-    testWidgetsWithLeakTracking('can use copyWith', (WidgetTester tester) async {
+    testWidgets('can use copyWith', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(
@@ -598,7 +597,7 @@ void main() {
       expect(theme.extension<MyThemeExtensionA>()!.color2, Colors.amber);
     });
 
-    testWidgetsWithLeakTracking('can lerp', (WidgetTester tester) async {
+    testWidgets('can lerp', (WidgetTester tester) async {
       const MyThemeExtensionA extensionA1 = MyThemeExtensionA(
         color1: Colors.black,
         color2: Colors.amber,
@@ -674,7 +673,7 @@ void main() {
       expect(lerped.extension<MyThemeExtensionB>()!.textStyle, const TextStyle(fontSize: 100)); // Not lerped
     });
 
-    testWidgetsWithLeakTracking('should return null on extension not found', (WidgetTester tester) async {
+    testWidgets('should return null on extension not found', (WidgetTester tester) async {
       final ThemeData theme = ThemeData(
         extensions: const <ThemeExtension<dynamic>>{},
       );
@@ -706,7 +705,7 @@ void main() {
     expect(hoverColorBlack.hashCode != hoverColorWhite.hashCode, true);
   });
 
-  testWidgetsWithLeakTracking('ThemeData.copyWith correctly creates new ThemeData with all copied arguments', (WidgetTester tester) async {
+  testWidgets('ThemeData.copyWith correctly creates new ThemeData with all copied arguments', (WidgetTester tester) async {
     final SliderThemeData sliderTheme = SliderThemeData.fromPrimaryColors(
       primaryColor: Colors.black,
       primaryColorDark: Colors.black,
@@ -819,6 +818,7 @@ void main() {
       toggleButtonsTheme: const ToggleButtonsThemeData(textStyle: TextStyle(color: Colors.black)),
       tooltipTheme: const TooltipThemeData(height: 100),
       // DEPRECATED (newest deprecations at the bottom)
+      androidOverscrollIndicator: AndroidOverscrollIndicator.glow,
       toggleableActiveColor: Colors.black,
       selectedRowColor: Colors.black,
       errorColor: Colors.black,
@@ -937,6 +937,7 @@ void main() {
       tooltipTheme: const TooltipThemeData(height: 100),
 
       // DEPRECATED (newest deprecations at the bottom)
+      androidOverscrollIndicator: AndroidOverscrollIndicator.stretch,
       toggleableActiveColor: Colors.white,
       selectedRowColor: Colors.white,
       errorColor: Colors.white,
@@ -1038,6 +1039,7 @@ void main() {
       tooltipTheme: otherTheme.tooltipTheme,
 
       // DEPRECATED (newest deprecations at the bottom)
+      androidOverscrollIndicator: otherTheme.androidOverscrollIndicator,
       toggleableActiveColor: otherTheme.toggleableActiveColor,
       selectedRowColor: otherTheme.selectedRowColor,
       errorColor: otherTheme.errorColor,
@@ -1140,6 +1142,7 @@ void main() {
     expect(themeDataCopy.tooltipTheme, equals(otherTheme.tooltipTheme));
 
     // DEPRECATED (newest deprecations at the bottom)
+    expect(themeDataCopy.androidOverscrollIndicator, equals(otherTheme.androidOverscrollIndicator));
     expect(themeDataCopy.toggleableActiveColor, equals(otherTheme.toggleableActiveColor));
     expect(themeDataCopy.selectedRowColor, equals(otherTheme.selectedRowColor));
     expect(themeDataCopy.errorColor, equals(otherTheme.errorColor));
@@ -1147,7 +1150,7 @@ void main() {
     expect(themeDataCopy.bottomAppBarColor, equals(otherTheme.bottomAppBarColor));
   });
 
-  testWidgetsWithLeakTracking('ThemeData.toString has less than 200 characters output', (WidgetTester tester) async {
+  testWidgets('ThemeData.toString has less than 200 characters output', (WidgetTester tester) async {
     // This test makes sure that the ThemeData debug output doesn't get too
     // verbose, which has been a problem in the past.
 
@@ -1162,12 +1165,12 @@ void main() {
     expect(lightTheme.toString().length, lessThan(200));
   });
 
-  testWidgetsWithLeakTracking('ThemeData brightness parameter overrides ColorScheme brightness', (WidgetTester tester) async {
+  testWidgets('ThemeData brightness parameter overrides ColorScheme brightness', (WidgetTester tester) async {
     const ColorScheme lightColors = ColorScheme.light();
     expect(() => ThemeData(colorScheme: lightColors, brightness: Brightness.dark), throwsAssertionError);
   });
 
-  testWidgetsWithLeakTracking('ThemeData.copyWith brightness parameter overrides ColorScheme brightness', (WidgetTester tester) async {
+  testWidgets('ThemeData.copyWith brightness parameter overrides ColorScheme brightness', (WidgetTester tester) async {
     const ColorScheme lightColors = ColorScheme.light();
     final ThemeData theme = ThemeData.from(colorScheme: lightColors).copyWith(brightness: Brightness.dark);
 
@@ -1273,6 +1276,7 @@ void main() {
       'toggleButtonsTheme',
       'tooltipTheme',
       // DEPRECATED (newest deprecations at the bottom)
+      'androidOverscrollIndicator',
       'toggleableActiveColor',
       'selectedRowColor',
       'errorColor',

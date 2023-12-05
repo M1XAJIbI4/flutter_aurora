@@ -48,8 +48,6 @@ const String outOfDatePluginsPodfileConsequence = '''
 
 const String cocoaPodsInstallInstructions = 'see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.';
 
-const String cocoaPodsUpdateInstructions = 'see https://guides.cocoapods.org/using/getting-started.html#updating-cocoapods for instructions.';
-
 const String podfileIosMigrationInstructions = '''
   rm ios/Podfile''';
 

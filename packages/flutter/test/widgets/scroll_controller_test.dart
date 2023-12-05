@@ -6,14 +6,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import 'states.dart';
 
 void main() {
-  testWidgetsWithLeakTracking('ScrollController control test', (WidgetTester tester) async {
+  testWidgets('ScrollController control test', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
 
     await tester.pumpWidget(
       Directionality(
@@ -78,7 +76,6 @@ void main() {
     expect(realOffset(), equals(controller.offset));
 
     final ScrollController controller2 = ScrollController();
-    addTearDown(controller2.dispose);
 
     await tester.pumpWidget(
       Directionality(
@@ -134,11 +131,10 @@ void main() {
     expect(realOffset(), equals(controller2.offset));
   });
 
-  testWidgetsWithLeakTracking('ScrollController control test', (WidgetTester tester) async {
+  testWidgets('ScrollController control test', (WidgetTester tester) async {
     final ScrollController controller = ScrollController(
       initialScrollOffset: 209.0,
     );
-    addTearDown(controller.dispose);
 
     await tester.pumpWidget(
       Directionality(
@@ -180,9 +176,8 @@ void main() {
     expect(realOffset(), equals(controller.offset));
   });
 
-  testWidgetsWithLeakTracking('DrivenScrollActivity ending after dispose', (WidgetTester tester) async {
+  testWidgets('DrivenScrollActivity ending after dispose', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
 
     await tester.pumpWidget(
       Directionality(
@@ -202,17 +197,14 @@ void main() {
     await tester.pumpWidget(Container(), const Duration(seconds: 2));
   });
 
-  testWidgetsWithLeakTracking('Read operations on ScrollControllers with no positions fail', (WidgetTester tester) async {
+  testWidgets('Read operations on ScrollControllers with no positions fail', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     expect(() => controller.offset, throwsAssertionError);
     expect(() => controller.position, throwsAssertionError);
   });
 
-  testWidgetsWithLeakTracking('Read operations on ScrollControllers with more than one position fail', (WidgetTester tester) async {
+  testWidgets('Read operations on ScrollControllers with more than one position fail', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -245,17 +237,14 @@ void main() {
     expect(() => controller.position, throwsAssertionError);
   });
 
-  testWidgetsWithLeakTracking('Write operations on ScrollControllers with no positions fail', (WidgetTester tester) async {
+  testWidgets('Write operations on ScrollControllers with no positions fail', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     expect(() => controller.animateTo(1.0, duration: const Duration(seconds: 1), curve: Curves.linear), throwsAssertionError);
     expect(() => controller.jumpTo(1.0), throwsAssertionError);
   });
 
-  testWidgetsWithLeakTracking('Write operations on ScrollControllers with more than one position do not throw', (WidgetTester tester) async {
+  testWidgets('Write operations on ScrollControllers with more than one position do not throw', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
-
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -289,7 +278,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgetsWithLeakTracking('Scroll controllers notify when the position changes', (WidgetTester tester) async {
+  testWidgets('Scroll controllers notify when the position changes', (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
 
     final List<double> log = <double>[];
@@ -323,7 +312,7 @@ void main() {
     expect(log, isEmpty);
   });
 
-  testWidgetsWithLeakTracking('keepScrollOffset', (WidgetTester tester) async {
+  testWidgets('keepScrollOffset', (WidgetTester tester) async {
     final PageStorageBucket bucket = PageStorageBucket();
 
     Widget buildFrame(ScrollController controller) {
@@ -351,7 +340,6 @@ void main() {
     // The initialScrollOffset is used in this case, because there's no saved
     // scroll offset.
     ScrollController controller = ScrollController(initialScrollOffset: 200.0);
-    addTearDown(controller.dispose);
     await tester.pumpWidget(buildFrame(controller));
     expect(tester.getTopLeft(find.widgetWithText(SizedBox, 'Item 2')), Offset.zero);
 
@@ -362,7 +350,6 @@ void main() {
     // The initialScrollOffset isn't used in this case, because the scrolloffset
     // can be restored.
     controller = ScrollController(initialScrollOffset: 25.0);
-    addTearDown(controller.dispose);
     await tester.pumpWidget(buildFrame(controller));
     expect(controller.offset, 2000.0);
     expect(tester.getTopLeft(find.widgetWithText(SizedBox, 'Item 20')), Offset.zero);
@@ -372,14 +359,13 @@ void main() {
     // the initialScrollOffset is used.
 
     controller = ScrollController(keepScrollOffset: false, initialScrollOffset: 100.0);
-    addTearDown(controller.dispose);
     await tester.pumpWidget(buildFrame(controller));
     expect(controller.offset, 100.0);
     expect(tester.getTopLeft(find.widgetWithText(SizedBox, 'Item 1')), Offset.zero);
 
   });
 
-  testWidgetsWithLeakTracking('isScrollingNotifier works with pointer scroll', (WidgetTester tester) async {
+  testWidgets('isScrollingNotifier works with pointer scroll', (WidgetTester tester) async {
     Widget buildFrame(ScrollController controller) {
       return Directionality(
         textDirection: TextDirection.ltr,
@@ -394,7 +380,6 @@ void main() {
 
     bool isScrolling = false;
     final ScrollController controller = ScrollController();
-    addTearDown(controller.dispose);
     controller.addListener((){
       isScrolling = controller.position.isScrollingNotifier.value;
     });
@@ -407,12 +392,5 @@ void main() {
     // When the listener was notified, the value of the isScrollingNotifier
     // should have been true
     expect(isScrolling, isTrue);
-  });
-
-  test('$ScrollController dispatches object creation in constructor', () async {
-    await expectLater(
-      await memoryEvents(() => ScrollController().dispose(), ScrollController),
-      areCreateAndDispose,
-    );
   });
 }
