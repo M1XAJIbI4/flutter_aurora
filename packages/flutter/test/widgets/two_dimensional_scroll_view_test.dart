@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/gestures/monodrag.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 import 'two_dimensional_utils.dart';
 
@@ -22,34 +23,40 @@ Widget? _testChildBuilder(BuildContext context, ChildVicinity vicinity) {
 
 void main() {
   group('TwoDimensionalScrollView',() {
-    testWidgets('asserts the axis directions do not conflict with one another', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('asserts the axis directions do not conflict with one another', (WidgetTester tester) async {
       final List<Object> exceptions = <Object>[];
       final FlutterExceptionHandler? oldHandler = FlutterError.onError;
       FlutterError.onError = (FlutterErrorDetails details) {
         exceptions.add(details.exception);
       };
       // Horizontal wrong
+      late final TwoDimensionalChildBuilderDelegate delegate1;
+      addTearDown(() => delegate1.dispose());
       await tester.pumpWidget(MaterialApp(
         home: SimpleBuilderTableView(
-          delegate: TwoDimensionalChildBuilderDelegate(builder: (_, __) => null),
+          delegate: delegate1 = TwoDimensionalChildBuilderDelegate(builder: (_, __) => null),
           horizontalDetails: const ScrollableDetails.vertical(),
           // Horizontal has default const ScrollableDetails.horizontal()
         ),
       ));
 
       // Vertical wrong
+      late final TwoDimensionalChildBuilderDelegate delegate2;
+      addTearDown(() => delegate2.dispose());
       await tester.pumpWidget(MaterialApp(
         home: SimpleBuilderTableView(
-          delegate: TwoDimensionalChildBuilderDelegate(builder: (_, __) => null),
+          delegate: delegate2 = TwoDimensionalChildBuilderDelegate(builder: (_, __) => null),
           verticalDetails: const ScrollableDetails.horizontal(),
           // Horizontal has default const ScrollableDetails.horizontal()
         ),
       ));
 
       // Both wrong
+      late final TwoDimensionalChildBuilderDelegate delegate3;
+      addTearDown(() => delegate3.dispose());
       await tester.pumpWidget(MaterialApp(
         home: SimpleBuilderTableView(
-          delegate: TwoDimensionalChildBuilderDelegate(builder: (_, __) => null),
+          delegate: delegate3 = TwoDimensionalChildBuilderDelegate(builder: (_, __) => null),
           verticalDetails: const ScrollableDetails.horizontal(),
           horizontalDetails: const ScrollableDetails.vertical(),
         ),
@@ -63,15 +70,19 @@ void main() {
       }
     }, variant: TargetPlatformVariant.all());
 
-    testWidgets('ScrollableDetails.controller can set initial scroll positions, modify within bounds', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('ScrollableDetails.controller can set initial scroll positions, modify within bounds', (WidgetTester tester) async {
       final ScrollController verticalController = ScrollController(initialScrollOffset: 100);
+      addTearDown(verticalController.dispose);
       final ScrollController horizontalController = ScrollController(initialScrollOffset: 50);
+      addTearDown(horizontalController.dispose);
+      late final TwoDimensionalChildBuilderDelegate delegate;
+      addTearDown(() => delegate.dispose());
 
       await tester.pumpWidget(MaterialApp(
         home: SimpleBuilderTableView(
           verticalDetails: ScrollableDetails.vertical(controller: verticalController),
           horizontalDetails: ScrollableDetails.horizontal(controller: horizontalController),
-          delegate: TwoDimensionalChildBuilderDelegate(
+          delegate: delegate = TwoDimensionalChildBuilderDelegate(
             builder: _testChildBuilder,
             maxXIndex: 99,
             maxYIndex: 99,
@@ -102,13 +113,20 @@ void main() {
       expect(horizontalController.position.pixels, 19200);
     }, variant: TargetPlatformVariant.all());
 
-    testWidgets('Properly assigns the PrimaryScrollController to the main axis on the correct platform', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('Properly assigns the PrimaryScrollController to the main axis on the correct platform', (WidgetTester tester) async {
       late ScrollController controller;
       Widget buildForPrimaryScrollController({
         bool? explicitPrimary,
         Axis mainAxis = Axis.vertical,
         bool addControllerConflict = false,
       }) {
+        final ScrollController verticalController = ScrollController();
+        addTearDown(verticalController.dispose);
+        final ScrollController horizontalController = ScrollController();
+        addTearDown(horizontalController.dispose);
+        late final TwoDimensionalChildBuilderDelegate delegate;
+        addTearDown(() => delegate.dispose());
+
         return MaterialApp(
           home: PrimaryScrollController(
             controller: controller,
@@ -117,15 +135,15 @@ void main() {
               primary: explicitPrimary,
               verticalDetails: ScrollableDetails.vertical(
                 controller: addControllerConflict && mainAxis == Axis.vertical
-                  ? ScrollController()
+                  ? verticalController
                   : null
               ),
               horizontalDetails: ScrollableDetails.horizontal(
                 controller: addControllerConflict && mainAxis == Axis.horizontal
-                  ? ScrollController()
+                  ? horizontalController
                   : null
               ),
-              delegate: TwoDimensionalChildBuilderDelegate(
+              delegate: delegate = TwoDimensionalChildBuilderDelegate(
                 builder: _testChildBuilder,
                 maxXIndex: 99,
                 maxYIndex: 99,
@@ -137,6 +155,7 @@ void main() {
 
       // Horizontal default - horizontal never automatically adopts PSC
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         mainAxis: Axis.horizontal,
       ));
@@ -155,6 +174,7 @@ void main() {
 
       // Horizontal explicitly true
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         mainAxis: Axis.horizontal,
         explicitPrimary: true,
@@ -176,6 +196,7 @@ void main() {
 
       // Horizontal explicitly false
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         mainAxis: Axis.horizontal,
         explicitPrimary: false,
@@ -196,6 +217,7 @@ void main() {
 
       // Vertical default
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController());
       await tester.pumpAndSettle();
 
@@ -216,6 +238,7 @@ void main() {
 
       // Vertical explicitly true
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         explicitPrimary: true,
       ));
@@ -236,6 +259,7 @@ void main() {
 
       // Vertical explicitly false
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         explicitPrimary: false,
       ));
@@ -262,6 +286,7 @@ void main() {
       // Vertical asserts ScrollableDetails.controller has not been provided if
       // primary is explicitly set
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         explicitPrimary: true,
         addControllerConflict: true,
@@ -277,6 +302,7 @@ void main() {
       // Horizontal asserts ScrollableDetails.controller has not been provided
       // if primary is explicitly set true
       controller = ScrollController();
+      addTearDown(controller.dispose);
       await tester.pumpWidget(buildForPrimaryScrollController(
         mainAxis: Axis.horizontal,
         explicitPrimary: true,
@@ -291,12 +317,14 @@ void main() {
       FlutterError.onError = oldHandler;
     }, variant: TargetPlatformVariant.all());
 
-    testWidgets('TwoDimensionalScrollable receives the correct details from TwoDimensionalScrollView', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('TwoDimensionalScrollable receives the correct details from TwoDimensionalScrollView', (WidgetTester tester) async {
       late BuildContext capturedContext;
       // Default
+      late final TwoDimensionalChildBuilderDelegate delegate1;
+      addTearDown(() => delegate1.dispose());
       await tester.pumpWidget(MaterialApp(
         home: SimpleBuilderTableView(
-          delegate: TwoDimensionalChildBuilderDelegate(
+          delegate: delegate1 = TwoDimensionalChildBuilderDelegate(
             builder: (BuildContext context, ChildVicinity vicinity) {
               capturedContext = context;
               return Text(vicinity.toString());
@@ -314,13 +342,15 @@ void main() {
       expect(scrollable.widget.dragStartBehavior, DragStartBehavior.start);
 
       // Customized
+      late final TwoDimensionalChildBuilderDelegate delegate2;
+      addTearDown(() => delegate2.dispose());
       await tester.pumpWidget(MaterialApp(
         home: SimpleBuilderTableView(
           verticalDetails: const ScrollableDetails.vertical(reverse: true),
           horizontalDetails: const ScrollableDetails.horizontal(reverse: true),
           diagonalDragBehavior: DiagonalDragBehavior.weightedContinuous,
           dragStartBehavior: DragStartBehavior.down,
-          delegate: TwoDimensionalChildBuilderDelegate(
+          delegate: delegate2 = TwoDimensionalChildBuilderDelegate(
             builder: _testChildBuilder,
           ),
         ),

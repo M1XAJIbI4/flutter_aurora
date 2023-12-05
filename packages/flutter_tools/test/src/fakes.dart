@@ -256,8 +256,20 @@ class FakeStdio extends Stdio {
 class FakeStdin extends Fake implements Stdin {
   final StreamController<List<int>> controller = StreamController<List<int>>();
 
+  void Function(bool mode)? echoModeCallback;
+
+  bool _echoMode = true;
+
   @override
-  bool echoMode = true;
+  bool get echoMode => _echoMode;
+
+  @override
+  set echoMode(bool mode) {
+    _echoMode = mode;
+    if (echoModeCallback != null) {
+      echoModeCallback!(mode);
+    }
+  }
 
   @override
   bool lineMode = true;
@@ -447,12 +459,13 @@ class TestFeatureFlags implements FeatureFlags {
     this.isMacOSEnabled = false,
     this.isWebEnabled = false,
     this.isWindowsEnabled = false,
-    this.isSingleWidgetReloadEnabled = false,
     this.isAndroidEnabled = true,
     this.isIOSEnabled = true,
     this.isFuchsiaEnabled = false,
     this.areCustomDevicesEnabled = false,
     this.isFlutterWebWasmEnabled = false,
+    this.isCliAnimationEnabled = true,
+    this.isNativeAssetsEnabled = false,
   });
 
   @override
@@ -471,9 +484,6 @@ class TestFeatureFlags implements FeatureFlags {
   final bool isWindowsEnabled;
 
   @override
-  final bool isSingleWidgetReloadEnabled;
-
-  @override
   final bool isAndroidEnabled;
 
   @override
@@ -489,6 +499,12 @@ class TestFeatureFlags implements FeatureFlags {
   final bool isFlutterWebWasmEnabled;
 
   @override
+  final bool isCliAnimationEnabled;
+
+  @override
+  final bool isNativeAssetsEnabled;
+
+  @override
   bool isEnabled(Feature feature) {
     switch (feature) {
       case flutterWebFeature:
@@ -499,8 +515,6 @@ class TestFeatureFlags implements FeatureFlags {
         return isMacOSEnabled;
       case flutterWindowsDesktopFeature:
         return isWindowsEnabled;
-      case singleWidgetReload:
-        return isSingleWidgetReloadEnabled;
       case flutterAndroidFeature:
         return isAndroidEnabled;
       case flutterIOSFeature:
@@ -509,6 +523,10 @@ class TestFeatureFlags implements FeatureFlags {
         return isFuchsiaEnabled;
       case flutterCustomDevicesFeature:
         return areCustomDevicesEnabled;
+      case cliAnimation:
+        return isCliAnimationEnabled;
+      case nativeAssets:
+        return isNativeAssetsEnabled;
     }
     return false;
   }

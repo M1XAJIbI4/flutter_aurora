@@ -9,6 +9,7 @@ import 'package:package_config/package_config.dart';
 
 import '../../artifacts.dart';
 import '../../base/build.dart';
+import '../../base/common.dart';
 import '../../base/file_system.dart';
 import '../../base/io.dart';
 import '../../build_info.dart';
@@ -22,6 +23,7 @@ import 'assets.dart';
 import 'dart_plugin_registrant.dart';
 import 'icon_tree_shaker.dart';
 import 'localizations.dart';
+import 'native_assets.dart';
 import 'shader_compiler.dart';
 
 /// Copies the pre-built flutter bundle.
@@ -128,6 +130,7 @@ class KernelSnapshot extends Target {
 
   @override
   List<Source> get inputs => const <Source>[
+    Source.pattern('{BUILD_DIR}/native_assets.yaml'),
     Source.pattern('{PROJECT_DIR}/.dart_tool/package_config_subset'),
     Source.pattern('{FLUTTER_ROOT}/packages/flutter_tools/lib/src/build_system/targets/common.dart'),
     Source.artifact(Artifact.platformKernelDill),
@@ -145,6 +148,7 @@ class KernelSnapshot extends Target {
 
   @override
   List<Target> get dependencies => const <Target>[
+    NativeAssets(),
     GenerateLocalizationsTarget(),
     DartPluginRegistrantTarget(),
   ];
@@ -177,9 +181,17 @@ class KernelSnapshot extends Target {
     final TargetPlatform targetPlatform = getTargetPlatformForName(targetPlatformEnvironment);
 
     // This configuration is all optional.
+    final String? frontendServerStarterPath = environment.defines[kFrontendServerStarterPath];
     final List<String> extraFrontEndOptions = decodeCommaSeparated(environment.defines, kExtraFrontEndOptions);
     final List<String>? fileSystemRoots = environment.defines[kFileSystemRoots]?.split(',');
     final String? fileSystemScheme = environment.defines[kFileSystemScheme];
+
+    final File nativeAssetsFile = environment.buildDir.childFile('native_assets.yaml');
+    final String nativeAssets = nativeAssetsFile.path;
+    if (!await nativeAssetsFile.exists()) {
+      throwToolExit("$nativeAssets doesn't exist.");
+    }
+    environment.logger.printTrace('Embedding native assets mapping $nativeAssets in kernel.');
 
     TargetModel targetModel = TargetModel.flutter;
     if (targetPlatform == TargetPlatform.fuchsia_x64 ||
@@ -247,6 +259,7 @@ class KernelSnapshot extends Target {
       linkPlatformKernelIn: forceLinkPlatform || buildMode.isPrecompiled,
       mainPath: targetFileAbsolute,
       depFilePath: environment.buildDir.childFile('kernel_snapshot.d').path,
+      frontendServerStarterPath: frontendServerStarterPath,
       extraFrontEndOptions: extraFrontEndOptions,
       fileSystemRoots: fileSystemRoots,
       fileSystemScheme: fileSystemScheme,
@@ -255,6 +268,7 @@ class KernelSnapshot extends Target {
       buildDir: environment.buildDir,
       targetOS: targetOS,
       checkDartPluginRegistry: environment.generateDartPluginRegistry,
+      nativeAssets: nativeAssets,
     );
     if (output == null || output.errorCount != 0) {
       throw Exception();

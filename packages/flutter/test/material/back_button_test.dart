@@ -8,9 +8,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
-  testWidgets('BackButton control test', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton control test', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: const Material(child: Text('Home')),
@@ -37,7 +38,7 @@ void main() {
     expect(find.text('Home'), findsOneWidget);
   });
 
-  testWidgets('BackButton onPressed overrides default pop behavior', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton onPressed overrides default pop behavior', (WidgetTester tester) async {
     bool customCallbackWasCalled = false;
     await tester.pumpWidget(
       MaterialApp(
@@ -70,7 +71,7 @@ void main() {
     expect(customCallbackWasCalled, true);
   });
 
-  testWidgets('BackButton icon', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton icon', (WidgetTester tester) async {
     final Key androidKey = UniqueKey();
     final Key iOSKey = UniqueKey();
     final Key linuxKey = UniqueKey();
@@ -118,7 +119,7 @@ void main() {
     expect(windowsIcon.icon == androidIcon.icon, isTrue);
   });
 
-  testWidgets('BackButton color', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton color', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Material(
@@ -136,7 +137,7 @@ void main() {
     expect(iconText.text.style!.color, Colors.red);
   });
 
-  testWidgets('BackButton color with ButtonStyle', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton color with ButtonStyle', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(useMaterial3: true),
@@ -157,7 +158,7 @@ void main() {
     expect(iconText.text.style!.color, Colors.red);
   });
 
-  testWidgets('BackButton.style.iconColor parameter overrides BackButton.color', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton.style.iconColor parameter overrides BackButton.color', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(useMaterial3: true),
@@ -180,7 +181,7 @@ void main() {
     expect(iconText.text.style!.color, Colors.red);
   });
 
-  testWidgets('BackButton semantics', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('BackButton semantics', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     await tester.pumpWidget(
       MaterialApp(
@@ -224,7 +225,7 @@ void main() {
     handle.dispose();
   }, variant: TargetPlatformVariant.all());
 
-  testWidgets('CloseButton semantics', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('CloseButton semantics', (WidgetTester tester) async {
     final SemanticsHandle handle = tester.ensureSemantics();
     await tester.pumpWidget(
       MaterialApp(
@@ -268,7 +269,7 @@ void main() {
     handle.dispose();
   }, variant: TargetPlatformVariant.all());
 
-  testWidgets('CloseButton color', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('CloseButton color', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Material(
@@ -286,7 +287,7 @@ void main() {
     expect(iconText.text.style!.color, Colors.red);
   });
 
-  testWidgets('CloseButton color with ButtonStyle', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('CloseButton color with ButtonStyle', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(useMaterial3: true),
@@ -307,7 +308,7 @@ void main() {
     expect(iconText.text.style!.color, Colors.red);
   });
 
-  testWidgets('CloseButton.style.iconColor parameter overrides CloseButton.color', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('CloseButton.style.iconColor parameter overrides CloseButton.color', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(useMaterial3: true),
@@ -330,7 +331,7 @@ void main() {
     expect(iconText.text.style!.color, Colors.red);
   });
 
-  testWidgets('CloseButton onPressed overrides default pop behavior', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('CloseButton onPressed overrides default pop behavior', (WidgetTester tester) async {
     bool customCallbackWasCalled = false;
     await tester.pumpWidget(
       MaterialApp(

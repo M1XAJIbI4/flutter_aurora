@@ -19,14 +19,13 @@ Flutter SDK для ОС Аврора не состоит в [`upstream`](https:/
 
 ```shell
 # Проверка установленных инструментов
-$ flutter-aurora doctor
+flutter-aurora doctor
 
-# Создание нового проекта или добавление поддержки
-# ОС Аврора в уже существующий проект
-$ flutter-aurora create --platforms=aurora --template=app
+# Создание нового проекта
+flutter-aurora create --platforms=aurora --template=app <NAME>
 
 # Сборка приложения
-$ flutter-aurora build aurora --release
+flutter-aurora build aurora --release
 ```
 
 Подробнее о поддержке CLI смотрите раздел "[Flutter CLI на ОС Аврора](documentation/cli.md)".
@@ -52,12 +51,12 @@ $ flutter-aurora build aurora --release
 Flutter SDK позволяет создавать стартовые шаблоны для проектов на основе которых легко начать нужный вам проект:
 
 ```shell
-$ flutter-aurora create --platforms=aurora --template=<KEY> --org=<ORG_NAME> <APPNAME>
+flutter-aurora create --platforms=aurora --template=<KEY> --org=<ORG_NAME> <APPNAME>
 ```
 
 - `<KEY>` - Тип шаблона, их три: `app` - приложение, `plugin` - плагин, `plugin_ffi` - плагин FFI.
-- `<ORG_NAME>` - Название организации, написавшей это приложение. 
-- `<APPNAME>` - Имя этого приложения в нижнем регистре без пробелов и символов. 
+- `<ORG_NAME>` - Название организации, написавшей это приложение.
+- `<APPNAME>` - Имя этого приложения в нижнем регистре без пробелов и символов.
 
 Всего можно отметить пять видов возможных проектов на Flutter для ОС Аврора:
 

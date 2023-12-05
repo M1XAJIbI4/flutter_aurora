@@ -7,7 +7,7 @@
 Проект "[Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages)" содержит в себе приложение "Hello World". Создать приложение Flutter для ОС Аврора можно командой:
 
 ```shell
-$ flutter-aurora create --platforms=aurora --template=app --org=<ORG_NAME> <APPNAME>
+flutter-aurora create --platforms=aurora --template=app --org=<ORG_NAME> <APPNAME>
 ```
 
 - `<ORG_NAME>` - название организации
@@ -48,7 +48,7 @@ $ flutter-aurora create --platforms=aurora --template=app --org=<ORG_NAME> <APPN
 Для того что бы добавить поддержку ОС Аврора в уже имеющиеся Flutter приложение перейдите в папку с Flutter проектом и выполните следующую команду:
 
 ```shell
-$ flutter-aurora create --platforms=aurora --org=<ORGNAME> .
+flutter-aurora create --platforms=aurora --org=<ORGNAME> .
 ```
 
 ## Сборка Flutter приложения
@@ -61,22 +61,22 @@ $ flutter-aurora create --platforms=aurora --org=<ORGNAME> .
 
 ```shell
 # Определите название armv7hl таргета
-$ aurora_psdk sdk-assistant list
+aurora_psdk sdk-assistant list
 
   AuroraOS-4.0.2.89-base
   ├─AuroraOS-4.0.2.89-base-aarch64
   ├─AuroraOS-4.0.2.89-base-armv7hl <- <TARGET>
   └─AuroraOS-4.0.2.89-base-i486
 
-$ aurora_psdk sb2-config -d <TARGET>
+aurora_psdk sb2-config -d <TARGET>
 ```
 
 Запустите сборку проекта в необходимом вам режиме:
 
 ```shell
-$ flutter-aurora build aurora --debug
-$ flutter-aurora build aurora --profile
-$ flutter-aurora build aurora --release
+flutter-aurora build aurora --debug
+flutter-aurora build aurora --profile
+flutter-aurora build aurora --release
 ```
 
 > Во время процесса сборки может потребоваться ввести пароль от супер-пользователя для работы с Platform SDK
@@ -84,7 +84,7 @@ $ flutter-aurora build aurora --release
 После успешной сборки будет выведен путь к собранному RPM пакету.
 
 ```shell
-$ flutter-aurora build aurora --release
+flutter-aurora build aurora --release
 
   Building Aurora application...
 

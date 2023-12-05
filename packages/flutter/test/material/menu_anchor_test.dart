@@ -11,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
-import '../rendering/mock_canvas.dart';
 import '../widgets/semantics_tester.dart';
 
 void main() {
@@ -84,6 +84,7 @@ void main() {
     TextDirection textDirection = TextDirection.ltr,
   }) {
     final FocusNode focusNode = FocusNode();
+    addTearDown(focusNode.dispose);
     return MaterialApp(
       theme: ThemeData(useMaterial3: false),
       home: Material(
@@ -146,7 +147,7 @@ void main() {
     );
   }
 
-  testWidgets('Menu responds to density changes', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('Menu responds to density changes', (WidgetTester tester) async {
     Widget buildMenu({VisualDensity? visualDensity = VisualDensity.standard}) {
       return MaterialApp(
         theme: ThemeData(visualDensity: visualDensity, useMaterial3: false),
@@ -241,7 +242,7 @@ void main() {
     );
   });
 
-  testWidgets('menu defaults colors', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('Menu defaults', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData();
     await tester.pumpWidget(
       MaterialApp(
@@ -282,6 +283,8 @@ void main() {
     expect(material.elevation, 0.0);
     expect(material.shape, const RoundedRectangleBorder());
     expect(material.textStyle?.color, themeData.colorScheme.onSurface);
+    expect(material.textStyle?.fontSize, 14.0);
+    expect(material.textStyle?.height, 1.43);
 
     // vertical menu
     await tester.tap(find.text(TestMenu.mainMenu1.label));
@@ -309,6 +312,8 @@ void main() {
     expect(material.elevation, 0.0);
     expect(material.shape, const RoundedRectangleBorder());
     expect(material.textStyle?.color, themeData.colorScheme.onSurface);
+    expect(material.textStyle?.fontSize, 14.0);
+    expect(material.textStyle?.height, 1.43);
 
     await tester.tap(find.text(TestMenu.mainMenu0.label));
     await tester.pump();
@@ -319,7 +324,7 @@ void main() {
     expect(iconRichText.text.style?.color, themeData.colorScheme.onSurfaceVariant);
   });
 
-  testWidgets('menu defaults - disabled', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('Menu defaults - disabled', (WidgetTester tester) async {
     final ThemeData themeData = ThemeData();
     await tester.pumpWidget(
       MaterialApp(
@@ -394,7 +399,7 @@ void main() {
     expect(iconRichText.text.style?.color, themeData.colorScheme.onSurface.withOpacity(0.38));
   });
 
-  testWidgets('Menu scrollbar inherits ScrollbarTheme', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('Menu scrollbar inherits ScrollbarTheme', (WidgetTester tester) async {
     const ScrollbarThemeData scrollbarTheme = ScrollbarThemeData(
       thumbColor: MaterialStatePropertyAll<Color?>(Color(0xffff0000)),
       thumbVisibility: MaterialStatePropertyAll<bool?>(true),
@@ -489,8 +494,56 @@ void main() {
     );
   }, variant: TargetPlatformVariant.desktop());
 
+  testWidgetsWithLeakTracking('focus is returned to previous focus before invoking onPressed', (WidgetTester tester) async {
+    final FocusNode buttonFocus = FocusNode(debugLabel: 'Button Focus');
+    addTearDown(buttonFocus.dispose);
+    FocusNode? focusInOnPressed;
+
+    void onMenuSelected(TestMenu item) {
+      focusInOnPressed = FocusManager.instance.primaryFocus;
+    }
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Material(
+          child: Column(
+            children: <Widget>[
+              MenuBar(
+                controller: controller,
+                children: createTestMenus(
+                  onPressed: onMenuSelected,
+                ),
+              ),
+              ElevatedButton(
+                autofocus: true,
+                onPressed: () {},
+                focusNode: buttonFocus,
+                child: const Text('Press Me'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    expect(FocusManager.instance.primaryFocus, equals(buttonFocus));
+
+    await tester.tap(find.text(TestMenu.mainMenu1.label));
+    await tester.pump();
+
+    await tester.tap(find.text(TestMenu.subMenu11.label));
+    await tester.pump();
+
+    await tester.tap(find.text(TestMenu.subSubMenu110.label));
+    await tester.pump();
+
+    expect(focusInOnPressed, equals(buttonFocus));
+    expect(FocusManager.instance.primaryFocus, equals(buttonFocus));
+  });
+
   group('Menu functions', () {
-    testWidgets('basic menu structure', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('basic menu structure', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -543,7 +596,7 @@ void main() {
       expect(opened.last, equals(TestMenu.subMenu11));
     });
 
-    testWidgets('geometry', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('geometry', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(useMaterial3: false),
@@ -608,7 +661,7 @@ void main() {
       );
     });
 
-    testWidgets('geometry with RTL direction', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('geometry with RTL direction', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(useMaterial3: false),
@@ -685,7 +738,7 @@ void main() {
       );
     });
 
-    testWidgets('menu alignment and offset in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menu alignment and offset in LTR', (WidgetTester tester) async {
       await tester.pumpWidget(buildTestApp());
 
       final Rect buttonRect = tester.getRect(find.byType(ElevatedButton));
@@ -728,7 +781,7 @@ void main() {
       );
     });
 
-    testWidgets('menu alignment and offset in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menu alignment and offset in RTL', (WidgetTester tester) async {
       await tester.pumpWidget(buildTestApp(textDirection: TextDirection.rtl));
 
       final Rect buttonRect = tester.getRect(find.byType(ElevatedButton));
@@ -770,7 +823,7 @@ void main() {
       expect(tester.getRect(findMenuScope).topLeft - menuRect.topLeft, equals(const Offset(-10, 20)));
     });
 
-    testWidgets('menu position in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menu position in LTR', (WidgetTester tester) async {
       await tester.pumpWidget(buildTestApp(alignmentOffset: const Offset(100, 50)));
 
       final Rect buttonRect = tester.getRect(find.byType(ElevatedButton));
@@ -791,7 +844,7 @@ void main() {
       expect(tester.getRect(findMenuScope), equals(const Rect.fromLTRB(526.0, 476.0, 800.0, 588.0)));
     });
 
-    testWidgets('menu position in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menu position in RTL', (WidgetTester tester) async {
       await tester.pumpWidget(buildTestApp(
         alignmentOffset: const Offset(100, 50),
         textDirection: TextDirection.rtl,
@@ -816,7 +869,7 @@ void main() {
       expect(tester.getRect(findMenuScope), equals(const Rect.fromLTRB(526.0, 476.0, 800.0, 588.0)));
     });
 
-    testWidgets('works with Padding around menu and overlay', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('works with Padding around menu and overlay', (WidgetTester tester) async {
       await tester.pumpWidget(
         Padding(
           padding: const EdgeInsets.all(10.0),
@@ -869,7 +922,7 @@ void main() {
       expect(tester.getRect(find.byType(MenuBar)), equals(const Rect.fromLTRB(22.0, 22.0, 778.0, 70.0)));
     });
 
-    testWidgets('works with Padding around menu and overlay with RTL direction', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('works with Padding around menu and overlay with RTL direction', (WidgetTester tester) async {
       await tester.pumpWidget(
         Padding(
           padding: const EdgeInsets.all(10.0),
@@ -925,7 +978,7 @@ void main() {
       expect(tester.getRect(find.byType(MenuBar)), equals(const Rect.fromLTRB(22.0, 22.0, 778.0, 70.0)));
     });
 
-    testWidgets('visual attributes can be set', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('visual attributes can be set', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -956,7 +1009,7 @@ void main() {
       expect(material.color, equals(Colors.red));
     });
 
-    testWidgets('MenuAnchor clip behavior', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('MenuAnchor clip behavior', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1017,7 +1070,7 @@ void main() {
       expect(getMenuBarMaterial(tester).clipBehavior, equals(Clip.antiAlias));
     });
 
-    testWidgets('open and close works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('open and close works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1066,7 +1119,7 @@ void main() {
       expect(closed, equals(<TestMenu>[TestMenu.mainMenu1]));
     });
 
-    testWidgets('select works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('select works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1101,7 +1154,7 @@ void main() {
       expect(find.text(TestMenu.subMenu11.label), findsNothing);
     });
 
-    testWidgets('diagnostics', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('diagnostics', (WidgetTester tester) async {
       const MenuItemButton item = MenuItemButton(
         shortcut: SingleActivator(LogicalKeyboardKey.keyA),
         child: Text('label2'),
@@ -1140,7 +1193,7 @@ void main() {
       );
     });
 
-    testWidgets('keyboard tab traversal works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('keyboard tab traversal works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1199,7 +1252,7 @@ void main() {
       expect(closed, <TestMenu>[TestMenu.mainMenu0]);
     });
 
-    testWidgets('keyboard directional traversal works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('keyboard directional traversal works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1279,7 +1332,7 @@ void main() {
       expect(focusedMenu, equals('MenuItemButton(Text("Sub Sub Menu 113"))'));
     });
 
-    testWidgets('keyboard directional traversal works in RTL mode', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('keyboard directional traversal works in RTL mode', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Directionality(
@@ -1365,7 +1418,7 @@ void main() {
       expect(focusedMenu, equals('MenuItemButton(Text("Sub Sub Menu 113"))'));
     });
 
-    testWidgets('hover traversal works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('hover traversal works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1421,8 +1474,9 @@ void main() {
       expect(focusedMenu, equals('MenuItemButton(Text("Sub Sub Menu 110"))'));
     });
 
-    testWidgets('menus close on ancestor scroll', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menus close on ancestor scroll', (WidgetTester tester) async {
       final ScrollController scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1459,9 +1513,10 @@ void main() {
       expect(closed, isNotEmpty);
     });
 
-    testWidgets('menus do not close on root menu internal scroll', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menus do not close on root menu internal scroll', (WidgetTester tester) async {
       // Regression test for https://github.com/flutter/flutter/issues/122168.
       final ScrollController scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
       bool rootOpened = false;
 
       await tester.pumpWidget(
@@ -1531,8 +1586,9 @@ void main() {
       expect(closed, isNotEmpty);
     });
 
-    testWidgets('menus close on view size change', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('menus close on view size change', (WidgetTester tester) async {
       final ScrollController scrollController = ScrollController();
+      addTearDown(scrollController.dispose);
       final MediaQueryData mediaQueryData = MediaQueryData.fromView(tester.view);
 
       Widget build(Size size) {
@@ -1621,7 +1677,7 @@ void main() {
       }
     });
 
-    testWidgets('can invoke menu items', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('can invoke menu items', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1677,7 +1733,7 @@ void main() {
       selected.clear();
     }, variant: TargetPlatformVariant(nonApple));
 
-    testWidgets('can combine with regular keyboard navigation', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('can combine with regular keyboard navigation', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1714,7 +1770,7 @@ void main() {
       expect(selected, equals(<TestMenu>[TestMenu.subSubMenu110]));
     }, variant: TargetPlatformVariant(nonApple));
 
-    testWidgets('can combine with mouse', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('can combine with mouse', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1749,7 +1805,7 @@ void main() {
       expect(selected, equals(<TestMenu>[TestMenu.subSubMenu112]));
     }, variant: TargetPlatformVariant(nonApple));
 
-    testWidgets("disabled items don't respond to accelerators", (WidgetTester tester) async {
+    testWidgetsWithLeakTracking("disabled items don't respond to accelerators", (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1781,7 +1837,7 @@ void main() {
       expect(find.text(TestMenu.subMenu00.label), findsNothing);
     }, variant: TargetPlatformVariant(nonApple));
 
-    testWidgets("Apple platforms don't react to accelerators", (WidgetTester tester) async {
+    testWidgetsWithLeakTracking("Apple platforms don't react to accelerators", (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1827,7 +1883,7 @@ void main() {
   });
 
   group('MenuController', () {
-    testWidgets('Moving a controller to a new instance works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('Moving a controller to a new instance works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1865,7 +1921,7 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('closing via controller works', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('closing via controller works', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -1908,7 +1964,7 @@ void main() {
   });
 
   group('MenuItemButton', () {
-    testWidgets('Shortcut mnemonics are displayed', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('Shortcut mnemonics are displayed', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -2029,7 +2085,7 @@ void main() {
       expect(mnemonic2.data, equals('↵'));
     }, variant: TargetPlatformVariant.all());
 
-    testWidgets('leadingIcon is used when set', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('leadingIcon is used when set', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -2057,7 +2113,7 @@ void main() {
       expect(find.text('leadingIcon'), findsOneWidget);
     });
 
-    testWidgets('trailingIcon is used when set', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('trailingIcon is used when set', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Material(
@@ -2085,7 +2141,7 @@ void main() {
       expect(find.text('trailingIcon'), findsOneWidget);
     });
 
-    testWidgets('SubmenuButton uses supplied controller', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('SubmenuButton uses supplied controller', (WidgetTester tester) async {
       final MenuController submenuController = MenuController();
       await tester.pumpWidget(
         MaterialApp(
@@ -2142,7 +2198,7 @@ void main() {
       expect(find.text(TestMenu.subMenu00.label), findsNothing);
     });
 
-    testWidgets('diagnostics', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('diagnostics', (WidgetTester tester) async {
       final ButtonStyle style = ButtonStyle(
         shape: MaterialStateProperty.all<OutlinedBorder?>(const StadiumBorder()),
         elevation: MaterialStateProperty.all<double?>(10.0),
@@ -2202,7 +2258,7 @@ void main() {
       );
     });
 
-    testWidgets('MenuItemButton respects closeOnActivate property', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('MenuItemButton respects closeOnActivate property', (WidgetTester tester) async {
       final MenuController controller = MenuController();
       await tester.pumpWidget(MaterialApp(
         home: Material(
@@ -2300,7 +2356,7 @@ void main() {
       return menuRects;
     }
 
-    testWidgets('unconstrained menus show up in the right place in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('unconstrained menus show up in the right place in LTR', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(800, 600));
       await tester.pumpWidget(
         MaterialApp(
@@ -2344,7 +2400,7 @@ void main() {
       );
     });
 
-    testWidgets('unconstrained menus show up in the right place in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('unconstrained menus show up in the right place in RTL', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(800, 600));
       await tester.pumpWidget(
         MaterialApp(
@@ -2391,7 +2447,7 @@ void main() {
       );
     });
 
-    testWidgets('constrained menus show up in the right place in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('constrained menus show up in the right place in LTR', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(300, 300));
       await tester.pumpWidget(
         MaterialApp(
@@ -2436,7 +2492,7 @@ void main() {
       );
     });
 
-    testWidgets('constrained menus show up in the right place in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('constrained menus show up in the right place in RTL', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(300, 300));
       await tester.pumpWidget(
         MaterialApp(
@@ -2481,7 +2537,7 @@ void main() {
       );
     });
 
-    testWidgets('constrained menus show up in the right place with offset in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('constrained menus show up in the right place with offset in LTR', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(800, 600));
       await tester.pumpWidget(
         MaterialApp(
@@ -2558,7 +2614,7 @@ void main() {
       );
     });
 
-    testWidgets('constrained menus show up in the right place with offset in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('constrained menus show up in the right place with offset in RTL', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(800, 600));
       await tester.pumpWidget(
         MaterialApp(
@@ -2635,7 +2691,7 @@ void main() {
       );
     });
 
-    testWidgets('vertically constrained menus are positioned above the anchor by default', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('vertically constrained menus are positioned above the anchor by default', (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(800, 600));
       await tester.pumpWidget(
         MaterialApp(
@@ -2686,7 +2742,7 @@ void main() {
       );
     });
 
-    testWidgets('vertically constrained menus are positioned above the anchor with the provided offset',
+    testWidgetsWithLeakTracking('vertically constrained menus are positioned above the anchor with the provided offset',
         (WidgetTester tester) async {
       await changeSurfaceSize(tester, const Size(800, 600));
       await tester.pumpWidget(
@@ -2773,7 +2829,7 @@ void main() {
       await tester.pump();
     }
 
-    testWidgets('submenus account for density in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('submenus account for density in LTR', (WidgetTester tester) async {
       await buildDensityPaddingApp(
         tester,
         textDirection: TextDirection.ltr,
@@ -2788,7 +2844,7 @@ void main() {
       );
     });
 
-    testWidgets('submenus account for menu density in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('submenus account for menu density in RTL', (WidgetTester tester) async {
       await buildDensityPaddingApp(
         tester,
         textDirection: TextDirection.rtl,
@@ -2803,7 +2859,7 @@ void main() {
       );
     });
 
-    testWidgets('submenus account for compact menu density in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('submenus account for compact menu density in LTR', (WidgetTester tester) async {
       await buildDensityPaddingApp(
         tester,
         visualDensity: VisualDensity.compact,
@@ -2819,7 +2875,7 @@ void main() {
       );
     });
 
-    testWidgets('submenus account for compact menu density in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('submenus account for compact menu density in RTL', (WidgetTester tester) async {
       await buildDensityPaddingApp(
         tester,
         visualDensity: VisualDensity.compact,
@@ -2835,7 +2891,7 @@ void main() {
       );
     });
 
-    testWidgets('submenus account for padding in LTR', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('submenus account for padding in LTR', (WidgetTester tester) async {
       await buildDensityPaddingApp(
         tester,
         menuPadding: const EdgeInsetsDirectional.only(start: 10, end: 11, top: 12, bottom: 13),
@@ -2851,7 +2907,7 @@ void main() {
       );
     });
 
-    testWidgets('submenus account for padding in RTL', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('submenus account for padding in RTL', (WidgetTester tester) async {
       await buildDensityPaddingApp(
         tester,
         menuPadding: const EdgeInsetsDirectional.only(start: 10, end: 11, top: 12, bottom: 13),
@@ -2869,7 +2925,7 @@ void main() {
   });
 
   group('LocalizedShortcutLabeler', () {
-    testWidgets('getShortcutLabel returns the right labels', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('getShortcutLabel returns the right labels', (WidgetTester tester) async {
       String expectedMeta;
       String expectedCtrl;
       String expectedAlt;
@@ -2902,7 +2958,18 @@ void main() {
         shift: true,
         alt: true,
       );
-      final String allExpected = <String>[expectedAlt, expectedCtrl, expectedMeta, expectedShift, 'A'].join(expectedSeparator);
+      late String allExpected;
+      switch (defaultTargetPlatform) {
+        case TargetPlatform.android:
+        case TargetPlatform.fuchsia:
+        case TargetPlatform.linux:
+        case TargetPlatform.aurora:
+        case TargetPlatform.windows:
+          allExpected = <String>[expectedAlt, expectedCtrl, expectedMeta, expectedShift, 'A'].join(expectedSeparator);
+        case TargetPlatform.iOS:
+        case TargetPlatform.macOS:
+          allExpected = <String>[expectedCtrl, expectedAlt, expectedShift, expectedMeta, 'A'].join(expectedSeparator);
+      }
       const CharacterActivator charShortcuts = CharacterActivator('ñ');
       const String charExpected = 'ñ';
       await tester.pumpWidget(
@@ -2938,7 +3005,7 @@ void main() {
   });
 
   group('CheckboxMenuButton', () {
-    testWidgets('tapping toggles checkbox', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('tapping toggles checkbox', (WidgetTester tester) async {
       bool? checkBoxValue;
       await tester.pumpWidget(
         MaterialApp(
@@ -2992,7 +3059,7 @@ void main() {
   });
 
   group('RadioMenuButton', () {
-    testWidgets('tapping toggles radio button', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('tapping toggles radio button', (WidgetTester tester) async {
       int? radioValue;
       await tester.pumpWidget(
         MaterialApp(
@@ -3061,7 +3128,7 @@ void main() {
   });
 
   group('Semantics', () {
-    testWidgets('MenuItemButton is not a semantic button', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('MenuItemButton is not a semantic button', (WidgetTester tester) async {
       final SemanticsTester semantics = SemanticsTester(tester);
       await tester.pumpWidget(
         Directionality(
@@ -3069,7 +3136,7 @@ void main() {
           child: Center(
             child: MenuItemButton(
               style: MenuItemButton.styleFrom(fixedSize: const Size(88.0, 36.0)),
-              onPressed: () { },
+              onPressed: () {},
               child: const Text('ABC'),
             ),
           ),
@@ -3077,32 +3144,35 @@ void main() {
       );
 
       // The flags should not have SemanticsFlag.isButton
-      expect(semantics, hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            TestSemantics.rootChild(
-              actions: <SemanticsAction>[
-                SemanticsAction.tap,
-              ],
-              label: 'ABC',
-              rect: const Rect.fromLTRB(0.0, 0.0, 88.0, 48.0),
-              transform: Matrix4.translationValues(356.0, 276.0, 0.0),
-              flags: <SemanticsFlag>[
-                SemanticsFlag.hasEnabledState,
-                SemanticsFlag.isEnabled,
-                SemanticsFlag.isFocusable,
-              ],
-              textDirection: TextDirection.ltr,
-            ),
-          ],
+      expect(
+        semantics,
+        hasSemantics(
+          TestSemantics.root(
+            children: <TestSemantics>[
+              TestSemantics.rootChild(
+                actions: <SemanticsAction>[
+                  SemanticsAction.tap,
+                ],
+                label: 'ABC',
+                rect: const Rect.fromLTRB(0.0, 0.0, 88.0, 48.0),
+                transform: Matrix4.translationValues(356.0, 276.0, 0.0),
+                flags: <SemanticsFlag>[
+                  SemanticsFlag.hasEnabledState,
+                  SemanticsFlag.isEnabled,
+                  SemanticsFlag.isFocusable,
+                ],
+                textDirection: TextDirection.ltr,
+              ),
+            ],
+          ),
+          ignoreId: true,
         ),
-        ignoreId: true,
-      ));
+      );
 
       semantics.dispose();
     });
 
-    testWidgets('SubMenuButton is not a semantic button', (WidgetTester tester) async {
+    testWidgetsWithLeakTracking('SubMenuButton is not a semantic button', (WidgetTester tester) async {
       final SemanticsTester semantics = SemanticsTester(tester);
       await tester.pumpWidget(
         Directionality(
@@ -3119,25 +3189,209 @@ void main() {
       );
 
       // The flags should not have SemanticsFlag.isButton
-      expect(semantics, hasSemantics(
-        TestSemantics.root(
-          children: <TestSemantics>[
-            TestSemantics.rootChild(
-              label: 'ABC',
-              rect: const Rect.fromLTRB(0.0, 0.0, 88.0, 48.0),
-              transform: Matrix4.translationValues(356.0, 276.0, 0.0),
-              flags: <SemanticsFlag>[
-                SemanticsFlag.hasEnabledState,
-              ],
-              textDirection: TextDirection.ltr,
-            ),
-          ],
+      expect(
+        semantics,
+        hasSemantics(
+          TestSemantics.root(
+            children: <TestSemantics>[
+              TestSemantics(
+                rect: const Rect.fromLTRB(0.0, 0.0, 88.0, 48.0),
+                flags: <SemanticsFlag>[SemanticsFlag.hasEnabledState,
+                  SemanticsFlag.hasExpandedState],
+                label: 'ABC',
+                textDirection: TextDirection.ltr,
+              ),
+            ],
+          ),
+          ignoreTransform: true,
+          ignoreId: true,
         ),
-        ignoreId: true,
-      ));
+      );
 
       semantics.dispose();
     });
+
+    testWidgetsWithLeakTracking('SubmenuButton expanded/collapsed state', (WidgetTester tester) async {
+      final SemanticsTester semantics = SemanticsTester(tester);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Center(
+            child: SubmenuButton(
+              onHover: (bool value) {},
+              style: SubmenuButton.styleFrom(fixedSize: const Size(88.0, 36.0)),
+              menuChildren: <Widget>[
+                MenuItemButton(
+                  style: SubmenuButton.styleFrom(fixedSize: const Size(120.0, 36.0)),
+                  child: const Text('Item 0'),
+                  onPressed: () {},
+                ),
+              ],
+              child: const Text('ABC'),
+            ),
+          ),
+        ),
+      );
+
+      // Test expanded state.
+      await tester.tap(find.text('ABC'));
+      await tester.pumpAndSettle();
+      expect(
+        semantics,
+        hasSemantics(
+          TestSemantics.root(
+            children: <TestSemantics>[
+              TestSemantics(
+                id: 1,
+                rect: const Rect.fromLTRB(0.0, 0.0, 800.0, 600.0),
+                children: <TestSemantics> [
+                  TestSemantics(
+                    id: 2,
+                    rect: const Rect.fromLTRB(0.0, 0.0, 800.0, 600.0),
+                    children: <TestSemantics> [
+                      TestSemantics(
+                        id: 3,
+                        rect: const Rect.fromLTRB(0.0, 0.0, 800.0, 600.0),
+                        flags: <SemanticsFlag> [SemanticsFlag.scopesRoute],
+                        children: <TestSemantics> [
+                          TestSemantics(
+                            id: 4,
+                            flags: <SemanticsFlag>[SemanticsFlag.hasExpandedState, SemanticsFlag.isExpanded, SemanticsFlag.isFocused, SemanticsFlag.hasEnabledState, SemanticsFlag.isEnabled,
+                              SemanticsFlag.isFocusable],
+                            actions: <SemanticsAction>[SemanticsAction.tap],
+                            label: 'ABC',
+                            rect: const Rect.fromLTRB(0.0, 0.0, 88.0, 48.0),
+                          )
+                        ]
+                      )
+                    ]
+                  ),
+                  TestSemantics(
+                      id: 6,
+                      rect: const Rect.fromLTRB(0.0, 0.0, 120.0, 64.0),
+                      children: <TestSemantics> [
+                        TestSemantics(
+                            id: 7,
+                            rect: const Rect.fromLTRB(0.0, 0.0, 120.0, 48.0),
+                            flags: <SemanticsFlag> [SemanticsFlag.hasImplicitScrolling],
+                            children: <TestSemantics> [
+                              TestSemantics(
+                                  id: 8,
+                                  label: 'Item 0',
+                                  rect: const Rect.fromLTRB(0.0, 0.0, 120.0, 48.0),
+                                  flags: <SemanticsFlag>[SemanticsFlag.hasEnabledState, SemanticsFlag.isEnabled, SemanticsFlag.isFocusable],
+                                  actions: <SemanticsAction>[SemanticsAction.tap],
+                              ),
+                            ],
+                        ),
+                      ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          ignoreTransform: true,
+        ),
+      );
+
+      // Test collapsed state.
+      await tester.tap(find.text('ABC'));
+      await tester.pumpAndSettle();
+      expect(
+        semantics,
+        hasSemantics(
+          TestSemantics.root(
+            children: <TestSemantics>[
+              TestSemantics(
+                id: 1,
+                rect: const Rect.fromLTRB(0.0, 0.0, 800.0, 600.0),
+                children: <TestSemantics> [
+                  TestSemantics(
+                      id: 2,
+                      rect: const Rect.fromLTRB(0.0, 0.0, 800.0, 600.0),
+                      children: <TestSemantics> [
+                        TestSemantics(
+                            id: 3,
+                            rect: const Rect.fromLTRB(0.0, 0.0, 800.0, 600.0),
+                            flags: <SemanticsFlag> [SemanticsFlag.scopesRoute],
+                            children: <TestSemantics> [
+                              TestSemantics(
+                                id: 4,
+                                flags: <SemanticsFlag>[SemanticsFlag.hasExpandedState, SemanticsFlag.isFocused, SemanticsFlag.hasEnabledState, SemanticsFlag.isEnabled,
+                                  SemanticsFlag.isFocusable],
+                                actions: <SemanticsAction>[SemanticsAction.tap],
+                                label: 'ABC',
+                                rect: const Rect.fromLTRB(0.0, 0.0, 88.0, 48.0),
+                              )
+                            ]
+                        )
+                      ]
+                  ),
+                ],
+              ),
+            ],
+          ),
+          ignoreTransform: true,
+        ),
+      );
+
+      semantics.dispose();
+    });
+  });
+
+  // This is a regression test for https://github.com/flutter/flutter/issues/131676.
+  testWidgetsWithLeakTracking('Material3 - Menu uses correct text styles', (WidgetTester tester) async {
+    const TextStyle menuTextStyle = TextStyle(
+      fontSize: 18.5,
+      fontStyle: FontStyle.italic,
+      wordSpacing: 1.2,
+      decoration: TextDecoration.lineThrough,
+    );
+    final ThemeData themeData = ThemeData(
+      textTheme: const TextTheme(
+        labelLarge: menuTextStyle,
+      )
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: themeData,
+        home: Material(
+          child: MenuBar(
+            controller: controller,
+            children: createTestMenus(
+              onPressed: onPressed,
+              onOpen: onOpen,
+              onClose: onClose,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Test menu button text style uses the TextTheme.labelLarge.
+    Finder buttonMaterial = find.descendant(
+      of: find.byType(TextButton),
+      matching: find.byType(Material),
+    ).first;
+    Material material = tester.widget<Material>(buttonMaterial);
+    expect(material.textStyle?.fontSize, menuTextStyle.fontSize);
+    expect(material.textStyle?.fontStyle, menuTextStyle.fontStyle);
+    expect(material.textStyle?.wordSpacing, menuTextStyle.wordSpacing);
+    expect(material.textStyle?.decoration, menuTextStyle.decoration);
+
+    // Open the menu.
+    await tester.tap(find.text(TestMenu.mainMenu1.label));
+    await tester.pump();
+
+    // Test menu item text style uses the TextTheme.labelLarge.
+    buttonMaterial = find.descendant(
+      of: find.widgetWithText(TextButton, TestMenu.subMenu10.label),
+      matching: find.byType(Material),
+    ).first;
+    material = tester.widget<Material>(buttonMaterial);
+    expect(material.textStyle?.fontSize, menuTextStyle.fontSize);
+    expect(material.textStyle?.fontStyle, menuTextStyle.fontStyle);
+    expect(material.textStyle?.wordSpacing, menuTextStyle.wordSpacing);
+    expect(material.textStyle?.decoration, menuTextStyle.decoration);
   });
 }
 
