@@ -16,7 +16,11 @@ const String FRAMEWORK_VERSION = '3.16.2-1';
 
 /// Engine downloads url
 const String ENGINE_URL =
-    'https://gitlab.com/omprussia/flutter/flutter-engine/-/raw/master/engines';
+    'https://gitlab.com/omprussia/flutter/flutter-engine/-/raw/{tag}/engines/{psdk}/{engine}/{file}';
+
+/// Engine tags url
+const String ENGINE_TAGS =
+    'https://gitlab.com/api/v4/projects/53055476/repository/tags?per_page=50&order_by=version&search={search}*';
 
 /// Path psdk
 String? _psdkDir;
@@ -157,6 +161,26 @@ Future<bool> downloadEngine(
 
   globals.printStatus('Download aurora "$arch ($buildMode)" engine...');
 
+  /// Get latest version tag
+  final RunResult rawTags = await globals.processUtils.run(
+    <String>[
+      'curl',
+      '--silent',
+      '--fail',
+      ENGINE_TAGS.replaceAll('{search}', FRAMEWORK_VERSION.split('-').first)
+    ],
+  );
+
+  if (rawTags.exitCode == 22) {
+    return false;
+  }
+
+  final dynamic tag = (json.decode(rawTags.toString()) as List<dynamic>).firstOrNull;
+
+  if (tag == null) {
+    return false;
+  }
+
   /// Files
   final List<String> files = <String>[
     'gen_snapshot',
@@ -171,7 +195,11 @@ Future<bool> downloadEngine(
         'curl',
         '--silent',
         '--fail',
-        '$ENGINE_URL/$FRAMEWORK_VERSION/$psdkMajorKeyVersion/$arch$suffix/$file',
+        ENGINE_URL
+            .replaceAll('{tag}', (tag as Map<String, dynamic>)['name'].toString())
+            .replaceAll('{psdk}', psdkMajorKeyVersion)
+            .replaceAll('{engine}', '$arch$suffix')
+            .replaceAll('{file}', file),
         '--output',
         '${engineFolder.path}/$file'
       ],
