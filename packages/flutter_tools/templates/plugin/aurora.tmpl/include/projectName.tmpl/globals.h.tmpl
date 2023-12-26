@@ -1,0 +1,10 @@
+#ifndef FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_GLOBALS_H
+#define FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_GLOBALS_H
+
+#ifdef PLUGIN_IMPL
+#define PLUGIN_EXPORT __attribute__((visibility("default")))
+#else
+#define PLUGIN_EXPORT
+#endif
+
+#endif /* FLUTTER_PLUGIN_{{pluginClassCapitalSnakeCase}}_GLOBALS_H */
