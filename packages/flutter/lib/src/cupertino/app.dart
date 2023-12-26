@@ -148,8 +148,6 @@ class CupertinoApp extends StatefulWidget {
   /// unsupported route.
   ///
   /// This class creates an instance of [WidgetsApp].
-  ///
-  /// The boolean arguments, [routes], and [navigatorObservers], must not be null.
   const CupertinoApp({
     super.key,
     this.navigatorKey,
@@ -160,6 +158,7 @@ class CupertinoApp extends StatefulWidget {
     this.onGenerateRoute,
     this.onGenerateInitialRoutes,
     this.onUnknownRoute,
+    this.onNavigationNotification,
     List<NavigatorObserver> this.navigatorObservers = const <NavigatorObserver>[],
     this.builder,
     this.title = '',
@@ -205,6 +204,7 @@ class CupertinoApp extends StatefulWidget {
     this.builder,
     this.title = '',
     this.onGenerateTitle,
+    this.onNavigationNotification,
     this.color,
     this.locale,
     this.localizationsDelegates,
@@ -270,6 +270,9 @@ class CupertinoApp extends StatefulWidget {
 
   /// {@macro flutter.widgets.widgetsApp.onUnknownRoute}
   final RouteFactory? onUnknownRoute;
+
+  /// {@macro flutter.widgets.widgetsApp.onNavigationNotification}
+  final NotificationListenerCallback<NavigationNotification>? onNavigationNotification;
 
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
   final List<NavigatorObserver>? navigatorObservers;
@@ -505,6 +508,12 @@ class _CupertinoAppState extends State<CupertinoApp> {
     _heroController = CupertinoApp.createCupertinoHeroController();
   }
 
+  @override
+  void dispose() {
+    _heroController.dispose();
+    super.dispose();
+  }
+
   // Combine the default localization for Cupertino with the ones contributed
   // by the localizationsDelegates parameter, if any. Only the first delegate
   // of a particular LocalizationsDelegate.type is loaded so the
@@ -577,6 +586,7 @@ class _CupertinoAppState extends State<CupertinoApp> {
       onGenerateRoute: widget.onGenerateRoute,
       onGenerateInitialRoutes: widget.onGenerateInitialRoutes,
       onUnknownRoute: widget.onUnknownRoute,
+      onNavigationNotification: widget.onNavigationNotification,
       builder: widget.builder,
       title: widget.title,
       onGenerateTitle: widget.onGenerateTitle,
