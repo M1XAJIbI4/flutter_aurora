@@ -14,4 +14,3 @@ Flutter SDK требует установленной [Аврора Platform SDK
 
     От сообщества доступно CLI приложение [Aurora CLI](https://github.com/keygenqt/aurora-scripts).
     C помощью его можно установить нужную версию Platform SDK и Flutter SDK.
-    Смотрите раздел [Сообщество](../community/index.md).

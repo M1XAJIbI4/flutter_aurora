@@ -1,6 +1,8 @@
 # Установка на Windows (WSL2)
 
-Работа Flutter SDK была проверена на [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about). Установка Flutter SDK с поддержкой ОС Аврора аналогична установке описанной в документации для Linux - [Установка на Linux](install_linux.md). Сборка приложений Flutter будет осуществляться с помощью CLI Flutter - детальное описание команд можно найти в документации - "[Flutter CLI на ОС Аврора](cli.md)".
+Работа Flutter SDK была проверена на [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about). 
+Установка Flutter SDK с поддержкой ОС Аврора аналогична установке описанной в документации для Linux - [Установка на Linux](linux.md).
+Сборка приложений Flutter будет осуществляться с помощью CLI Flutter - детальное описание команд можно найти в документации - [Flutter CLI на ОС Аврора](../using/cli.md).
 
 !!! warning
 
