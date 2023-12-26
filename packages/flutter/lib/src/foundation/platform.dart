@@ -8,7 +8,7 @@
 import 'dart:io';
 
 import '_platform_io.dart'
-  if (dart.library.html) '_platform_web.dart' as platform;
+  if (dart.library.js_util) '_platform_web.dart' as platform;
 
 /// The [TargetPlatform] that matches the platform on which the framework is
 /// currently executing.
@@ -31,6 +31,12 @@ import '_platform_io.dart'
 ///
 /// Tests can also create specific platform tests by and adding a `variant:`
 /// argument to the test and using a [TargetPlatformVariant].
+///
+/// See also:
+///
+/// * [kIsWeb], a boolean which is true if the application is running on the
+///   web, where [defaultTargetPlatform] returns which platform the browser is
+///   running on.
 //
 // When adding support for a new platform (e.g. Windows Phone, Raspberry Pi),
 // first create a new value on the [TargetPlatform] enum, then add a rule for

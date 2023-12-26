@@ -55,6 +55,6 @@ class AuroraDoctorValidator extends DoctorValidator {
       return ValidationResult(ValidationType.missing, messages);
     }
 
-    return ValidationResult(ValidationType.installed, messages);
+    return ValidationResult(ValidationType.success, messages);
   }
 }

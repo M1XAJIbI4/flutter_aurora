@@ -9,7 +9,7 @@
 
 ## Установка Flutter SDK
 
-Установка будет производится на систему Ubuntu 22.04. На других системах Linux возможны некоторые незначительные отклонения от документации. Установить пакеты для работы с curl, git и zip:
+Установка будет производиться на систему Ubuntu 22.04. На других системах Linux возможны некоторые незначительные отклонения от документации. Установить пакеты для работы с curl, git и zip:
 
 ```shell
 $ sudo apt-get install curl git git-lfs unzip bzip2
@@ -94,24 +94,24 @@ $ aurora_psdk sb2-config -d <TARGET>
 
 где `<TARGET>` - полное наименование таргета, например, `AuroraOS-4.0.2.89-base-armv7hl`.
 
-Далее, следует перейти в директорию с пакетами и установить зависимости. При конфликте хешей их нужно проигнорировать, выбрав (`i`):
+Далее, следует перейти в директорию с пакетами и установить зависимости:
 
 ```shell  
-$ cd ~/.local/opt/flutter/bin/cache/artifacts/aurora/arm  
- 
-# Для Аврора 4.0.2 установить пакеты совместимости  
-$ aurora_psdk sb2 -t <TARGET> -m sdk-install -R zypper in platform-sdk/compatibility/*.rpm  
+$ cd ~/.local/opt/flutter/bin/cache/artifacts/aurora/arm
 
-# Установить необходимые пакеты  
-$ aurora_psdk sb2 -t <TARGET> -m sdk-install -R zypper in platform-sdk/*.rpm  
-  
-# Очистить снимки armv7hl таргета  
-$ aurora_psdk sdk-assistant target remove --snapshots-of <TARGET>  
+# Для Аврора 4.0.2 установить пакеты совместимости
+$ aurora_psdk sb2 -t <TARGET> -m sdk-install -R zypper --no-gpg-checks in -y platform-sdk/compatibility/*.rpm
+
+# Установить необходимые пакеты
+$ aurora_psdk sb2 -t <TARGET> -m sdk-install -R zypper --no-gpg-checks in -y platform-sdk/*.rpm
+
+# Очистить снимки armv7hl таргета
+$ aurora_psdk sdk-assistant target remove --snapshots-of <TARGET>
 ```
 
 ## Установка пакетов для работы Flutter
 
-На данный момент ОС Аврора требует также установки дополнительных пакетов от которых зависит работа Flutter. Пакеты находятся в установленном Flutter SDK по пути `<flutter>/bin/cache/artifacts/aurora/arm/device/compatibility`. 
+На устройствах до `4.0.2.303` требуется установка дополнительных пакетов от которых зависит работа Flutter. Пакеты находятся в установленном Flutter SDK по пути `<flutter>/bin/cache/artifacts/aurora/arm/device/compatibility`. 
 
 > Примечание. На данный момент поддерживается сборка только под архитектуру `armv7hl`, то есть поддержка эмулятора пока недоступна.
 

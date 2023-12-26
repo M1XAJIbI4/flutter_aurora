@@ -170,6 +170,7 @@ Future<void> _buildAssets(
     fileSystem: globals.fs,
     logger: globals.logger,
     processManager: globals.processManager,
+    usage: globals.flutterUsage,
     platform: globals.platform,
     generateDartPluginRegistry: true,
   );
@@ -208,7 +209,8 @@ Future<void> _buildKernel(
   BuildInfo buildInfo,
   String target
 ) async {
-  final String? engineDartBinaryPath = globals.artifacts?.getHostArtifact(HostArtifact.engineDartBinary).path;
+
+  final String? engineDartBinaryPath = globals.artifacts?.getArtifactPath(Artifact.engineDartBinary, platform: targetPlatform);
   final String? frontendSnapshotPath = globals.artifacts?.getArtifactPath(Artifact.frontendServerSnapshotForEngineDartSdk);
   final String? patchedSdkProductPath = globals.artifacts?.getArtifactPath(Artifact.flutterPatchedSdkPath);
 

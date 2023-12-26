@@ -16,6 +16,7 @@ import 'build.dart';
 /// A command to build a aurora target through a build shell script.
 class BuildAuroraCommand extends BuildSubCommand {
   BuildAuroraCommand({
+    required super.logger,
     required OperatingSystemUtils operatingSystemUtils,
     bool verboseHelp = false,
   }) : _operatingSystemUtils = operatingSystemUtils,
