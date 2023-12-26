@@ -9,6 +9,7 @@ import 'package:file/memory.dart';
 import 'package:meta/meta.dart';
 import 'package:process/process.dart';
 
+import 'aurora/aurora_sdk.dart';
 import 'base/common.dart';
 import 'base/file_system.dart';
 import 'base/os.dart';
@@ -144,6 +145,8 @@ TargetPlatform? _mapTargetPlatform(TargetPlatform? targetPlatform) {
     case TargetPlatform.linux_x64:
     case TargetPlatform.linux_arm64:
     case TargetPlatform.aurora_arm:
+    case TargetPlatform.aurora_arm64:
+    case TargetPlatform.aurora_x64:
     case TargetPlatform.windows_x64:
     case TargetPlatform.fuchsia_arm64:
     case TargetPlatform.fuchsia_x64:
@@ -524,6 +527,8 @@ class CachedArtifacts implements Artifacts {
       case TargetPlatform.windows_x64:
         return _getDesktopArtifactPath(artifact, platform, mode);
       case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
         return _getAuroraArtifactPath(artifact, platform!, mode);
       case TargetPlatform.fuchsia_arm64:
       case TargetPlatform.fuchsia_x64:
@@ -807,9 +812,17 @@ class CachedArtifacts implements Artifacts {
     final String engineDir = _cache.getArtifactDirectory('engine').path;
     final String platformName = _enginePlatformDirectoryName(platform);
     switch (platform) {
+      case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
+        final String psdkMajorKeyVersion = getPsdkMajorKeyVersion();
+        if (mode == BuildMode.debug || mode == null) {
+          return _fileSystem.path.join(engineDir, psdkMajorKeyVersion, platformName);
+        }
+        final String suffix = mode != BuildMode.debug ? '-${snakeCase(mode.cliName, '-')}' : '';
+        return _fileSystem.path.join(engineDir, psdkMajorKeyVersion, platformName + suffix);
       case TargetPlatform.linux_x64:
       case TargetPlatform.linux_arm64:
-      case TargetPlatform.aurora_arm:
       case TargetPlatform.darwin:
       case TargetPlatform.windows_x64:
         // TODO(zanderso): remove once debug desktop artifacts are uploaded
@@ -1118,6 +1131,11 @@ class CachedLocalEngineArtifacts implements Artifacts {
       case TargetPlatform.windows_x64:
         return 'windows-x64';
       case TargetPlatform.aurora_arm:
+        return 'aurora-arm';
+      case TargetPlatform.aurora_arm64:
+        return 'aurora-arm64';
+      case TargetPlatform.aurora_x64:
+        return 'aurora-x64';
       case TargetPlatform.ios:
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
@@ -1319,6 +1337,10 @@ class CachedLocalWebSdkArtifacts implements Artifacts {
         return 'windows-x64';
       case TargetPlatform.aurora_arm:
         return 'aurora-arm';
+      case TargetPlatform.aurora_arm64:
+        return 'aurora-arm64';
+      case TargetPlatform.aurora_x64:
+        return 'aurora-x64';
       case TargetPlatform.ios:
       case TargetPlatform.android:
       case TargetPlatform.android_arm:

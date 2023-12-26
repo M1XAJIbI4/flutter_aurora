@@ -46,6 +46,8 @@ class BuildBundleCommand extends BuildSubCommand {
           'linux-x64',
           'linux-arm64',
           'aurora-arm',
+          'aurora-arm64',
+          'aurora-x64',
           'windows-x64',
         ],
         help: 'The architecture for which to build the application.',
@@ -116,6 +118,8 @@ class BuildBundleCommand extends BuildSubCommand {
         }
         break;
       case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
         if (!featureFlags.isAuroraEnabled) {
           throwToolExit('Linux is not a supported target platform.');
         }

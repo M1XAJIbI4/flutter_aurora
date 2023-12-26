@@ -71,6 +71,8 @@ class DevelopmentShaderCompiler {
       case TargetPlatform.linux_x64:
       case TargetPlatform.linux_arm64:
       case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
       case TargetPlatform.windows_x64:
       case TargetPlatform.fuchsia_arm64:
       case TargetPlatform.fuchsia_x64:

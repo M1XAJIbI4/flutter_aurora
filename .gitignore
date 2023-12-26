@@ -28,14 +28,6 @@
 # Flutter repo-specific
 /bin/cache/*
 
-# Exclude Aurora OS artifacts
-!/bin/cache/artifacts
-/bin/cache/artifacts/*
-!/bin/cache/artifacts/aurora
-!/bin/cache/artifacts/engine
-/bin/cache/artifacts/engine/*
-!/bin/cache/artifacts/engine/aurora-*
-
 /bin/internal/bootstrap.bat
 /bin/internal/bootstrap.sh
 /bin/mingit/

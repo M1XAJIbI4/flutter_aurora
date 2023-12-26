@@ -126,6 +126,8 @@ class NativeAssets extends Target {
       case TargetPlatform.linux_arm64:
       case TargetPlatform.linux_x64:
       case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
         final String? environmentBuildMode = environment.defines[kBuildMode];
         if (environmentBuildMode == null) {
           throw MissingDefineException(kBuildMode, name);

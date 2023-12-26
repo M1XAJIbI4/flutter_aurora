@@ -1865,6 +1865,8 @@ DevelopmentArtifact? artifactFromTargetPlatform(TargetPlatform targetPlatform) {
       }
       return null;
     case TargetPlatform.aurora_arm:
+    case TargetPlatform.aurora_arm64:
+    case TargetPlatform.aurora_x64:
       if (featureFlags.isAndroidEnabled) {
         return DevelopmentArtifact.aurora;
       }

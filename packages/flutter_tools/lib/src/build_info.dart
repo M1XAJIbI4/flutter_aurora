@@ -8,6 +8,7 @@
 import 'package:package_config/package_config_types.dart';
 
 import 'artifacts.dart';
+import 'aurora/aurora_sdk.dart';
 import 'base/config.dart';
 import 'base/file_system.dart';
 import 'base/logger.dart';
@@ -550,6 +551,8 @@ enum TargetPlatform {
   linux_x64,
   linux_arm64,
   aurora_arm,
+  aurora_arm64,
+  aurora_x64,
   windows_x64,
   fuchsia_arm64,
   fuchsia_x64,
@@ -578,8 +581,10 @@ enum TargetPlatform {
       case TargetPlatform.darwin:
       case TargetPlatform.ios:
       case TargetPlatform.linux_arm64:
-      case TargetPlatform.aurora_arm:
       case TargetPlatform.linux_x64:
+      case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
       case TargetPlatform.tester:
       case TargetPlatform.web_javascript:
       case TargetPlatform.windows_x64:
@@ -597,6 +602,10 @@ enum TargetPlatform {
         return 'arm64';
       case TargetPlatform.aurora_arm:
         return 'arm';
+      case TargetPlatform.aurora_arm64:
+        return 'arm64';
+      case TargetPlatform.aurora_x64:
+        return 'x64';
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
       case TargetPlatform.android_arm64:
@@ -754,6 +763,10 @@ String getNameForTargetPlatform(TargetPlatform platform, {DarwinArch? darwinArch
       return 'linux-arm64';
     case TargetPlatform.aurora_arm:
       return 'aurora-arm';
+    case TargetPlatform.aurora_arm64:
+      return 'aurora-arm64';
+    case TargetPlatform.aurora_x64:
+      return 'aurora-x64';
     case TargetPlatform.windows_x64:
       return 'windows-x64';
     case TargetPlatform.fuchsia_arm64:
@@ -799,6 +812,10 @@ TargetPlatform getTargetPlatformForName(String platform) {
       return TargetPlatform.linux_arm64;
     case 'aurora-arm':
       return TargetPlatform.aurora_arm;
+    case 'aurora-arm64':
+      return TargetPlatform.aurora_arm64;
+    case 'aurora-x64':
+      return TargetPlatform.aurora_x64;
     case 'windows-x64':
       return TargetPlatform.windows_x64;
     case 'web-javascript':
@@ -908,7 +925,8 @@ String getNameForBuildMode(BuildMode buildMode) {
 String getAuroraBuildDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
   final String arch = getNameForTargetPlatform(targetPlatform);
   final String buildMode = getNameForBuildMode(buildInfo.mode);
-  return globals.fs.path.join(getBuildDirectory(), 'aurora/$arch/$buildMode');
+  final String psdkVersion = getPsdkVersion();
+  return globals.fs.path.join(getBuildDirectory(), 'aurora/psdk_$psdkVersion/$arch/$buildMode');
 }
 
 /// Returns the Windows build output directory.

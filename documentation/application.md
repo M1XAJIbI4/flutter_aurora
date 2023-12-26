@@ -55,21 +55,7 @@ flutter-aurora create --platforms=aurora --org=<ORGNAME> .
 
 Выполните команду `flutter-aurora doctor`, чтобы убедиться, что ваше окружение подготовлено для сборки под ОС Аврора.
 
-> На данный момент поддерживается сборка только под архитектуру `armv7hl`
-
-Выполните следующую команду, чтобы выставить в Platform SDK таргет `armv7hl` по умолчанию.
-
-```shell
-# Определите название armv7hl таргета
-aurora_psdk sdk-assistant list
-
-  AuroraOS-4.0.2.89-base
-  ├─AuroraOS-4.0.2.89-base-aarch64
-  ├─AuroraOS-4.0.2.89-base-armv7hl <- <TARGET>
-  └─AuroraOS-4.0.2.89-base-i486
-
-aurora_psdk sb2-config -d <TARGET>
-```
+> Команда `doctor` работает на основе переменной окружения `PSDK_DIR`.
 
 Запустите сборку проекта в необходимом вам режиме:
 
@@ -77,6 +63,18 @@ aurora_psdk sb2-config -d <TARGET>
 flutter-aurora build aurora --debug
 flutter-aurora build aurora --profile
 flutter-aurora build aurora --release
+```
+
+Для ОС Аврора 5+ станут доступны архитектуры arm/arm64/x64. Добавлен параметр `--target-platform` который позволяет указать желаемую архитектуру:
+
+* aurora-arm (default)
+* aurora-arm64
+* aurora-x64
+
+Например, команда для сборки для эмулятора `x86_64` будет выглядеть следующим образом:
+
+```shell
+flutter-aurora build aurora --target-platform aurora-x64 --debug
 ```
 
 > Во время процесса сборки может потребоваться ввести пароль от супер-пользователя для работы с Platform SDK
@@ -94,3 +92,16 @@ flutter-aurora build aurora --release
 ```
 
 Далее пакет следует подписать, описание процесса можно найти здесь - [Подписывание установочных пакетов](https://developer.auroraos.ru/doc/software_development/guides/package_signing). После этого можно установить приложение на устройство с ОС Аврора (4.0.2.269 и выше).
+
+## Сборка для разных версий ОС Аврора (4.0.2+ и 5+)
+
+Для сборки под разные версии ОС Аврора потребуются разные Platform SDK. 
+Сборки на 5-м поколении Platform SDK не будут совместимы с 4-м поколением ОС Аврора.
+Для этого был добавлен параметр `--psdk-dir` через который можно указать нужную Platform SDK директорию.
+Flutter SDK использует переменную окружения `PSDK_DIR` как основную версию Platform SDK для сборки, другую версию можно указать следующим образом:
+
+```shell
+flutter-aurora  build aurora --psdk-dir /home/keygenqt/Aurora_Platform_SDK_4.0.2.303/sdks/aurora_psdk
+```
+
+В данном случае указан Platform SDK `4.0.2.303` и будет собрано приложение для ОС Аврора `4.0.2+`.

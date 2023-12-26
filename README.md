@@ -15,7 +15,7 @@ Flutter SDK для ОС Аврора не состоит в [`upstream`](https:/
 
 ## Использование
 
-При установке Flutter SDK для ОС Аврора во избежание коллизий с основной версией Flutter исходная CLI команда `flutter` меняется на `flutter-aurora`. Поддерживается только интерфейс командной строки. Сборка требует права суперпользователя так как зависит от [Аврора Platform SDK](https://developer.auroraos.ru/doc/software_development/psdk).
+При установке Flutter SDK для ОС Аврора во избежание коллизий с `upstream` версией Flutter исходная CLI команда `flutter` меняется на `flutter-aurora`. Поддерживается только интерфейс командной строки. Сборка требует права суперпользователя так как зависит от [Аврора Platform SDK](https://developer.auroraos.ru/doc/software_development/psdk).
 
 ```shell
 # Проверка установленных инструментов
@@ -41,10 +41,6 @@ flutter-aurora build aurora --release
 ## Отладка
 
 На данный момент изучение этого вопроса находится в очереди. Вы можете помочь, оставив сообщение в раздел [issue](https://gitlab.com/omprussia/flutter/flutter/-/issues) о встреченных вами проблем с отладкой и их решению.
-
-## Сборка Flutter Engine
-
-[Flutter Engine](https://github.com/flutter/engine) - необходимая библиотека для работы Flutter приложения. Flutter SDK уже содержит библиотеку и собирать ее отдельно не нужно. Если же необходимость собственной сборки появится, в разделе [Сборка Flutter Engine](documentation/engine.md) вы найдете описание сборки engine под `armv7hl`.
 
 ## Шаблоны
 

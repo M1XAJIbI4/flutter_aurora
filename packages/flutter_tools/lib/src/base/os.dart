@@ -605,6 +605,9 @@ String? findProjectRoot(FileSystem fileSystem, [ String? directory ]) {
 enum HostPlatform {
   darwin_x64,
   darwin_arm64,
+  aurora_arm,
+  aurora_arm64,
+  aurora_x64,
   linux_x64,
   linux_arm64,
   windows_x64;
@@ -615,6 +618,9 @@ enum HostPlatform {
       HostPlatform.darwin_arm64 => 'arm64',
       HostPlatform.linux_x64 => 'x64',
       HostPlatform.linux_arm64 => 'arm64',
+      HostPlatform.aurora_arm => 'arm',
+      HostPlatform.aurora_arm64 => 'arm64',
+      HostPlatform.aurora_x64 => 'x64',
       HostPlatform.windows_x64 => 'x64'
     };
   }
@@ -626,6 +632,9 @@ String getNameForHostPlatform(HostPlatform platform) {
     HostPlatform.darwin_arm64 => 'darwin-arm64',
     HostPlatform.linux_x64 => 'linux-x64',
     HostPlatform.linux_arm64 => 'linux-arm64',
+    HostPlatform.aurora_arm => 'aurora-arm',
+    HostPlatform.aurora_arm64 => 'aurora-arm64',
+    HostPlatform.aurora_x64 => 'aurora-x64',
     HostPlatform.windows_x64 => 'windows-x64'
   };
 }

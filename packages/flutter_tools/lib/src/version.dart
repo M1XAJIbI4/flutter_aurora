@@ -4,6 +4,7 @@
 
 import 'package:meta/meta.dart';
 
+import 'aurora/aurora_sdk.dart' show FRAMEWORK_VERSION;
 import 'base/common.dart';
 import 'base/file_system.dart';
 import 'base/io.dart';
@@ -150,8 +151,7 @@ abstract class FlutterVersion {
       clock: clock,
       flutterRoot: flutterRoot,
       frameworkRevision: frameworkRevision,
-      // @todo set version
-      frameworkVersion: "3.16.2",
+      frameworkVersion: FRAMEWORK_VERSION,
       gitTagVersion: gitTagVersion,
       fs: fs,
     );

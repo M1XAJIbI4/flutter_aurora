@@ -207,6 +207,8 @@ class KernelSnapshot extends Target {
       case TargetPlatform.windows_x64:
       case TargetPlatform.linux_x64:
       case TargetPlatform.aurora_arm:
+      case TargetPlatform.aurora_arm64:
+      case TargetPlatform.aurora_x64:
         forceLinkPlatform = true;
       case TargetPlatform.android:
       case TargetPlatform.android_arm:
@@ -232,7 +234,7 @@ class KernelSnapshot extends Target {
         'android',
       TargetPlatform.darwin => 'macos',
       TargetPlatform.ios => 'ios',
-      TargetPlatform.linux_arm64 || TargetPlatform.linux_x64 || TargetPlatform.aurora_arm => 'linux',
+      TargetPlatform.linux_arm64 || TargetPlatform.linux_x64 || TargetPlatform.aurora_arm || TargetPlatform.aurora_arm64 || TargetPlatform.aurora_x64 => 'linux',
       TargetPlatform.windows_x64 => 'windows',
       TargetPlatform.tester || TargetPlatform.web_javascript => null,
     };
