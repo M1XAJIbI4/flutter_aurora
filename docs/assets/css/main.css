@@ -1,0 +1,40 @@
+.md-grid {
+    max-width: 55rem;
+}
+
+.md-sidebar {
+    width: 10rem;
+}
+
+.md-content img {
+    border-radius: 20px;
+}
+
+.publication {
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style-type: none !important;
+    font-size: 0;
+}
+
+.publication li {
+    display: inline-block;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 49%;
+    vertical-align: top;
+}
+
+.publication li:nth-child(2n) {
+    margin-left: 2% !important;
+}
+
+.publication li .title {
+    font-size: 16px;
+    padding: 10px 0 30px 0;
+    font-weight: bold;
+}
+
+.publication li img {
+    border-radius: 10px;
+}

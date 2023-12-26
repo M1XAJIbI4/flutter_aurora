@@ -1,0 +1,98 @@
+site_name: Flutter для ОС Аврора
+site_dir: public
+site_url: https://flutter.keygenqt.com
+site_description: >-
+  Flutter SDK с поддержкой платформы ОС Аврора для создания приложений Flutter.
+
+# Navigation
+nav:
+  - Главная:
+      - Index: index.md
+      - Flutter Links:
+          - SDK: https://gitlab.com/omprussia/flutter/flutter
+          - Embedder: https://gitlab.com/omprussia/flutter/flutter-embedder
+          - Plugins: https://gitlab.com/omprussia/flutter/flutter-plugins
+          - Engine: https://gitlab.com/omprussia/flutter/flutter-engine
+          - Demo: https://gitlab.com/omprussia/flutter/flutter-demo
+      - Community Links:
+          - Telegram: https://t.me/aurora_devs/23477
+  - Установка:
+      - Index: install/index.md
+      - Linux: install/linux.md
+      - Windows: install/windows.md
+  - Применение:
+      - Index: using/index.md
+      - Flutter CLI: using/cli.md
+      - Примеры:
+          - Hello, World!: using/application.md
+          - Plugin Channel: using/plugin_channel.md
+          - Plugin D-Bus: using/plugin_dbus.md
+          - Plugin FFI: using/plugin_ffi.md
+          - Plugin Qt: using/plugin_qt.md
+  - Публикации:
+      - Index: publication/index.md
+      - Статьи: publication/articles.md
+      - Видео: publication/video.md
+  - WIKI:
+      - Index: wiki/index.md
+      - Общие вопросы: wiki/common_wiki.md
+
+# Repository
+repo_name: 'Flutter SDK'
+repo_url: 'https://gitlab.com/omprussia/flutter/flutter'
+
+# Assets
+extra_css:
+  - assets/css/main.css
+
+# Extensions
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+# Configuration
+theme:
+  name: 'material'
+  language: 'ru'
+  custom_dir: docs/assets
+  favicon: images/favicon.ico
+  icon:
+    logo: custom/icon
+  features:
+    - toc.integrate
+    - content.action.edit
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips
+    - navigation.footer
+    - navigation.indexes
+    - navigation.sections
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
