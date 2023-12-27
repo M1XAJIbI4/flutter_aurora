@@ -29,6 +29,9 @@ nav:
           - Plugin D-Bus: using/plugin_dbus.md
           - Plugin FFI: using/plugin_ffi.md
           - Plugin Qt: using/plugin_qt.md
+  - Плагины:
+      - Index: plugins/index.md
+      - Плагины ОМП: plugins/omp.md
   - Публикации:
       - Index: publication/index.md
       - Статьи: publication/articles.md

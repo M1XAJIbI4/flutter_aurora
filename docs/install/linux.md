@@ -21,13 +21,19 @@ sudo apt-get install curl git git-lfs unzip bzip2
 mkdir -p ~/.local/opt
 ```
 
-Клонировать репозиторий Flutter с поддержкой платформы ОС Аврора в созданную папку и создать `alias`, через который можно будет обратиться к установленному Flutter SDK:
+Клонировать репозиторий Flutter с поддержкой платформы ОС Аврора в созданную папку.
+
+`<version>` - тег версии Flutter SDK. 
+Список тегов можно получить в [репозитории Flutter](https://gitlab.com/omprussia/flutter/flutter/-/tags).
 
 ```shell
-git clone https://gitlab.com/omprussia/flutter/flutter.git ~/.local/opt/flutter
+git clone -c advice.detachedHead=false --depth 1 --branch <version> https://gitlab.com/omprussia/flutter/flutter.git ~/.local/opt/flutter
+```
 
+Добавить `alias`, через который можно будет обратиться к установленному Flutter SDK:
+
+```shell
 echo "alias flutter-aurora=$HOME/.local/opt/flutter/bin/flutter" >> ~/.bashrc
-
 exec bash
 ```
 
