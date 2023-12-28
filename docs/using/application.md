@@ -64,30 +64,31 @@ flutter-aurora create --platforms=aurora --org=<ORGNAME> .
 
 Выполните команду `flutter-aurora doctor`, чтобы убедиться, что ваше окружение подготовлено для сборки под ОС Аврора.
 
-!!! warning
-
-    На данный момент поддерживается сборка только под архитектуру `armv7hl`.
-
-Выполните следующую команду, чтобы выставить в Platform SDK таргет `armv7hl` по умолчанию.
-
-```shell
-# Определите название armv7hl таргета
-aurora_psdk sdk-assistant list
-
-  AuroraOS-4.0.2.89-base
-  ├─AuroraOS-4.0.2.89-base-aarch64
-  ├─AuroraOS-4.0.2.89-base-armv7hl <- <TARGET>
-  └─AuroraOS-4.0.2.89-base-i486
-
-aurora_psdk sb2-config -d <TARGET>
-```
-
 Запустите сборку проекта в необходимом вам режиме:
 
 ```shell
 flutter-aurora build aurora --debug
 flutter-aurora build aurora --profile
 flutter-aurora build aurora --release
+```
+
+Если у вас несколько Platform SDK для сборки можно указать путь `<PATH>` к нужной через параметр `--psdk-dir`:
+
+```shell
+flutter-aurora build aurora --debug --psdk-dir <PATH>
+```
+
+Для сборки отличных от таргета `armv7hl` добавлен параметр `--target-platform`.
+Доступны три `target-platform`:
+
+* `aurora-arm` (default) - для архитектуры `armv7hl`
+* `aurora-arm64` - для архитектуры `aarch64`
+* `aurora-x64` - для архитектуры `x86_64`
+
+Команда с параметром `--target-platform` может выглядеть так:
+
+```shell
+flutter-aurora build aurora --debug --target-platform aurora-arm
 ```
 
 !!! info

@@ -9,7 +9,9 @@
 
 ## Установка Flutter SDK
 
-Установка будет производиться на систему Ubuntu 22.04. На других системах Linux возможны некоторые незначительные отклонения от документации. Установить пакеты для работы с curl, git и zip:
+Установка будет производиться на систему Ubuntu 22.04.
+На других системах Linux возможны некоторые незначительные отклонения от документации.
+Установить пакеты для работы c Flutter:
 
 ```shell
 sudo apt-get install curl git git-lfs unzip bzip2
@@ -23,17 +25,21 @@ mkdir -p ~/.local/opt
 
 Клонировать репозиторий Flutter с поддержкой платформы ОС Аврора в созданную папку.
 
-`<version>` - тег версии Flutter SDK. 
-Список тегов можно получить в [репозитории Flutter](https://gitlab.com/omprussia/flutter/flutter/-/tags).
+`<VERSION>` - тег версии Flutter SDK.
+
+Список тегов можно получить в репозитории [Flutter](https://gitlab.com/omprussia/flutter/flutter/-/tags).
 
 ```shell
-git clone -c advice.detachedHead=false --depth 1 --branch <version> https://gitlab.com/omprussia/flutter/flutter.git ~/.local/opt/flutter
+git clone --branch <VERSION> \
+ --depth 1  \
+ --config advice.detachedHead=false \
+  https://gitlab.com/omprussia/flutter/flutter.git ~/.local/opt/flutter-<VERSION>
 ```
 
 Добавить `alias`, через который можно будет обратиться к установленному Flutter SDK:
 
 ```shell
-echo "alias flutter-aurora=$HOME/.local/opt/flutter/bin/flutter" >> ~/.bashrc
+echo "alias flutter-aurora=$HOME/.local/opt/flutter-<VERSION>/bin/flutter" >> ~/.bashrc
 exec bash
 ```
 
@@ -53,81 +59,118 @@ flutter-aurora config --enable-aurora
 flutter-aurora doctor
 ```
 
+!!! info
+
+    Flutter `doctor` проверяет таргеты по переменной окружения `PSDK_DIR`.
+    Если у вас несколько Platform SDK для проверки определенной версии вы можете изменить переменную окружения выполнив в консоле команду
+    `export PSDK_DIR=<путь до Platform SDK>/sdks/aurora_psdk` перед использованием `flutter-aurora doctor`.
+
 ## Установка Platform SDK
 
-Для сборки приложений на Flutter используется Platform SDK. Установку Platform SDK следует выполнить по [(инструкции)](https://developer.auroraos.ru/doc/software_development/psdk/setup). Для работы Platform SDK необходимы права суперпользователя. Так как сборка выполняется в консоли, не всегда удобно каждый раз вводить пароль вручную. Для решения этой проблемы нужно добавить следующие файлы в директорию `/etc/sudoers.d`, они позволят работать с Platform SDK без ввода пароля суперпользователя.
+Для сборки приложений на Flutter используется Platform SDK. 
+Установку Platform SDK следует выполнить по [(инструкции)](https://developer.auroraos.ru/doc/software_development/psdk/setup). 
+Для работы Platform SDK необходимы права суперпользователя. 
+Так как сборка выполняется в консоли, не всегда удобно каждый раз вводить пароль вручную. 
+Для решения этой проблемы нужно добавить следующие файлы в директорию `/etc/sudoers.d`, они позволят работать с Platform SDK без ввода пароля суперпользователя.
 
 !!! info
 
     Вместо `<USERNAME>` необходимо указать имя текущего пользователя.
 
+    Вместо `<PSDK_DIR>` необходимо указать путь к Platfrom SDK.
+
 Файл `/etc/sudoers.d/mer-sdk-chroot`:
 
 ```
-<USERNAME> ALL=(ALL) NOPASSWD: /home/<USERNAME>/AuroraPlatformSDK/sdks/aurora_psdk/mer-sdk-chroot
-Defaults!/home/<USERNAME>/AuroraPlatformSDK/sdks/aurora_psdk/mer-sdk-chroot env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
+<USERNAME> ALL=(ALL) NOPASSWD: <PSDK_DIR>
+Defaults!<PSDK_DIR> env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
 ```
 
 Файл `/etc/sudoers.d/sdk-chroot`:
 
 ```
-<USERNAME> ALL=(ALL) NOPASSWD: /home/<USERNAME>/AuroraPlatformSDK/sdks/aurora_psdk/sdk-chroot
-Defaults!/home/<USERNAME>/AuroraPlatformSDK/sdks/aurora_psdk/sdk-chroot env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
-```
-
-Либо перед использованием Flutter SDK единожды нужно выполнить любую команду, использующую `sudo`, чтобы в текущей терминальной сессии больше не запрашивался пароль суперпользователя:
-
-```shell
-sudo echo 'Run doctor' && flutter-aurora doctor
+<USERNAME> ALL=(ALL) NOPASSWD: <PSDK_DIR>/sdk-chroot
+Defaults!<PSDK_DIR>/sdk-chroot env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
 ```
 
 ## Установка пакетов для сборки Flutter
 
-На устройствах до 4.0.2.303 требуется установка дополнительных пакетов от которых зависит работа Flutter. Необходимые пакеты находятся в клонированном репозитории Flutter по пути: `<flutter>/dependencies/arm`.
+Для сборки приложений Flutter требуется пакет [Flutter Embedder](https://gitlab.com/omprussia/flutter/flutter-embedder).
+Его нужно установить в один из доступных вам таргетов Platform SDK.
 
-Для установки зависимостей требуется определить название `armv7hl` таргета. Получить полное название таргета можно следующей командой:
+!!! info
+
+    Для Platform SDK 4й и 5й версий пакеты для таргетов отличаются, тоесть для архитектуры `armv7hl` есть пакет для Platform SDK 4й версии и есть пакет для Platform SDK 5й версии.
+
+Для этого вам нужно клонировать его как выше мы это сделали с Flutter SDK:
+
+`<VERSION>` - тег версии Flutter Embedder.
+
+Список тегов можно получить в репозитории [Flutter Embedder](https://gitlab.com/omprussia/flutter/flutter-embedder/-/tags).
+
+```shell
+git clone --branch <VERSION> \
+  --depth 1  \
+  --config advice.detachedHead=false \
+  https://gitlab.com/omprussia/flutter/flutter-embedder.git
+```
+
+Для установки зависимостей требуется определить название таргета.
+
+!!! info
+
+    Здесь приведен пример с таргетом архитектуры `armv7hl`, та же логика работает и с другими архитектурами.
+
+Получить полное название таргета можно следующей командой:
 
 ```shell
 aurora_psdk sdk-assistant list
 
 AuroraOS-4.0.2.89-base
-├─AuroraOS-4.0.2.89-base-aarch64
 ├─AuroraOS-4.0.2.89-base-armv7hl <- <TARGET>
 └─AuroraOS-4.0.2.89-base-i486
 ```
 
-Установить таргет по умолчанию можно с помощью команды:
-
-```shell
-aurora_psdk sb2-config -d <TARGET>
-```
-
 где `<TARGET>` - полное наименование таргета, например, `AuroraOS-4.0.2.89-base-armv7hl`.
 
-Далее, следует перейти в директорию с пакетами и установить зависимости. При конфликте хешей их нужно проигнорировать, выбрав (`i`):
+Далее, следует перейти в директорию с пакетами:
 
 ```shell
-cd ~/.local/opt/flutter/dependencies/arm
+cd flutter-embedder
+```
 
-# Для Аврора 4.0.2 установить пакеты совместимости
-aurora_psdk sb2 -t <TARGET> -m sdk-install -R zypper in platform-sdk/compatibility/*.rpm
+Установить пакеты совместимости:
 
-# Установить необходимые пакеты
-aurora_psdk sb2 -t <TARGET> -m sdk-install -R zypper in platform-sdk/*.rpm
+```shell
+aurora_psdk sb2 -t <TARGET> \
+  -m sdk-install -R zypper --no-gpg-checks in -y dependencies/armv7hl/platform-sdk/*.rpm
+```
 
-# Очистить снимки armv7hl таргета
+Установить Flutter Embedder:
+
+```shell
+aurora_psdk sb2 -t <TARGET> \
+  -m sdk-install -R zypper --no-gpg-checks in -y embedder/armv7hl/*.rpm
+```
+
+Очистить снимки таргета:
+
+```shell
 aurora_psdk sdk-assistant target remove --snapshots-of <TARGET>
 ```
 
+!!! info
+    
+    Начиная с версии Flutter Embedder `3.16.2-1.6.2-1` нужно в путь добавить ключ версии psdk (psdk_4 или psdk_5).
+    Пример: `embedder/psdk_4/armv7hl/*.rpm`
+
 ## Установка пакетов для работы Flutter
 
-На данный момент ОС Аврора требует также установки дополнительных пакетов от которых зависит работа Flutter. Пакеты находятся в установленном Flutter SDK по пути `<flutter>/dependencies/arm/device/compatibility`. 
+На устройствах до `4.0.2.303` требуется установка дополнительных пакетов от которых зависит работа Flutter.
+Пакеты находятся в установленном Flutter SDK по пути`<flutter-embedder>/dependencies/armv7hl/device`.
 
-!!! info
-
-    На данный момент поддерживается сборка только под архитектуру `armv7hl`, то есть поддержка эмулятора пока недоступна.
-
-В следующих версиях эта зависимость будет стоять по умолчанию, но на данный момент ее нужно установить вручную. Для этого нужно загрузить на телефон пакеты и установить на устройстве с помощью следующей команды:
+В следующих версиях эта зависимость будет стоять по умолчанию, но на данный момент ее нужно установить вручную.
+Для этого нужно загрузить на телефон пакеты и установить на устройстве с помощью следующей команды:
 
 ```
 devel-su pkcon install-local *.rpm -y

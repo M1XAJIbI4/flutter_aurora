@@ -15,6 +15,14 @@
 | pub      | `flutter pub <PUB_COMMAND>`          | Работа с зависимостями.                           |
 | test     | `flutter test <DIRECTORY/DART_FILE>` | Запускает тесты в этом пакете.                    |
 
+!!! info
+
+    В команду `build aurora` были добавлены аргументы `--target-platform` и `--psdk-dir`.
+
+    `--target-platform` - Целевая платформа (aurora-arm (default), aurora-arm64, aurora-x64).
+
+    `--psdk-dir` - Вы можете указать путь к Aurora Platform SDK.
+
 ## Ожидают поддержки
 
 | Команда         | Описание                                                                                           | 
