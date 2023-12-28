@@ -101,6 +101,7 @@ Defaults!<PSDK_DIR>/sdk-chroot env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
 !!! info
 
     Для Platform SDK 4й и 5й версий пакеты для таргетов отличаются, тоесть для архитектуры `armv7hl` есть пакет для Platform SDK 4й версии и есть пакет для Platform SDK 5й версии.
+    Для сборки приложения Flutter на ОС Аврора 5й вресии потребуется Platform SDK 5й версии и аналогично с 4й весрией ОС Аврора/Platform SDK.
 
 Для этого вам нужно клонировать его как выше мы это сделали с Flutter SDK:
 
