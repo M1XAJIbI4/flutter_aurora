@@ -1,5 +1,7 @@
 # Flutter SDK для ОС Аврора
 
+![Version](https://img.shields.io/badge/dynamic/json?color=blue&label=Version&query=%24%5B%3A1%5D.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F48571227%2Frepository%2Ftags)
+
 [Flutter SDK](https://github.com/flutter/flutter) с поддержкой платформы ОС Аврора для создания приложений Flutter.
 
 [Flutter](https://flutter.dev/) — это SDK Google для создания красивых и быстрых пользовательских интерфейсов для мобильных устройств, интернета и настольных компьютеров на основе единой базы кода. 
