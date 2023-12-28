@@ -10,6 +10,10 @@
     border-radius: 20px;
 }
 
+.md-content__button {
+display: none;
+}
+
 .publication {
     margin: 0 !important;
     padding: 0 !important;
@@ -37,4 +41,10 @@
 
 .publication li img {
     border-radius: 10px;
+}
+
+@media (max-width: 500px) {
+    .publication li {
+        width: 100%;
+    }
 }
