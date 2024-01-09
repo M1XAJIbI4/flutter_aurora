@@ -53,7 +53,7 @@ class AuroraDoctorValidator extends DoctorValidator {
     /// Check embedder in targets
     for (final FileSystemEntity entity in targets) {
       if (!await globals.fs
-          .directory('${entity.path}/usr/include/flutter-embedder/flutter')
+          .file('${entity.path}/usr/include/flutter-embedder/flutter/encodable.h')
           .exists()) {
         messages.add(ValidationMessage.error(
             '${path.basename(entity.path)} flutter-embedder-devel package is not available.'));
