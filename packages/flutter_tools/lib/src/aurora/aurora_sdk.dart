@@ -110,7 +110,7 @@ Future<String?> getPsdkTargetName(TargetPlatform targetPlatform) async {
   final List<String> psdkTargets = const LineSplitter()
       .convert(result.stdout)
       .where((String e) =>
-          e.contains('AuroraOS') &&
+          e.contains('Aurora') &&
           e.contains(psdkTarget) &&
           !e.contains('default'))
       .toList();
