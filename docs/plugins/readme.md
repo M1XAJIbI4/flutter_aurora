@@ -43,7 +43,7 @@
        path: packages/<PARENT_PLUGIN>/<AURORA_PLUGIN>
  ```
 
-***main.cpp**
+ ***main.cpp**
 
  ```c++
  #include <flutter/application.h>
@@ -59,13 +59,13 @@
  }
  ```
 
-***.desktop**
+ ***.desktop**
 
  ```desktop
  Permissions=<AURORA_PLUGIN_PERMISSIONS>
  ```
 
-***.spec**
+ ***.spec**
 
  ```spec
  %global __requires_exclude ^lib(<AURORA_PLUGIN_LIB_EXCLUDE>)\\.so.*$
@@ -73,7 +73,7 @@
  BuildRequires: pkgconfig(<AURORA_PLUGIN_DEPENDENCY>)
  ```
 
-***.dart**
+ ***.dart**
 
  ```dart
  <EXAMPLE_DART>
