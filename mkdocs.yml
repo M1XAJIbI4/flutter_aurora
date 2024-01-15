@@ -34,6 +34,7 @@ nav:
   - Плагины:
       - Index: plugins/index.md
       - Плагины ОМП: plugins/omp.md
+      - README.md: plugins/readme.md
   - Публикации:
       - Index: publication/index.md
       - Статьи: publication/articles.md
