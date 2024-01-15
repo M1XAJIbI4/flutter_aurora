@@ -41,6 +41,7 @@ nav:
   - WIKI:
       - Index: wiki/index.md
       - Общие вопросы: wiki/common_wiki.md
+      - Документация: wiki/documentation.md
 
 # Repository
 repo_name: 'Flutter SDK'
