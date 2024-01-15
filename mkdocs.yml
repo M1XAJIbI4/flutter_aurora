@@ -23,6 +23,7 @@ nav:
   - Применение:
       - Index: using/index.md
       - Flutter CLI: using/cli.md
+      - Platform Texture: using/platform_texture.md
       - Platform Methods: using/platform_methods.md
       - Примеры:
           - Hello, World!: using/application.md
