@@ -41,6 +41,7 @@ nav:
   - WIKI:
       - Index: wiki/index.md
       - Общие вопросы: wiki/common_wiki.md
+      - Gitflow : wiki/gitflow.md
       - Документация: wiki/documentation.md
 
 # Repository
