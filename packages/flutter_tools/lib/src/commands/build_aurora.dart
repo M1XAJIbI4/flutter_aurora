@@ -96,6 +96,10 @@ class BuildAuroraCommand extends BuildSubCommand {
       throwToolExit("The engine won't find it.");
     }
 
+    if (!await checkEmbedder(targetPlatform, buildInfo)) {
+      throwToolExit("The embedder won't find it.");
+    }
+
     displayNullSafetyMode(buildInfo);
     await buildAurora(
       flutterProject.aurora,

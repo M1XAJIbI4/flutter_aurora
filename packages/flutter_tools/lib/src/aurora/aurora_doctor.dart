@@ -38,35 +38,6 @@ class AuroraDoctorValidator extends DoctorValidator {
       return ValidationResult(ValidationType.missing, messages);
     }
 
-    /// Find targets
-    final List<FileSystemEntity> targets = <FileSystemEntity>[];
-    final List<FileSystemEntity> entities =
-        await Directory(psdkTarget).list().toList();
-
-    for (final FileSystemEntity entity in entities.whereType<Directory>()) {
-      if (!entity.path.contains('default') &&
-          !entity.path.contains('i486')) {
-        targets.add(entity);
-      }
-    }
-
-    /// Check embedder in targets
-    for (final FileSystemEntity entity in targets) {
-      if (!await globals.fs
-          .file('${entity.path}/usr/include/flutter-embedder/flutter/encodable.h')
-          .exists()) {
-        messages.add(ValidationMessage.error(
-            '${path.basename(entity.path)} flutter-embedder-devel package is not available.'));
-      }
-    }
-
-    /// Add link to setup Flutter is has error
-    if (messages.isNotEmpty) {
-      messages.add(const ValidationMessage.error(
-          'Flutter embedder setup: https://gitlab.com/omprussia/flutter/flutter/-/blob/master/documentation/install_linux.md.'));
-      return ValidationResult(ValidationType.missing, messages);
-    }
-
     return ValidationResult(ValidationType.success, messages);
   }
 }
