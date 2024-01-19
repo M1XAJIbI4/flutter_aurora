@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: flutter-aurora
+base: core22
+version: '1+3.16.2-1'
+license: BSD-3-Clause
+summary: Flutter SDK with support for the Aurora OS platform.
+description: Flutter is Google's SDK for creating beautiful, fast user experiences for mobile, web, and desktop from a single code base.
+
+grade: stable
+confinement: classic
+
+parts:
+  stage:
+    plugin: nil
+    stage-packages:
+      - git
+      - git-lfs
+      - tar
+      - unzip
+      - curl
+      - bash
+  run:
+    plugin: dump
+    source: bin
+    organize:
+      run.sh: bin/run.sh
+
+apps:
+  flutter-aurora:
+    command: bin/run.sh
+    plugs:
+      - home
+      - network
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      GIT_EXEC_PATH: $SNAP/usr/lib/git-core
+      GIT_TEMPLATE_DIR: $SNAP/usr/share/git-core/templates
+      FLUTTER_TAG: 3.16.2-1
