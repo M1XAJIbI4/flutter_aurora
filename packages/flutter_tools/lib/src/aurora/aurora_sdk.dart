@@ -327,8 +327,13 @@ Future<bool> installEmbedder(
     ],
   );
 
-  for (final FileSystemEntity rpm
-      in (await embedderFolder.list().toList()).reversed) {
+  final List<String> packages = (await embedderFolder.list().toList())
+      .map((FileSystemEntity e) => e.path)
+      .toList();
+
+  packages.sort();
+
+  for (final String path in packages) {
     final RunResult install = await globals.processUtils.run(
       <String>[
         psdkToolPath,
@@ -342,11 +347,12 @@ Future<bool> installEmbedder(
         '--no-gpg-checks',
         'in',
         '-y',
-        rpm.path,
+        path,
       ],
     );
 
     if (install.exitCode != 0) {
+      globals.printStatus('Error: ${install.stdout}\n${install.stderr}');
       return false;
     }
   }
