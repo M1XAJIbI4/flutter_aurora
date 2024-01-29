@@ -637,7 +637,8 @@ class FlutterValidator extends DoctorValidator {
   /// Return a warning if the provided [binary] on the user's path does not
   /// resolve within the Flutter SDK.
   ValidationMessage? _validateSdkBinary(String binary, String flutterRoot) {
-    return null; // @todo upstream
+    // @todo if not upstream
+    return null;
     final String flutterBinDir = _fileSystem.path.join(flutterRoot, 'bin');
 
     final File? flutterBin = _operatingSystemUtils.which(binary);
@@ -669,8 +670,8 @@ class FlutterValidator extends DoctorValidator {
     final String? repositoryUrl = version.repositoryUrl;
     final VersionCheckError? upstreamValidationError = VersionUpstreamValidator(version: version, platform: _platform).run();
 
+    // @todo if not upstream
     // VersionUpstreamValidator can produce an error if repositoryUrl is null
-    // @todo upstream
     if (upstreamValidationError != null && false) {
       final String errorMessage = upstreamValidationError.message;
       if (errorMessage.contains('could not determine the remote upstream which is being tracked')) {

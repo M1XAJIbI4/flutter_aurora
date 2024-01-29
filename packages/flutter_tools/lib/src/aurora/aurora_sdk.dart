@@ -10,7 +10,7 @@ import '../base/process.dart';
 import '../build_info.dart';
 import '../globals.dart' as globals;
 
-// @todo not in upstream
+// @todo if not upstream
 /// Version Flutter SDK
 const String FRAMEWORK_VERSION = '3.16.2-1';
 

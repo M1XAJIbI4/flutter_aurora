@@ -302,7 +302,6 @@ class UpgradeCommandRunner {
         'for instructions.'
       );
     }
-    // @todo ?
     return FlutterVersion.fromRevision(
       flutterRoot: workingDirectory!,
       frameworkRevision: revision,

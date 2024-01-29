@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 import 'runner.dart' as runner;
 import 'src/artifacts.dart';
+import 'src/aurora/aurora_update.dart';
 import 'src/base/context.dart';
 import 'src/base/io.dart';
 import 'src/base/logger.dart';
@@ -25,7 +29,6 @@ import 'src/commands/daemon.dart';
 import 'src/commands/debug_adapter.dart';
 import 'src/commands/devices.dart';
 import 'src/commands/doctor.dart';
-import 'src/commands/downgrade.dart';
 import 'src/commands/drive.dart';
 import 'src/commands/emulators.dart';
 import 'src/commands/generate.dart';
@@ -198,7 +201,8 @@ List<FlutterCommand> generateCommands({
   DebugAdapterCommand(verboseHelp: verboseHelp),
   DevicesCommand(verboseHelp: verboseHelp),
   DoctorCommand(verbose: verbose),
-  DowngradeCommand(verboseHelp: verboseHelp, logger: globals.logger),
+  // @todo if not upstream
+  AuroraUpdateCommand(isDowngrade: true),
   DriveCommand(verboseHelp: verboseHelp,
     fileSystem: globals.fs,
     logger: globals.logger,
@@ -230,7 +234,8 @@ List<FlutterCommand> generateCommands({
   ScreenshotCommand(fs: globals.fs),
   ShellCompletionCommand(),
   TestCommand(verboseHelp: verboseHelp, verbose: verbose),
-  UpgradeCommand(verboseHelp: verboseHelp),
+  // @todo if not upstream
+  AuroraUpdateCommand(),
   SymbolizeCommand(
     stdio: globals.stdio,
     fileSystem: globals.fs,
