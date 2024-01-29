@@ -10,6 +10,9 @@ import '../globals.dart' as globals;
 import '../runner/flutter_command.dart';
 import '../version.dart';
 
+/// Latest version of Flutter without update.
+const String FRAMEWORK_VERSION_BLOCK = '3.16.2-1';
+
 class AuroraUpdateCommand extends FlutterCommand {
   AuroraUpdateCommand({
     bool isDowngrade = false,
@@ -38,7 +41,7 @@ class AuroraUpdateCommand extends FlutterCommand {
     } else {
       tag = await getUpgradeTag();
     }
-    if (tag == null) {
+    if (tag == null || tag == FRAMEWORK_VERSION_BLOCK) {
       globals.printStatus(
           '\nYou have the latest version with the ability update.\n');
       globals.printStatus(_flutterVersion.toString());
