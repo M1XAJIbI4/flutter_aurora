@@ -165,6 +165,11 @@ Future<bool> checkEmbedder(
       ?.split('|')[3]
       .trim();
 
+  /// Check if install dev embedder
+  if (version != null && version.contains('+')) {
+    return true;
+  }
+
   /// Install if not found embedder
   if (version == null) {
     return installEmbedder(targetPlatform, latestVersionEmbedder);
