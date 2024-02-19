@@ -5,10 +5,10 @@
 !!! info
 
     Для демонстрации создания платформо-зависимого пакета для ОС Аврора типа был написан и опубликован проект
-    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) в котором имеется приложение "Hello, World!".
+    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages), в котором имеется приложение "Hello, World!".
     Полную статью с описанием проекта можно найти на Хабр - [Flutter на ОС Аврора](https://habr.com/ru/articles/761176/).
 
-Проект "[Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages)" содержит в себе пакет реализующий платформо-зависимый плагин для ОС Аврора типа "Plugin FFI".
+Проект "[Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages)" содержит в себе пакет, реализующий платформо-зависимый плагин для ОС Аврора типа "Plugin FFI".
 Данный пакет использует API ОС Аврора - [Device Info API](https://developer.auroraos.ru/doc/software_development/reference/device_info).
 Плагин использует [QtDBus](https://doc.qt.io/qt-5/qtdbus-index.html), но не является плагином "Plugin Qt", так как не использует сигналы и слоты.
 

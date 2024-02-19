@@ -1,9 +1,9 @@
 # Plugin Qt
 
 Qt plugin package - является обычным плагином типа "[Plugin Channel](plugin_channel.md)", но использующего Qt сигналы и слоты. 
-Проект [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) содержит в себе пакет реализующий платформо-зависимый плагин для ОС Аврора типа "Plugin package", на его примере покажем как подключить сигналы и слоты к плагину.
+Проект [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) содержит в себе пакет, реализующий платформо-зависимый плагин для ОС Аврора типа "Plugin package", на его примере покажем, как подключить сигналы и слоты к плагину.
 
-Плагин уже имеет в зависимостях Qt, но в нем не будут работать сигналы и слоты. Для их подключения следует добавить зависимости в класс реализующий `PluginInterface`:
+Плагин уже имеет в зависимостях Qt, но в нем не будут работать сигналы и слоты. Для их подключения следует добавить зависимости в класс, реализующий `PluginInterface`:
 
 Файл `packages/aurora/plugin_device/aurora/include/plugin_device/plugin_device_plugin.h`
 
@@ -87,7 +87,7 @@ void PluginDevicePlugin::onGetDeviceName(const MethodCall &call)
 }
 
 /**
- * Метод возвращающий [nullptr], если запрашиваемый метод не найден
+ * Метод, возвращающий [nullptr], если запрашиваемый метод не найден
  */
 void PluginDevicePlugin::unimplemented(const MethodCall &call)
 {
@@ -97,7 +97,7 @@ void PluginDevicePlugin::unimplemented(const MethodCall &call)
 #include "moc_sensors_plus_aurora_plugin.cpp"
 ```
 
-Для того что бы произошла генерация мок-файла, добавим в [set_target_properties](https://cmake.org/cmake/help/latest/command/set_target_properties.html) `AUTOMOC ON`:
+Для того чтобы произошла генерация мок-файла, добавим в [set_target_properties](https://cmake.org/cmake/help/latest/command/set_target_properties.html) `AUTOMOC ON`:
 
 Файл `packages/aurora/plugin_device/aurora/CMakeLists.txt`
 
@@ -105,7 +105,7 @@ void PluginDevicePlugin::unimplemented(const MethodCall &call)
 set_target_properties(${PLUGIN_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden AUTOMOC ON)
 ```
 
-Для подключения Qt в плагин нужно добавить в `CMakeLists.txt` как минимум [QtCore](https://doc.qt.io/qt-5/qtcore-index.html):
+Для подключения Qt в плагин, нужно добавить в `CMakeLists.txt` как минимум [QtCore](https://doc.qt.io/qt-5/qtcore-index.html):
 
 ```
 find_package(Qt5 COMPONENTS Core REQUIRED)
@@ -113,7 +113,7 @@ find_package(Qt5 COMPONENTS Core REQUIRED)
 target_link_libraries(${PLUGIN_NAME} PUBLIC Qt5::Core)
 ```
 
-Для работы плагина в приложении Qt нужно включить отдельно. Сделать это можно добавив в `main` функцию приложения вызов метода `EnableQtCompatibility()`.
+Для работы плагина в приложении Qt нужно включить отдельно. Сделать это можно, добавив в `main` функцию приложения вызов метода `EnableQtCompatibility()`.
 Выглядеть это может следующим образом:
 
 ```cpp
@@ -130,6 +130,6 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-Добавив зависимости в плагин начнут работать сигналы и слоты Qt.
+После добавления зависимостей в плагин начнут работать сигналы и слоты Qt.
 ОС Аврора очень зависит от Qt, во Flutter мы стараемся минимизировать эту зависимость.
-Если есть возможность выбора типа для реализации платформо-зависимого плагина использование Qt нежелательно, но приемлемо в отсутствии альтернатив.
+Если есть возможность выбора типа для реализации платформо-зависимого плагина, использование Qt нежелательно, но приемлемо в отсутствии альтернатив.

@@ -1,15 +1,15 @@
 # Plugin D-Bus
 
-Пакеты написанные на Dart, например package [`path`](https://pub.dev/packages/path). Они могут содержать специфичные для Flutter функции и иметь зависимость от инфраструктуры Flutter, ограничивая их использование только Flutter, например package [`fluro`](https://pub.dev/packages/fluro).
+Пакеты, написанные на Dart, - например, package [`path`](https://pub.dev/packages/path). Они могут содержать специфичные для Flutter функции и иметь зависимость от инфраструктуры Flutter, ограничивая их использование только Flutter, например, package [`fluro`](https://pub.dev/packages/fluro).
 
 !!! info
 
     Для демонстрации создания платформо-зависимого пакета для ОС Аврора типа был написан и опубликован проект
-    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) в котором имеется приложение "Hello, World!".
+    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages), в котором имеется приложение "Hello, World!".
     Полную статью с описанием проекта можно найти на Хабр - [Flutter на ОС Аврора](https://habr.com/ru/articles/761176/).
 
-Проект "[Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages)" содержит в себе пакет реализующий платформо-зависимый пакет для ОС Аврора типа "Plugin D-Bus".
-Пакет "[Flutter Device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/dart_package_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) становится платформо-зависимым используя [D-Bus](https://www.freedesktop.org/wiki/Software/dbus/) ОС Аврора.
+Проект "[Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages)" содержит в себе пакет, реализующий платформо-зависимый пакет для ОС Аврора типа "Plugin D-Bus".
+Пакет "[Flutter Device](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/packages/aurora/dart_package_device?ref_type=heads)" из проекта [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) становится платформо-зависимым, используя [D-Bus](https://www.freedesktop.org/wiki/Software/dbus/) ОС Аврора.
 Данный пакет использует - "[Device Info API](https://developer.auroraos.ru/doc/software_development/reference/device_info)".
 
 Пакет Dart в минимальном виде состоит из файла [`pubspec.yaml`](https://dart.dev/tools/pub/pubspec), папки `lib` с как минимум одним файлом `<package-name>.dart`. 
@@ -57,7 +57,7 @@ dart-dbus generate-remote-object ./ru.omp.deviceinfo.Features.xml \
 -o lib/ru_omp_device_info_features.dart
 ```
 
-Результат генерации c файла `ru.omp.deviceinfo.Features.xml` следует рассматривать, как отправную точку для реализации.
+Результат генерации c файла `ru.omp.deviceinfo.Features.xml` следует рассматривать как отправную точку для реализации.
 
 Файл `packages/aurora/dart_package_device/lib/ru_omp_device_info_features.dart`
 
@@ -81,7 +81,7 @@ class RuOmpDeviceinfoFeatures extends DBusRemoteObject {
 }
 ```
 
-Теперь можно реализовать интерфейс **[device_platform_interface](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/device_platform_interface?ref_type=heads)** и в методе `registerWith` указать пакет **dart_package_device**, как платформо-зависимый плагин.
+Теперь можно реализовать интерфейс **[device_platform_interface](https://gitlab.com/omprussia/flutter/demo-dart-packages/-/tree/master/device_platform_interface?ref_type=heads)** и в методе `registerWith` указать пакет **dart_package_device** как платформо-зависимый плагин.
 
 Файл `packages/aurora/dart_package_device/lib/dart_package_device.dart`
 

@@ -1,12 +1,12 @@
 # Flutter приложение "Hello, World!"
 
-Приложение написанное на Dart с использованием Flutter SDK, например [Fluttery ToDo](https://gitlab.com/omprussia/flutter/fluttery-todo).
-На данный момент любое приложение Flutter может быть собрано под ОС Аврора, исключением являются лишь те, корыте имеют в зависимостях не реализованные платформо-зависимые плагины.
+Приложение, написанное на Dart с использованием Flutter SDK, например, [Fluttery ToDo](https://gitlab.com/omprussia/flutter/fluttery-todo).
+На данный момент любое приложение Flutter может быть собрано под ОС Аврора, исключением являются лишь те, которые имеют в зависимостях нереализованные платформо-зависимые плагины.
 
 !!! info
 
     Для демонстрации создания платформо-зависимого пакета для ОС Аврора типа был написан и опубликован проект
-    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) в котором имеется приложение "Hello, World!".
+    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages), в котором имеется приложение "Hello, World!".
     Полную статью с описанием проекта можно найти на Хабр - [Flutter на ОС Аврора](https://habr.com/ru/articles/761176/).
 
 Проект [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) содержит в себе приложение "Hello, World!".
@@ -27,7 +27,7 @@ flutter-aurora create --platforms=aurora --template=app --org=<ORG_NAME> <APPNAM
 ├── aurora
 │   ├── CMakeLists.txt
 │   ├── desktop
-│   │   └── com.hello.world.desktop
+│   │   └── <ORG_NAME>.<APPNAME>.desktop
 │   ├── flutter
 │   │   ├── generated_plugin_registrant.cpp
 │   │   ├── generated_plugin_registrant.h
@@ -39,13 +39,13 @@ flutter-aurora create --platforms=aurora --template=app --org=<ORG_NAME> <APPNAM
 │   │   └── 86x86.png
 │   ├── main.cpp
 │   └── rpm
-│       └── com.hello.world.spec
+│       └── <ORG_NAME>.<APPNAME>..spec
 ├── lib
 │   └── main.dart
 ├── pubspec.lock
 ├── pubspec.yaml
 ├── README.md
-└── world.iml
+└── <APPNAME>.iml
 ```
 
 Описание и лицензия проекта настраивается в файле `<project>/aurora/rpm/<ORGNAME>.<APPNAME>.spec`. 
@@ -54,7 +54,7 @@ flutter-aurora create --platforms=aurora --template=app --org=<ORG_NAME> <APPNAM
 
 ## Добавление поддержки
 
-Для того что бы добавить поддержку ОС Аврора в уже имеющиеся Flutter приложение перейдите в папку с Flutter проектом и выполните следующую команду:
+Для того чтобы добавить поддержку ОС Аврора в уже имеющееся Flutter приложение, перейдите в папку с Flutter проектом и выполните следующую команду:
 
 ```shell
 flutter-aurora create --platforms=aurora --org=<ORGNAME> .
@@ -72,7 +72,7 @@ flutter-aurora build aurora --profile
 flutter-aurora build aurora --release
 ```
 
-Если у вас несколько Platform SDK для сборки можно указать путь `<PATH>` к нужной через параметр `--psdk-dir`:
+Если у вас несколько Platform SDK, для сборки можно указать путь `<PATH>` к нужной через параметр `--psdk-dir`:
 
 ```shell
 flutter-aurora build aurora --debug --psdk-dir <PATH>
@@ -94,7 +94,7 @@ flutter-aurora build aurora --debug --target-platform aurora-arm
 !!! info
     
     Во время процесса сборки может потребоваться ввести пароль от супер-пользователя для работы с Platform SDK.
-    Для того что бы убрать запрос супер-пользователя ознакомтесть с [Установка Platform SDK](../install/linux.md#platform-sdk).
+    Для того чтобы убрать запрос супер-пользователя, ознакомьтесть с [Установка Platform SDK](../install/linux.md#platform-sdk).
 
 После успешной сборки будет выведен путь к собранному RPM пакету.
 

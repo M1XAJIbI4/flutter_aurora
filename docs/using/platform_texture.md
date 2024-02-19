@@ -1,6 +1,6 @@
 # Platform Texture
 
-В класс `PluginRegistrar` был добавлен метод возвращающий `TextureRegistrar` позволяющий регистрировать Flutter-Texture.
+В класс `PluginRegistrar` был добавлен метод, возвращающий `TextureRegistrar`, позволяющий регистрировать Flutter-Texture.
 `PluginRegistrar` можно получить при наследовании класса плагина от `PluginInterface` в перегруженном методе `RegisterWithRegistrar`.
 
 ```c++

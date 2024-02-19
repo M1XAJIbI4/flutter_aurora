@@ -5,10 +5,10 @@
 !!! info
 
     Для демонстрации создания платформо-зависимого пакета для ОС Аврора типа был написан и опубликован проект
-    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) в котором имеется приложение "Hello, World!".
+    [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages), в котором имеется приложение "Hello, World!".
     Полную статью с описанием проекта можно найти на Хабр - [Flutter на ОС Аврора](https://habr.com/ru/articles/761176/).
 
-Проект [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) содержит в себе пакет реализующий платформо-зависимый плагин для ОС Аврора типа "Plugin Channel". 
+Проект [Demo Dart Packages](https://gitlab.com/omprussia/flutter/demo-dart-packages) содержит в себе пакет, реализующий платформо-зависимый плагин для ОС Аврора типа "Plugin Channel". 
 Данный пакет использует API ОС Аврора - [Device Info API](https://developer.auroraos.ru/doc/software_development/reference/device_info). 
 Плагин использует [QtDBus](https://doc.qt.io/qt-5/qtdbus-index.html), но не является плагином "Plugin Qt", так как не использует сигналы и слоты.
 
@@ -48,7 +48,7 @@ flutter:
         dartPluginClass: PluginDevice
 ```
 
-`PluginDevicePlugin` - C++ класс реализующий `PluginInterface` пакета `flutter-embedder`.
+`PluginDevicePlugin` - C++ класс, реализующий `PluginInterface` пакета `flutter-embedder`.
 
 Файл `packages/aurora/plugin_device/aurora/include/plugin_device/plugin_device_plugin.h`
 
@@ -124,7 +124,7 @@ void PluginDevicePlugin::onGetDeviceName(const MethodCall &call)
 }
 
 /**
- * Метод возвращающий [nullptr], если запрашиваемый метод не найден
+ * Метод, возвращающий [nullptr], если запрашиваемый метод не найден
  */
 void PluginDevicePlugin::unimplemented(const MethodCall &call)
 {
@@ -150,7 +150,7 @@ class PluginDevice extends DevicePlatform {
 }
 ```
 
-[MethodChannel](https://api.flutter.dev/flutter/services/MethodChannel-class.html) класс плагина отличается от подобного класса для Android только названием и ключом для взаимодействия с платформо-зависимой частью.
+[MethodChannel](https://api.flutter.dev/flutter/services/MethodChannel-class.html) - класс плагина, отличается от подобного класса для Android только названием и ключом для взаимодействия с платформо-зависимой частью.
 
 Файл `packages/aurora/plugin_device/lib/plugin_device_method_channel.dart`
 
