@@ -1,43 +1,72 @@
-## Updated: 27/12/2023 14:44:38 PM
+## Updated: 04/05/2024 16:11:55 PM
 
-### Info
+## Info
 
-- Last tag: 3.16.2
-- Released: 3
+- Last tag: 3.16.2-1
+- Released: 4
 
 ## Versions
 
+- Version: 3.16.2-1 (28/12/2023)
 - Version: 3.16.2 (26/12/2023)
 - Version: 3.13.5 (26/12/2023)
 - Version: 3.3.10 (26/12/2023)
 
-### HEAD (27/12/2023 14:44:38 PM)
+### HEAD (05/04/2024)
 
-#### Feature
+#### Bug
 
-* Add changeln config and templates.
-* Add docs for static web-site gitlab pages.
-* Add architecture for Platform SDK 5+
+- Update doctor - checking embedder installation.
 
 #### Change
 
-* Download engine by latest tag version Flutter SDK.
+- Remove dependency flutter-embedder.
+- Add --offline flag check with has version.
+- Update template for method RegisterPlugins.
+- Fix typos and broken links in documentation.
+- Update install embedder.
+- Block version downgrade.
+- Add Flutter CLI upgrade & downgrade.
+- Add sort install rpm embedder.
+- Update check targets name AuroraOS -> Aurora
+
+#### Feature
+
+- Add flag --offline for aurora build.
+- Add snapcraft configuration.
+- Add auto install embedder to platform sdk.
+- Add documentation plugin template readme.md.
+- Add documentation about gitflow.
+- Add documentation about mkdocs.
+- Add documentation about platform texture.
+- Add documentation about platform methods.
+
+### Version: 3.16.2-1 (28/12/2023)
+
+#### Change
+
+- Download engine by latest tag version Flutter SDK.
+
+#### Feature
+
+- Add changeln config and templates.
+- Add docs for static web-site gitlab pages.
+- Add architecture for Platform SDK 5+
 
 ### Version: 3.16.2 (26/12/2023)
 
 #### Change
 
-* Flutter SDK update to 3.16.2.
+- Flutter SDK update to 3.16.2.
 
 ### Version: 3.13.5 (26/12/2023)
 
 #### Change
 
-* Flutter SDK update to 3.13.5.
+- Flutter SDK update to 3.13.5.
 
 ### Version: 3.3.10 (26/12/2023)
 
 #### Feature
 
-* Add Flutter SDK 3.3.10 with target for Aurora OS.
-
+- Add Flutter SDK 3.3.10 with target for Aurora OS.
