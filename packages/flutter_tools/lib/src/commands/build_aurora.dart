@@ -43,6 +43,11 @@ class BuildAuroraCommand extends BuildSubCommand {
       defaultsTo: Platform.environment['PSDK_DIR'],
       help: 'You can specify path to Aurora Platform SDK.',
     );
+    argParser.addFlag(
+      'offline',
+      help: 'You can specify path to Aurora Platform SDK.',
+      negatable: false,
+    );
     usesTargetOption();
     usesTrackWidgetCreation(verboseHelp: verboseHelp);
   }
@@ -71,6 +76,7 @@ class BuildAuroraCommand extends BuildSubCommand {
     final TargetPlatform targetPlatform =
         getTargetPlatformForName(stringArg('target-platform')!);
     final String pathPSDK = stringArg('psdk-dir')!;
+    final bool offline = boolArg('offline');
 
     if (!featureFlags.isAuroraEnabled) {
       throwToolExit(
@@ -82,7 +88,7 @@ class BuildAuroraCommand extends BuildSubCommand {
       throwToolExit('"build aurora" only supported on Linux x64 hosts.');
     }
 
-    if (!await initPsdk(pathPSDK)) {
+    if (!await initPsdk(pathPSDK, offline)) {
       throwToolExit(
           'Platform SDK not found. You specified the wrong path or you do not have export PSDK_DIR.');
     }

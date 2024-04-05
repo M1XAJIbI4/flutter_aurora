@@ -29,7 +29,7 @@ private:
 };
 ```
 
-А в файл реализации добавить в низ файла `#include "moc_sensors_plus_aurora_plugin.cpp"`:
+А в файл реализации добавить в низ файла `#include "moc_plugin_device_plugin.cpp"`:
 
 Файл `packages/aurora/plugin_device/aurora/plugin_device_plugin.cpp`
 
@@ -94,7 +94,7 @@ void PluginDevicePlugin::unimplemented(const MethodCall &call)
     call.SendSuccessResponse(nullptr);
 }
 
-#include "moc_sensors_plus_aurora_plugin.cpp"
+#include "moc_plugin_device_plugin.cpp"
 ```
 
 Для того чтобы произошла генерация мок-файла, добавим в [set_target_properties](https://cmake.org/cmake/help/latest/command/set_target_properties.html) `AUTOMOC ON`:
@@ -117,15 +117,15 @@ target_link_libraries(${PLUGIN_NAME} PUBLIC Qt5::Core)
 Выглядеть это может следующим образом:
 
 ```cpp
-#include <flutter/application.h>
-#include <flutter/compatibility.h>
+#include <flutter/flutter_aurora.h>
+#include <flutter/flutter_compatibility_qt.h>
 #include "generated_plugin_registrant.h"
 
 int main(int argc, char *argv[]) {
-    Application::Initialize(argc, argv);
-    EnableQtCompatibility(); // Включение "Qt plugin package" плагинов
-    RegisterPlugins();
-    Application::Launch();
+    aurora::Initialize(argc, argv);
+    aurora::EnableQtCompatibility(); // Включение "Qt plugin package" плагинов
+    aurora::RegisterPlugins();
+    aurora::Launch();
     return 0;
 }
 ```

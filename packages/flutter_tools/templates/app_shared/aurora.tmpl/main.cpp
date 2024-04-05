@@ -1,9 +1,9 @@
-#include <flutter/application.h>
+#include <flutter/flutter_aurora.h>
 #include "generated_plugin_registrant.h"
 
 int main(int argc, char *argv[]) {
-    Application::Initialize(argc, argv);
-    RegisterPlugins();
-    Application::Launch();
+    aurora::Initialize(argc, argv);
+    aurora::RegisterPlugins();
+    aurora::Launch();
     return 0;
 }

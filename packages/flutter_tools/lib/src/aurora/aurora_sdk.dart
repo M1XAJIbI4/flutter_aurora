@@ -31,16 +31,18 @@ const String EMBEDDER_TAGS =
     'https://gitlab.com/api/v4/projects/53351457/repository/tags?per_page=50&order_by=version&search={search}*';
 
 /// Path psdk
+bool _offline = false;
 String? _psdkDir;
 String? _psdkVersion;
 
 /// Init PSDK data
-Future<bool> initPsdk(String psdkDir) async {
+Future<bool> initPsdk(String psdkDir, bool offline) async {
   /// Init _psdkDir
   final String chrootTool = globals.fs.path.join(psdkDir, 'sdk-chroot');
 
   if (await globals.fs.file(chrootTool).exists()) {
     _psdkDir = psdkDir;
+    _offline = offline;
   } else {
     return false;
   }
@@ -133,11 +135,6 @@ Future<bool> checkEmbedder(
 ) async {
   final String psdkToolPath = getPsdkChrootToolPath();
   final String? target = await getPsdkTargetName(targetPlatform);
-  final String? latestVersionEmbedder = await getLatestVersionEmbedder();
-
-  if (latestVersionEmbedder == null) {
-    return true;
-  }
 
   if (target == null) {
     return false;
@@ -167,6 +164,19 @@ Future<bool> checkEmbedder(
 
   /// Check if install dev embedder
   if (version != null && version.contains('+')) {
+    return true;
+  }
+
+  /// In offline not installed
+  if (version == null && _offline) {
+    return false;
+  }
+
+  /// Get latest tag for update
+  final String? latestVersionEmbedder = await getLatestVersionEmbedder();
+
+  /// Check empty result: if empty - all ok
+  if (latestVersionEmbedder == null) {
     return true;
   }
 
@@ -382,6 +392,9 @@ Future<bool> checkEngine(
 
   /// Download if not exist
   if (!await globals.fs.file(engineBinaryPath).exists()) {
+    if (_offline) {
+      return false;
+    }
     return downloadEngine(targetPlatform, buildInfo);
   }
 

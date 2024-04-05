@@ -764,7 +764,9 @@ const String _auroraPluginRegistryHeaderTemplate = '''
 #ifndef GENERATED_PLUGIN_REGISTRANT
 #define GENERATED_PLUGIN_REGISTRANT
 
+namespace aurora {
 void RegisterPlugins();
+}
 
 #endif /* GENERATED_PLUGIN_REGISTRANT */
 ''';
@@ -773,22 +775,20 @@ const String _auroraPluginRegistryImplementationTemplate = '''
 //
 //  Generated file. Do not edit.
 //
-
-// clang-format off
-
-#include <flutter/application.h>
+#include <flutter/flutter_aurora.h>
 {{#methodChannelPlugins}}
 #include <{{name}}/{{filename}}.h>
 {{/methodChannelPlugins}}
 
 #include "generated_plugin_registrant.h"
 
+namespace aurora {
 void RegisterPlugins() {
-    Application::RegisterPlugins({
-{{#methodChannelPlugins}}
-        std::make_shared<{{class}}>(),
-{{/methodChannelPlugins}}
-    });
+  flutter::PluginRegistrar* registrar = GetPluginRegistrar();
+  {{#methodChannelPlugins}}
+  {{class}}::RegisterWithRegistrar(registrar);
+  {{/methodChannelPlugins}}
+}
 }
 ''';
 
