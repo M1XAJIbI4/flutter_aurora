@@ -163,7 +163,7 @@ Future<bool> checkEmbedder(
       .trim();
 
   /// Check if install dev embedder
-  if (version != null && version.contains('+')) {
+  if (version != null && (version.contains('+') || _offline)) {
     return true;
   }
 
