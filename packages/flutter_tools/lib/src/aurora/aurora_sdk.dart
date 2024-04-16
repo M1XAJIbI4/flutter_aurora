@@ -162,14 +162,15 @@ Future<bool> checkEmbedder(
       ?.split('|')[3]
       .trim();
 
-  /// Check if install dev embedder
-  if (version != null && (version.contains('+') || _offline)) {
-    return true;
-  }
-
   /// In offline not installed
   if (version == null && _offline) {
     return false;
+  }
+
+  /// Check if install dev embedder
+  if (version != null &&
+      (version.contains('+') || version.contains('dev') || _offline)) {
+    return true;
   }
 
   /// Get latest tag for update
