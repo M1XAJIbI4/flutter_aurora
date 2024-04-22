@@ -12,7 +12,7 @@ import '../globals.dart' as globals;
 
 // @todo if not upstream
 /// Version Flutter SDK
-const String FRAMEWORK_VERSION = '3.16.2-1';
+const String FRAMEWORK_VERSION = '3.16.2-2';
 
 /// Engine downloads url
 const String ENGINE_URL =
