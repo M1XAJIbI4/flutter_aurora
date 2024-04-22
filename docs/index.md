@@ -1,19 +1,8 @@
-Flutter SDK для ОС Аврора
-===================
-
-![picture](assets/images/preview.png)
+---
+template: home.html
+title: Flutter SDK для ОС Аврора
+hide:
+    - navigation
+---
 
 Flutter SDK с поддержкой платформы ОС Аврора для создания приложений Flutter.
-
-[Flutter](https://flutter.dev/) — это SDK Google для создания красивых и быстрых пользовательских интерфейсов для мобильных устройств, Интернета и настольных компьютеров на основе единой базы кода. Flutter работает с существующим кодом, используется разработчиками и организациями по всему миру, он бесплатен и имеет открытый исходный код.
-
-Flutter SDK для ОС Аврора не состоит в [`upstream`](https://en.wikipedia.org/wiki/Upstream_(software_development)), и платформа ОС Аврора не доступна в официальной сборке Flutter. Поэтому [установка](install/linux.md) происходит отличным от основного метода установки.
-
-!!! info
-
-    Flutter доступен на ОС Аврора начиная с `4.0.2.269` версии.
-    На устройствах до `4.0.2.303` требуется [установка](install/linux.md#flutter_1) дополнительных пакетов, от которых зависит работа Flutter.
-
-## Вклад
-
-Этот проект поддерживается сообществом, и мы будем рады вашему вкладу и активности, оставляйте ваши вопросы, отзывы в [issue](https://gitlab.com/omprussia/flutter/flutter-plugins/-/issues) либо вашу работу в [мерж-реквесты](https://gitlab.com/omprussia/flutter/flutter-plugins/-/merge_requests).

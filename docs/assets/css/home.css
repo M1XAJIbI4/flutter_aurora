@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600&display=swap');
+
+.md-header__option {
+    display: none;
+}
+
+.Body .Logo {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    top: 36%;
+    left: 50%;
+    transform: translate(-50%, -35%);
+    overflow: hidden;
+}
+
+.Body .Logo .Mask {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image: url("../images/mask.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.Body .Logo .Bg {
+    position: absolute;
+    top: -300px;
+    left: -90px;
+    width: 1700px;
+    animation: spin 8s linear infinite, show 1s linear;
+}
+
+.Body .Logo .Bg img {
+    width: 100%;
+    height: 100%;
+}
+
+.Body .Logo .Flutter {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.Body .Logo .Flutter img {
+    width: 100%;
+}
+
+.Body .Info {
+    position: absolute;
+    width: 600px;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+    text-align: center;
+    padding: 30px;
+    background: #ffffff0a;
+    border-radius: 12px;
+}
+
+.Body .Info .Title {
+    color: white;
+    font-weight: normal;
+    font-size: 35px;
+    padding-bottom: 10px;
+}
+
+.Body .Info .Subtitle {
+    color: white;
+    font-weight: 200;
+    font-size: 19px;
+    padding-bottom: 20px;
+}
+
+.Body .Info .Btn {
+    background: #5BC8F8;
+    color: #080614;
+    text-decoration: none;
+    outline: none;
+    padding: 13px 24px;
+    font-size: 20px;
+    display: inline-block;
+    border-radius: 8px;
+    min-width: 200px;
+}
+
+.Body .Info .BtnWhite {
+    color: white;
+    background: transparent;
+    transition: 100ms linear;
+}
+
+.Body .Info .BtnWhite:hover {
+    background: #d498db;
+    color: #080614;
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@media (max-height: 880px) {
+    .Body .Logo {
+        width: 400px;
+        height: 400px;
+    }
+    .Body .Info {
+        background: #ffffff36;
+    }
+}
+
+@media (max-width: 620px) {
+    .Body .Logo {
+        margin: 0 auto;
+        display: block;
+        position: relative;
+        top: 0;
+        transform: none;
+        left: 0;
+        width: 100%;
+        padding-bottom: 30px;
+    }
+    .Body .Info {
+        display: block;
+        width: 100%;
+        position: relative;
+        left: 0;
+        transform: none;
+        bottom: 0;
+        box-sizing: border-box;
+    }
+}
+
+@media (max-width: 500px) {
+    .Body .Logo {
+        height: 400px;
+    }
+    .Body .Logo .Flutter {
+        width: 80px;
+        height: 80px;
+    }
+    .Body .Logo .Bg {
+        left: -350px;
+    }
+}

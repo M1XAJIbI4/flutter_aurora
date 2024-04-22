@@ -1,0 +1,54 @@
+{% extends "main.html" %}
+{% block tabs %}
+  {{ super() }}
+
+  <link rel="stylesheet" href="css/home.css">
+
+  <!-- Additional styles for landing page -->
+  <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      background: #080614;
+      font-family: 'Albert Sans', 'Roboto', sans-serif;
+      min-height: 660px;
+      position: relative;
+      height: calc(100% - 35px);
+    }
+
+    .md-header--shadow {
+      box-shadow: none;
+    }
+
+    .md-tabs,
+    .md-header {
+      background-color: transparent;
+    }
+  </style>
+
+{% endblock %}
+
+<!-- Content -->
+{% block content %}
+<div class="Body">
+  <div class="Logo">
+    <div class="Bg"><img alt="Bg" src="images/bg.png"></div>
+    <div class="Mask"></div>
+    <div class="Flutter"><img alt="Flutter" src="images/flutter.svg"></div>
+  </div>
+  <div class="Info">
+    <div class="Title">
+      Flutter для ОС Аврора
+    </div>
+    <div class="Subtitle">
+      Фреймворк для создания красивых и быстрых пользовательских интерфейсов с поддержкой ОС Аврора.
+    </div>
+    <a href="/flutter/flutter/install/linux/" class="Btn">Начать</a>
+    <a href="/flutter/flutter/structure/platform/" class="Btn BtnWhite">Узнать больше</a>
+  </div>
+</div>
+{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}{% endblock %}

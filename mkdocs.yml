@@ -1,6 +1,7 @@
 site_name: Flutter для ОС Аврора
 site_dir: public
 site_url: https://omprussia.gitlab.io/flutter/flutter
+repo_url: https://gitlab.com/omprussia/flutter
 site_description: >-
   Flutter SDK с поддержкой платформы ОС Аврора для создания приложений Flutter.
 
@@ -13,41 +14,31 @@ nav:
           - Embedder: https://gitlab.com/omprussia/flutter/flutter-embedder
           - Plugins: https://gitlab.com/omprussia/flutter/flutter-plugins
           - Engine: https://gitlab.com/omprussia/flutter/flutter-engine
-          - Demo: https://gitlab.com/omprussia/flutter/flutter-demo
       - Community Links:
           - Telegram: https://t.me/aurora_devs/23477
+  - О проекте:
+      - Платформа ОС Аврора: structure/platform.md
+      - Компоненты: structure/components.md
+      - Плагины: structure/plugins.md
   - Установка:
-      - Index: install/index.md
       - Linux: install/linux.md
       - Windows: install/windows.md
-  - Применение:
-      - Index: using/index.md
-      - Flutter CLI: using/cli.md
-      - Platform Texture: using/platform_texture.md
-      - Platform Methods: using/platform_methods.md
-      - Примеры:
-          - Hello, World!: using/application.md
-          - Plugin Channel: using/plugin_channel.md
-          - Plugin D-Bus: using/plugin_dbus.md
-          - Plugin FFI: using/plugin_ffi.md
-          - Plugin Qt: using/plugin_qt.md
-  - Плагины:
-      - Index: plugins/index.md
-      - Плагины ОМП: plugins/omp.md
-      - README.md: plugins/readme.md
+  - Примеры:
+      - Hello, World!: examples/build.md
+      - Плагин D-Bus: examples/dbus.md
+      - Плагин FFI: examples/ffi.md
+      - Плагин Platform: examples/platform-channels.md
+      - Плагин Platform & Qt: examples/platform-channels-qt.md
+  - Поддержка:
+      - Index: support/index.md
+      - Flutter CLI: support/cli.md
+      - Плагины ОМП: support/omp.md
+      - Сторонние плагины: support/community.md
+      - Сторонние инструменты: support/tools.md
   - Публикации:
-      - Index: publication/index.md
       - Статьи: publication/articles.md
       - Видео: publication/video.md
-  - WIKI:
-      - Index: wiki/index.md
-      - Общие вопросы: wiki/common_wiki.md
-      - Gitflow : wiki/gitflow.md
-      - Документация: wiki/documentation.md
-
-# Repository
-repo_name: 'Flutter SDK'
-repo_url: 'https://gitlab.com/omprussia/flutter/flutter'
+  - FAQ: faq/index.md
 
 # Assets
 extra_css:
@@ -55,6 +46,7 @@ extra_css:
 
 # Extensions
 markdown_extensions:
+  - tables
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
@@ -63,6 +55,10 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 # Configuration
 theme:
@@ -70,6 +66,7 @@ theme:
   language: 'ru'
   custom_dir: docs/assets
   favicon: images/favicon.ico
+  template: home.html
   icon:
     logo: custom/icon
   features:

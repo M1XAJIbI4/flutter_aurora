@@ -148,6 +148,7 @@ Future<bool> checkEmbedder(
       target,
       '-R',
       'zypper',
+      '--disable-repositories',
       'search',
       '--installed-only',
       '-s',
