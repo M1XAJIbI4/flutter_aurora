@@ -1,18 +1,19 @@
-## Updated: 04/05/2024 16:11:55 PM
+## Updated: 04/22/2024 18:12:02 PM
 
 ## Info
 
-- Last tag: 3.16.2-1
-- Released: 4
+- Last tag: 3.16.2-2
+- Released: 5
 
 ## Versions
 
+- Version: 3.16.2-2 (22/04/2024)
 - Version: 3.16.2-1 (28/12/2023)
 - Version: 3.16.2 (26/12/2023)
 - Version: 3.13.5 (26/12/2023)
 - Version: 3.3.10 (26/12/2023)
 
-### HEAD (05/04/2024)
+### Version: 3.16.2-2 (22/04/2024)
 
 #### Bug
 
@@ -20,6 +21,9 @@
 
 #### Change
 
+- Disable repositories in check version flutter embedder.
+- Updated documentation with client wrapper.
+- Update template plugin platform channels.
 - Remove dependency flutter-embedder.
 - Add --offline flag check with has version.
 - Update template for method RegisterPlugins.
