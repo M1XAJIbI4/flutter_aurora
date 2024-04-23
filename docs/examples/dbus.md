@@ -10,7 +10,7 @@
 !!! note ""
 
     Этот демонстрационный плагин доступен в репозитории ["Flutter Plugins"](https://gitlab.com/omprussia/flutter/flutter-plugins)
-    в разделе [demo/ffi_demo](https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/main/demo/dbus_demo).
+    в разделе [demo/dbus_demo](https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/main/demo/dbus_demo).
 
 ### 1. Создаем проект
 
