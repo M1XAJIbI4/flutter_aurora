@@ -95,3 +95,7 @@ display: none;
 .md-footer-meta {
     display: none;
 }
+
+.md-typeset code {
+    font-family: monospace !important;
+}
