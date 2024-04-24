@@ -241,6 +241,60 @@ journalctl -f
 Желающих попасть в программу большое количество, над расширением программы работы ведутся.
 Для ускорения процесса можно указать, что вы являетесь программистом, и цель получения устройства.
 
+## Flutter 3.16.2-1 -> 3.16.2-2
+
+С обновлением `3.16.2-2` [Flutter Embedder](./index.md#flutter-embedder) получил общий интерфейс Flutter -
+[Client Wrapper](../structure/plugins.md#client-wrapper).
+Старым платформо-зависимым плагинам нужно обновить взаимодействие с Flutter Embedder.
+Все плагины в основном репозитории - [Flutter Plugins](https://gitlab.com/omprussia/flutter/flutter-plugins) были обновлены.
+Со списком плагинов можно ознакомится в разделе ["Поддержка"](../support/index.md).
+
+Обновление интерфейса затронуло хедеры в `3.16.2-2`.
+Для демонстрации изменений было написано [демо приложение](https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/main/demo/client_wrapper_demo?ref_type=heads),
+в котором используются все актуальные конструкции по работе с Client Wrapper.
+
+Все платформенные функции Flutter Embedder из разрозненных хедеров:
+
+```c++
+#include <flutter/platform-events.h>
+#include <flutter/platform-methods.h>
+```
+
+были перенесены в один:
+
+```c++
+#include <flutter/flutter_aurora.h>
+```
+
+Также обратите внимание на обновленную функцию `main` приложения.
+
+Было:
+
+```c++
+#include <flutter/application.h>
+#include "generated_plugin_registrant.h"
+
+int main(int argc, char *argv[]) {
+    Application::Initialize(argc, argv);
+    RegisterPlugins();
+    Application::Launch();
+    return 0;
+}
+```
+
+Стало:
+```c++
+#include <flutter/flutter_aurora.h>
+#include "generated_plugin_registrant.h"
+
+int main(int argc, char *argv[]) {
+    aurora::Initialize(argc, argv);
+    aurora::RegisterPlugins();
+    aurora::Launch();
+    return 0;
+}
+```
+
 <style>
 @media screen and (min-width: 1220px) {
     .md-content {
