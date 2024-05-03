@@ -378,9 +378,9 @@ Future<void> _buildRPM(
   TargetPlatform targetPlatform,
   BuildInfo buildInfo,
 ) async {
-  final String psdkToolPath = getPsdkChrootToolPath();
+  final String psdkToolPath = getInitPsdkChrootToolPath();
   final String? psdkTarget = await getPsdkTargetName(targetPlatform);
-  final String psdkVersion = getPsdkVersion();
+  final String psdkVersion = getInitPsdkVersion();
 
   if (psdkTarget == null) {
     throwToolExit(

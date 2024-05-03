@@ -8,105 +8,146 @@ import '../artifacts.dart';
 import '../base/common.dart';
 import '../base/process.dart';
 import '../build_info.dart';
+import '../doctor_validator.dart';
 import '../globals.dart' as globals;
-
-// @todo if not upstream
-/// Version Flutter SDK
-const String FRAMEWORK_VERSION = '3.16.2-2';
-
-/// Engine downloads url
-const String ENGINE_URL =
-    'https://gitlab.com/omprussia/flutter/flutter-engine/-/raw/{tag}/engines/{psdk}/{engine}/{file}';
-
-/// Engine tags url
-const String ENGINE_TAGS =
-    'https://gitlab.com/api/v4/projects/53055476/repository/tags?per_page=50&order_by=version&search={search}*';
-
-/// Embedder downloads url
-const String EMBEDDER_URL =
-    'https://gitlab.com/omprussia/flutter/flutter-embedder/-/archive/{tag}/flutter-embedder-{tag}.zip';
-
-/// Embedder tags url
-const String EMBEDDER_TAGS =
-    'https://gitlab.com/api/v4/projects/53351457/repository/tags?per_page=50&order_by=version&search={search}*';
+import 'aurora_constants.dart';
 
 /// Path psdk
 bool _offline = false;
-String? _psdkDir;
-String? _psdkVersion;
+String? _initPsdkDir;
+String? _initPsdkVersion;
 
 /// Init PSDK data
 Future<bool> initPsdk(String psdkDir, bool offline) async {
-  /// Init _psdkDir
+  /// Init _initPsdkDir
   final String chrootTool = globals.fs.path.join(psdkDir, 'sdk-chroot');
 
   if (await globals.fs.file(chrootTool).exists()) {
-    _psdkDir = psdkDir;
+    _initPsdkDir = psdkDir;
     _offline = offline;
   } else {
     return false;
   }
 
-  /// Init _psdkVersion
+  _initPsdkVersion = await getPsdkVersion(chrootTool);
+
+  return _initPsdkDir != null && _initPsdkVersion != null;
+}
+
+/// Is init psdk
+void checkInitPsdk() {
+  if (_initPsdkDir == null ||
+      _initPsdkVersion == null ||
+      !globals.processManager
+          .canRun(globals.fs.path.join(_initPsdkDir!, 'sdk-chroot'))) {
+    throwToolExit('An error occurred while initializing the psdk.');
+  }
+}
+
+/// Get path psdk with check
+String getInitPsdkChrootToolPath() {
+  checkInitPsdk();
+  return globals.fs.path.join(_initPsdkDir!, 'sdk-chroot');
+}
+
+/// Get version psdk with check
+String getInitPsdkVersion() {
+  checkInitPsdk();
+  return _initPsdkVersion!;
+}
+
+/// Get base psdk folder
+String? getEnvironmentPSDK() {
+  return Platform.environment['PSDK_DIR'];
+}
+
+/// Get base psdk chroot tool
+Future<String?> getEnvironmentPSDKTool() async {
+  final String toolPath = '${getEnvironmentPSDK()}/sdk-chroot';
+  if (await globals.fs.file(toolPath).exists()) {
+    return toolPath;
+  }
+  return null;
+}
+
+/// Get major version psdk
+String getPsdkMajorKeyVersion() {
+  return 'psdk_${_initPsdkVersion!.substring(0, 1)}';
+}
+
+/// Get list architectures names
+List<String> getPsdkArchNames(String psdkVersion) {
+  if (psdkVersion.startsWith('5.')) {
+    return ARCHITECTURES_5.values.toList();
+  }
+  return ARCHITECTURES_4.values.toList();
+}
+
+/// Get name psdk target by target platform
+String getPsdkArchName(TargetPlatform targetPlatform) {
+  if (!ARCHITECTURES_FULL.containsKey(targetPlatform)) {
+    throwToolExit('Target ${targetPlatform.name} not found.');
+  }
+  return ARCHITECTURES_FULL[targetPlatform]!;
+}
+
+/// Get query version PSDK
+Future<String?> getPsdkVersion(String psdkToolPath) async {
+  if (!await globals.fs.file(psdkToolPath).exists()) {
+    return null;
+  }
+
   final RunResult result = await globals.processUtils.run(
     <String>[
-      chrootTool,
+      psdkToolPath,
       'version',
     ],
   );
 
-  _psdkVersion = const LineSplitter()
+  return const LineSplitter()
       .convert(result.stdout)
       .toList()
       .lastOrNull
       ?.split(' ')
       .elementAt(1);
-
-  return _psdkDir != null && _psdkVersion != null;
 }
 
-/// Is init psdk
-void checkInitPsdk() {
-  if (_psdkDir == null ||
-      _psdkVersion == null ||
-      !globals.processManager
-          .canRun(globals.fs.path.join(_psdkDir!, 'sdk-chroot'))) {
-    throwToolExit('An error occurred while initializing the psdk.');
+/// Get list names psdk targets
+Future<List<String>?> getPsdkTargetsName(String psdkToolPath) async {
+  if (!await globals.fs.file(psdkToolPath).exists()) {
+    return null;
   }
-}
 
-/// Get path psdk
-String getPsdkChrootToolPath() {
-  checkInitPsdk();
-  return globals.fs.path.join(_psdkDir!, 'sdk-chroot');
-}
+  final RunResult result = await globals.processUtils.run(
+    <String>[
+      psdkToolPath,
+      'sb2-config',
+      '-f',
+    ],
+  );
 
-/// Get version psdk
-String getPsdkVersion() {
-  checkInitPsdk();
-  return _psdkVersion!;
-}
+  final List<String> psdkTargets = <String>[];
 
-/// Get major version psdk
-String getPsdkMajorKeyVersion() {
-  return 'psdk_${_psdkVersion!.substring(0, 1)}';
-}
-
-/// Get name psdk target by target platform
-String getPsdkArchName(TargetPlatform targetPlatform) {
-  if (targetPlatform == TargetPlatform.aurora_arm) {
-    return 'armv7hl';
-  } else if (targetPlatform == TargetPlatform.aurora_arm64) {
-    return 'aarch64';
-  } else if (targetPlatform == TargetPlatform.aurora_x64) {
-    return 'x86_64';
+  for (final String line in const LineSplitter().convert(result.stdout)) {
+    if (line.contains('default')) {
+      continue;
+    }
+    if (!line.contains('Aurora')) {
+      continue;
+    }
+    for (final String arch in ARCHITECTURES_FULL.values) {
+      if (line.contains('-$arch')) {
+        psdkTargets.add(line);
+      }
+    }
   }
-  throwToolExit('Target ${targetPlatform.name} not found.');
+
+  return psdkTargets.isEmpty ? null : psdkTargets;
 }
 
 /// Get target psdk name
 Future<String?> getPsdkTargetName(TargetPlatform targetPlatform) async {
-  final String psdkToolPath = getPsdkChrootToolPath();
+  final String psdkToolPath = getInitPsdkChrootToolPath();
   final String psdkTarget = getPsdkArchName(targetPlatform);
 
   final RunResult result = await globals.processUtils.run(
@@ -133,7 +174,7 @@ Future<bool> checkEmbedder(
   TargetPlatform targetPlatform,
   BuildInfo buildInfo,
 ) async {
-  final String psdkToolPath = getPsdkChrootToolPath();
+  final String psdkToolPath = getInitPsdkChrootToolPath();
   final String? target = await getPsdkTargetName(targetPlatform);
 
   if (target == null) {
@@ -312,7 +353,7 @@ Future<bool> installEmbedder(
 
   final String psdkTarget = getPsdkArchName(targetPlatform);
   final String psdkMajorKeyVersion = getPsdkMajorKeyVersion();
-  final String psdkToolPath = getPsdkChrootToolPath();
+  final String psdkToolPath = getInitPsdkChrootToolPath();
   final String? target = await getPsdkTargetName(targetPlatform);
 
   final Directory embedderFolder = Directory(globals.fs.path.join(
@@ -496,5 +537,36 @@ extension ExtString on String {
       }
     }
     return result;
+  }
+
+  /// String to message error
+  ValidationMessage toError() {
+    return ValidationMessage.error(this);
+  }
+
+  /// String to message array errors
+  List<ValidationMessage> toErrors() {
+    if (isEmpty) {
+      return <ValidationMessage>[];
+    }
+    return <ValidationMessage>[toError()];
+  }
+
+  /// String to message array success
+  List<ValidationMessage> toSuccess() {
+    if (isEmpty) {
+      return <ValidationMessage>[];
+    }
+    return <ValidationMessage>[ValidationMessage.hint(this)];
+  }
+
+  /// String to validate result
+  ValidationResult toValidationResult({
+    ValidationType type = ValidationType.missing,
+  }) {
+    return ValidationResult(
+      type,
+      type == ValidationType.success ? toSuccess() : toErrors(),
+    );
   }
 }

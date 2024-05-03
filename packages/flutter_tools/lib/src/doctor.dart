@@ -180,10 +180,7 @@ class _DefaultDoctorValidatorsProvider implements DoctorValidatorsProvider {
           userMessages: userMessages,
         ),
       if (auroraWorkflow.appliesToHostPlatform)
-        AuroraDoctorValidator(
-          processManager: globals.processManager,
-          userMessages: userMessages,
-        ),
+        AuroraDoctorValidator(),
       if (windowsWorkflow!.appliesToHostPlatform)
         visualStudioValidator!,
       if (ideValidators.isNotEmpty)

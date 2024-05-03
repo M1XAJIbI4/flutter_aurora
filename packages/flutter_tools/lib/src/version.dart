@@ -4,7 +4,7 @@
 
 import 'package:meta/meta.dart';
 
-import 'aurora/aurora_sdk.dart' show FRAMEWORK_VERSION;
+import 'aurora/aurora_constants.dart' show FRAMEWORK_VERSION;
 import 'base/common.dart';
 import 'base/file_system.dart';
 import 'base/io.dart';

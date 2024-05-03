@@ -925,7 +925,7 @@ String getNameForBuildMode(BuildMode buildMode) {
 String getAuroraBuildDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
   final String arch = getNameForTargetPlatform(targetPlatform);
   final String buildMode = getNameForBuildMode(buildInfo.mode);
-  final String psdkVersion = getPsdkVersion();
+  final String psdkVersion = getInitPsdkVersion();
   return globals.fs.path.join(getBuildDirectory(), 'aurora/psdk_$psdkVersion/$arch/$buildMode');
 }
 
