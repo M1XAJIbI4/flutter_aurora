@@ -1,4 +1,4 @@
-## Updated: 04/22/2024 18:12:02 PM
+## Updated: 05/03/2024 15:11:01 PM
 
 ## Info
 
@@ -12,6 +12,16 @@
 - Version: 3.16.2 (26/12/2023)
 - Version: 3.13.5 (26/12/2023)
 - Version: 3.3.10 (26/12/2023)
+
+### HEAD (03/05/2024)
+
+#### Change
+
+- Corrected spelling, punctuation and semantic errors.
+
+#### Feature
+
+- Add check Platform SDK targets.
 
 ### Version: 3.16.2-2 (22/04/2024)
 
