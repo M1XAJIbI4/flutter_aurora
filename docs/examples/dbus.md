@@ -24,7 +24,7 @@
 flutter-aurora create --template=package --org=ru.aurora dbus_demo
 ```
 
-- `ru.aurora` - Имя организации ([Organization name](https://doc.qt.io/qt-5/qcoreapplication.html#organizationName-prop)),
+- `ru.aurora` - имя организации ([Organization name](https://doc.qt.io/qt-5/qcoreapplication.html#organizationName-prop)),
 участвует в формировании названия пакета.
 - `dbus_demo` название плагина ([Application Name](https://doc.qt.io/qt-5/qcoreapplication.html#applicationName-prop)), участвует в
 формировании названия пакета.

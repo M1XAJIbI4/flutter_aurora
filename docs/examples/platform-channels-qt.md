@@ -34,7 +34,7 @@ Platform Channels так же дает доступ к публичным мет
 flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platform_channels_qt_demo
 ```
 
-- `ru.aurora` - Имя организации ([Organization name](https://doc.qt.io/qt-5/qcoreapplication.html#organizationName-prop)),
+- `ru.aurora` - имя организации ([Organization name](https://doc.qt.io/qt-5/qcoreapplication.html#organizationName-prop)),
   участвует в формировании названия пакета.
 - `platform_channels_qt_demo` название плагина ([Application Name](https://doc.qt.io/qt-5/qcoreapplication.html#applicationName-prop)), участвует в
   формировании названия пакета.
@@ -103,14 +103,14 @@ flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platf
 - `platform_channels_demo_plugin.h` - хедер реализации плагина.
 - `platform_channels_demo_plugin.cpp` - реализация плагина.
 
-А в директории `<project>/example/aurora` находится файлы обеспечивающие работу демо-приложения плагина на платформе ОС Аврора:
+А в директории `<project>/example/aurora` находятся файлы, обеспечивающие работу демо-приложения плагина на платформе ОС Аврора:
 
 - `CMakeLists.txt` - приложение и плагины Flutter для ОС Аврора имеет платформенную часть на С++, а сборка реализована
   через [CMake](https://cmake.org/).
 - `desktop/ru.aurora.app_demo.desktop` - файл интеграции приложения в меню. В нем можно указать название приложения,
   требуемые права для приложения и некоторые другие настройки.
 - `icons/*.png` - иконки приложения.
-- `main.cpp` - тока входа в приложение для ОС Аврора. Это зачастую шаблонный код для запуска всех необходимых компонентов Flutter и
+- `main.cpp` - точка входа в приложение для ОС Аврора. Это зачастую шаблонный код для запуска всех необходимых компонентов Flutter и
   приложения.
 - `rpm/ru.aurora.app_demo.spec` - файл SPEC можно рассматривать как «рецепт», который утилита rpmbuild использует для фактической сборки
   RPM.
@@ -124,7 +124,7 @@ flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platf
 ### 2. Доработка С++ части
 
 В примере [плагина на Platform Channels](./platform-channels.md) была продемонстрирована передача данных и использования
-`MethodChannel`. В этом плагине будет продемонстрирована работа с `EventChannel` на который можно будет подписаться
+`MethodChannel`. В этом плагине будет продемонстрирована работа с `EventChannel`, на который можно будет подписаться
 из кода Dart и слушать события отправляемые из С++ части плагина.
 События будут приходить из сигналов Qt о состоянии сетевого подключения.
 
@@ -164,7 +164,7 @@ target_compile_definitions(${PLUGIN_NAME} PRIVATE PLUGIN_IMPL)
 ```
 
 В основном это шаблонный код генерируемый Flutter CLI, обратите **внимание** на прокомментированные строки
-в файле `CMakeLists.txt` которые необходимо добавить для поддержки сигналов и слотов Qt.
+в файле `CMakeLists.txt`, которые необходимо добавить для поддержки сигналов и слотов Qt.
 
 Далее подправим хедер С++ части плагина находящийся по пути
 `<plugin>/aurora/include/platform_channels_qt_demo/platform_channels_qt_demo_plugin.h`:
@@ -231,10 +231,10 @@ private:
 #endif /* FLUTTER_PLUGIN_PLATFORM_CHANNELS_QT_DEMO_PLUGIN_H */
 ```
 
-Здесь заменяем `MethodChannel` созданный шаблоном на `EventChannel` который позволит реализовать `Stream` на стороне Dart.
+Здесь заменяем `MethodChannel` созданный шаблоном на `EventChannel`, который позволит реализовать `Stream` на стороне Dart.
 Добавляем методы для реакции на подпись к `Stream` Dart.
 Подключаем `QObject` к классу, добавляем необходимые методы для работы с событиями
-и `Qt` классы которые позволят слушать сигналы об изменении состояния сети.
+и `Qt` классы, которые позволят слушать сигналы об изменении состояния сети.
 
 Можно перейти к реализации методов объявленных в хедере.
 Откроем и модифицируем файл по пути `<plugin>/aurora/platform_channels_qt_demo_plugin.cpp`:
@@ -322,7 +322,7 @@ void PlatformChannelsQtDemoPlugin::onEventChannelSend()
 ```
 
 Действия в коде подробно описаны.
-Обратите **внимание** на конец файлы где добавлен мок файл `{moc}_{file_plugin_name.cpp}`:
+Обратите **внимание** на конец файла где добавлен мок файл `{moc}_{file_plugin_name.cpp}`:
 
 ```c++
 #include "moc_platform_channels_qt_demo_plugin.cpp"
@@ -335,13 +335,13 @@ void PlatformChannelsQtDemoPlugin::onEventChannelSend()
 После реализации платформо-зависимого кода С++ нужно модифицировать шаблонный код плагина для создания `Stream` в `Dart`.
 Плагин Dart содержит 3 класса:
 
-- `PlatformChannelsQtDemo` - сам плагин который подключается в приложение.
-- `PlatformChannelsQtDemoPlatform` - интерфейс который позволяет расширять плагин.
+- `PlatformChannelsQtDemo` - сам плагин, который подключается в приложение.
+- `PlatformChannelsQtDemoPlatform` - интерфейс, который позволяет расширять плагин.
 - `MethodChannelPlatformChannelsQtDemo` - реализация методов интерфейса плагина.
 
 В Dart части плагина нам нужно подправить все файлы для реализации для задачи плагина: получение состояния статуса сетевого подключения.
 Для этого в файле `<plugin>/lib/platform_channels_qt_demo.dart` подправим класс `PlatformChannelsQtDemo`,
-удалив шаблонный код и добавив метод со Stream который будет сообщать о смене состояния сетевого подключения:
+удалив шаблонный код и добавив метод со Stream, который будет сообщать о смене состояния сетевого подключения:
 
 ```dart
 class PlatformChannelsQtDemo {
@@ -384,7 +384,7 @@ class MethodChannelPlatformChannelsQtDemo extends PlatformChannelsQtDemoPlatform
 
 ### 4. Доработка примера
 
-Шаблон Platform Channels плагина генерируемый Flutter CLI имеет приложение-пример работы с плагином в директории
+Шаблон Platform Channels плагина, генерируемый Flutter CLI, имеет приложение-пример работы с плагином в директории
 `<project>/example`.
 Доработаем его для отображения статуса сетевого подключения через плагин.
 
@@ -442,7 +442,7 @@ cd example
 flutter-aurora pub get
 ```
 
-Доработаем приложение которые будет использовать плагин `platform_channels_qt_demo`
+Доработаем приложение, которое будет использовать плагин `platform_channels_qt_demo`
 и демонстрировать статус сетевого подключения:
 
 ```dart
@@ -519,7 +519,7 @@ flutter-aurora build aurora --target-platform aurora-x64 --release
 └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Этот путь указывает на установочный RPM пакет который можно
+Этот путь указывает на установочный RPM пакет, который можно
 [подписать](../faq/index.md#rpm) и [установить](../faq/index.md#_6)
 на эмулятор.
 

@@ -28,7 +28,7 @@ Platform Channels так же дает доступ к публичным мет
 flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platform_channels_demo
 ```
 
-- `ru.aurora` - Имя организации ([Organization name](https://doc.qt.io/qt-5/qcoreapplication.html#organizationName-prop)),
+- `ru.aurora` - имя организации ([Organization name](https://doc.qt.io/qt-5/qcoreapplication.html#organizationName-prop)),
   участвует в формировании названия пакета.
 - `platform_channels_demo` название плагина ([Application Name](https://doc.qt.io/qt-5/qcoreapplication.html#applicationName-prop)), участвует в
   формировании названия пакета.
@@ -88,7 +88,7 @@ flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platf
 ```
 
 Структура проекта, для разработчика Flutter, должна быть знакома.
-Исключением является директория `<project>/aurora` в котором находится С++ код плагина
+Исключением является директория `<project>/aurora` в которой находится С++ код плагина
 для взаимодействия с [Flutter Embedder](../structure/platform.md#flutter-embedder)
 и реализации общения с кодом плагина на Dart через Platform Channels:
 
@@ -104,7 +104,7 @@ flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platf
 - `desktop/ru.aurora.app_demo.desktop` - файл интеграции приложения в меню. В нем можно указать название приложения,
   требуемые права для приложения и некоторые другие настройки.
 - `icons/*.png` - иконки приложения.
-- `main.cpp` - тока входа в приложение для ОС Аврора. Это зачастую шаблонный код для запуска всех необходимых компонентов Flutter и
+- `main.cpp` - точка входа в приложение для ОС Аврора. Это зачастую шаблонный код для запуска всех необходимых компонентов Flutter и
   приложения.
 - `rpm/ru.aurora.app_demo.spec` - файл SPEC можно рассматривать как «рецепт», который утилита rpmbuild использует для фактической сборки
   RPM.
@@ -121,7 +121,7 @@ flutter-aurora create --template=plugin --platforms aurora --org=ru.aurora platf
 Продемонстрирует обращение к функции `Flutter Embedder` и передачу данных через `MethodChannel`.
 Модифицируем шаблон под эти задачи.
 
-В корне плагина находится папка `<project>/aurora`, в ней лежит С++ код реализующимй `Platform Channels` плагина.
+В корне плагина находится папка `<project>/aurora`, в ней лежит С++ код, реализующий `Platform Channels` плагина.
 В папке `lib` лежит Dart часть кода плагина.
 В папке `example`, стандартно, пример приложения взаимодействующий с плагином.
 
@@ -155,7 +155,7 @@ private:
 ```
 
 Здесь просто добавляем метод `onGetApplicationName` и убираем метод шаблона.
-В папке `<project>/aurora` так же есть файл `<project>/aurora/platform_channels_demo_plugin.cpp`
+В папке `<project>/aurora` так же есть файл `<project>/aurora/platform_channels_demo_plugin.cpp`, 
 в котором нужно реализовать метод:
 
 ```c++
@@ -177,7 +177,7 @@ PlatformChannelsDemoPlugin::onGetApplicationName(const MethodCall &call) {
 ```
 
 Класс `MethodCall` содержит данные переданные из Dart кода которые можно получить в С++ части плагина.
-В этом методе есть `namespace Encodable` в котором есть методы облегчающие работу для работы с данными:
+В этом методе есть `namespace Encodable`, в котором есть методы облегчающие работу для работы с данными:
 
 ```c++
 // ...
@@ -200,14 +200,14 @@ inline std::string GetString(const EncodableMap &map, const std::string &key) {
 // ...
 ```
 
-В методе `onGetApplicationName` происходит вызов метода `aurora::GetApplicationName()` который реализован во Flutter Embedder.
+В методе `onGetApplicationName` происходит вызов метода `aurora::GetApplicationName()`, который реализован во Flutter Embedder.
 Все публичные функции Flutter Embedder можно получить подключив хедер `flutter_aurora.h`:
 
 ```c++
 #include <flutter/flutter_aurora.h>
 ```
 
-Это методы, не являются честью интерфейса [Client Wrapper](../structure/plugins.md#client-wrapper), а расширяют функционал по взаимодействию плагинов с платформой.
+Эти методы, не являются честью интерфейса [Client Wrapper](../structure/plugins.md#client-wrapper), а расширяют функционал по взаимодействию плагинов с платформой.
 
 ### 3. Доработка Dart части
 
@@ -215,7 +215,7 @@ inline std::string GetString(const EncodableMap &map, const std::string &key) {
 Все базовые элементы для такого плагина уже создал шаблон, это:
 
 - `PlatformChannelsDemo` - сам плагин который подключается в приложение.
-- `PlatformChannelsDemoPlatform` - интерфейс который позволяет расширять плагин.
+- `PlatformChannelsDemoPlatform` - интерфейс, который позволяет расширять плагин.
 - `MethodChannelPlatformChannelsDemo` - реализация методов интерфейса плагина.
 
 В Dart части плагина нам нужно подправить все файлы для реализации нашей задачи: получения названия приложения.
@@ -296,8 +296,8 @@ cd example
 flutter-aurora pub get
 ```
 
-Доработаем приложение которые будет использовать плагин `platform_channels_demo` и демонстрировать название приложения
-и прокидывать префикс (строку предваряющую название) из Dart кода в C++ и обратно:
+Доработаем приложение, которое будет использовать плагин `platform_channels_demo` и демонстрировать название приложения
+и прокидывать префикс (строку, предваряющую название) из Dart кода в C++ и обратно:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -389,6 +389,6 @@ flutter-aurora build aurora --target-platform aurora-x64 --release
 ### 5. Плагин готов!
 
 Реализация плагина с использованием `Platform Channels` дает максимальные возможности для реализации плагина.
-Flutter Embedder реализует общий интерфейс Client Wrapper который позволяет легко портировать плагины на другие платформы.
+Flutter Embedder реализует общий интерфейс Client Wrapper, который позволяет легко портировать плагины на другие платформы.
 Так же Flutter Embedder реализует методы специфичные для платформы,
 которые можно получить через подключение хедера `flutter_aurora.h`. 
