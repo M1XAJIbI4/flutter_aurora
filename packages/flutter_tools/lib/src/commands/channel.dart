@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -171,19 +174,20 @@ class ChannelCommand extends FlutterCommand {
         <String>['git', 'show-ref', '--verify', '--quiet', 'refs/heads/$branchName'],
         workingDirectory: Cache.flutterRoot,
       );
-      if (runResult.processResult.exitCode == 0) {
-        // branch already exists, try just switching to it
-        runResult = await globals.processUtils.run(
-          <String>['git', 'checkout', branchName, '--'],
-          workingDirectory: Cache.flutterRoot,
-        );
-      } else {
-        // branch does not exist, we have to create it
-        runResult = await globals.processUtils.run(
-          <String>['git', 'checkout', '--track', '-b', branchName, 'origin/$branchName'],
-          workingDirectory: Cache.flutterRoot,
-        );
-      }
+      // @todo
+      // if (runResult.processResult.exitCode == 0) {
+      //   // branch already exists, try just switching to it
+      //   runResult = await globals.processUtils.run(
+      //     <String>['git', 'checkout', branchName, '--'],
+      //     workingDirectory: Cache.flutterRoot,
+      //   );
+      // } else {
+      //   // branch does not exist, we have to create it
+      //   runResult = await globals.processUtils.run(
+      //     <String>['git', 'checkout', '--track', '-b', branchName, 'origin/$branchName'],
+      //     workingDirectory: Cache.flutterRoot,
+      //   );
+      // }
     }
     if (runResult.processResult.exitCode != 0) {
       throwToolExit(

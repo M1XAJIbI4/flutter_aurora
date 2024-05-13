@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 import '../artifacts.dart';
@@ -15,7 +15,7 @@ import '../convert.dart';
 import '../flutter_plugins.dart';
 import '../globals.dart' as globals;
 import '../project.dart';
-import 'aurora_sdk.dart';
+import 'aurora_psdk.dart';
 
 File codeSizeFileForArch(BuildInfo buildInfo, String arch) {
   return globals.fs
@@ -43,6 +43,7 @@ Directory getBuildBundleLibDirectory(
 }
 
 Future<void> buildAurora(
+  AuroraPSDK psdk,
   AuroraProject auroraProject,
   TargetPlatform targetPlatform,
   String target,
@@ -80,9 +81,17 @@ Future<void> buildAurora(
         () => _copyIcudtl(auroraProject, buildInfo, targetPlatform));
 
     await _timedBuildStep(
-        'aurora-build-rpm',
-        () => _buildRPM(
-            auroraProject.cmakeFile.parent, targetPlatform, buildInfo));
+      'aurora-build-rpm',
+      () async {
+        if (!(await psdk.buildRPM(
+          auroraProject.cmakeFile.parent.path,
+          buildInfo,
+          targetPlatform,
+        ))) {
+          throwToolExit('Unable to generate build files');
+        }
+      },
+    );
   } finally {
     status.cancel();
   }
@@ -118,7 +127,7 @@ Future<void> buildAurora(
   }
 
   final Directory rpmsDir = globals.fs
-      .directory(await getAuroraBuildDirectory(targetPlatform, buildInfo))
+      .directory(getAuroraBuildDirectory(targetPlatform, buildInfo))
       .childDirectory('RPMS');
 
   final String rpms = await rpmsDir
@@ -371,44 +380,4 @@ Future<void> _copyIcudtl(
   final File destIcudtl = bundleDir.childFile(sourceIcudtl.basename);
 
   await sourceIcudtl.copy(destIcudtl.path);
-}
-
-Future<void> _buildRPM(
-  Directory sourceDir,
-  TargetPlatform targetPlatform,
-  BuildInfo buildInfo,
-) async {
-  final String psdkToolPath = getInitPsdkChrootToolPath();
-  final String? psdkTarget = await getPsdkTargetName(targetPlatform);
-  final String psdkVersion = getInitPsdkVersion();
-
-  if (psdkTarget == null) {
-    throwToolExit(
-        'The target for the required architecture was not found in the Platform SDK.');
-  }
-
-  final int result = await globals.processUtils.stream(<String>[
-    psdkToolPath,
-    'mb2',
-    '--target',
-    psdkTarget,
-    '--no-fix-version',
-    'build',
-    if (buildInfo.mode == BuildMode.debug) '-d',
-    sourceDir.path,
-    '--',
-    '--define',
-    '_flutter_psdk_version $psdkVersion',
-    '--define',
-    '_flutter_psdk_major ${int.parse(psdkVersion.substring(0, 1))}',
-    '--define',
-    if (buildInfo.mode == BuildMode.debug) '_flutter_build_type Debug',
-    if (buildInfo.mode != BuildMode.debug) '_flutter_build_type Release',
-  ],
-      workingDirectory: getAuroraBuildDirectory(targetPlatform, buildInfo),
-      treatStderrAsStdout: true);
-
-  if (result != 0) {
-    throwToolExit('Unable to generate build files');
-  }
 }
