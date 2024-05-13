@@ -680,7 +680,7 @@ class Cache {
   }
 
   String? getVersionFor(String artifactName) {
-    // @todo
+    // @todo if not upstream
     if (artifactName.startsWith('aurora')) {
       return FRAMEWORK_VERSION;
     }
@@ -764,9 +764,6 @@ class Cache {
   /// Update the cache to contain all `requiredArtifacts`.
   Future<void> updateAll(Set<DevelopmentArtifact> requiredArtifacts,
       {bool offline = false}) async {
-    // @todo
-    _logger.printTrace('Artifact: $requiredArtifacts');
-
     if (!_lockEnabled) {
       return;
     }
@@ -1010,10 +1007,10 @@ abstract class EngineCachedArtifact extends CachedArtifact {
           fileSystem.directory(fileSystem.path.join(location.path, cacheDir));
 
       final bool isUrl = urlPath.contains('https://');
-      // @todo
+      // @todo if not upstream
       final Uri downloadUrl =
           isUrl ? Uri.parse(urlPath) : Uri.parse(url + urlPath);
-      // @todo
+      // @todo if not upstream
       // Avoid printing things like 'Downloading linux-x64 tools...' multiple times.
       final String friendlyName = (isUrl
               ? '${downloadUrl.pathSegments.firstOrNull}/${downloadUrl.pathSegments.lastOrNull}'
@@ -1276,7 +1273,7 @@ class ArtifactUpdater {
   /// See also:
   ///   * https://cloud.google.com/storage/docs/xml-api/reference-headers#xgooghash
   Future<void> _download(Uri url, File file, Status status) async {
-    // @todo
+    // @todo if not upstream
     final bool isAllowedUrl =
         url.toString().startsWith('https://gitlab.com/omprussia') ||
             _allowedBaseUrls

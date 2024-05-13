@@ -54,21 +54,7 @@ class AuroraPSDK {
   }
 
   static String getStaticVersionMajor() {
-    if (_version == null) {
-      throwToolExit(
-        'The PSDK has not been initialized. An error occurred while retrieving the version.',
-      );
-    }
-    return _version!.substring(0, 1);
-  }
-
-  static String getStaticEnginePath() {
-    if (_version == null) {
-      throwToolExit(
-        'The PSDK has not been initialized. An error occurred while retrieving the version.',
-      );
-    }
-    return _version!.substring(0, 1);
+    return getStaticVersion().substring(0, 1);
   }
 
   Future<String?> getVersion() async {
@@ -116,7 +102,7 @@ class AuroraPSDK {
     return psdkTargets.firstOrNull;
   }
 
-  Future<bool> buildRPM(
+  Future<void> buildRPM(
     String path,
     BuildInfo buildInfo,
     TargetPlatform targetPlatform,
@@ -126,10 +112,10 @@ class AuroraPSDK {
     final String? targetName = await findTargetName(targetPlatform);
 
     if (targetName == null) {
-      return false;
+      throwToolExit('Not found target PSDK');
     }
 
-    final RunResult result = await globals.processUtils.run(
+    final int result = await globals.processUtils.stream(
       <String>[
         _tool,
         'mb2',
@@ -148,11 +134,17 @@ class AuroraPSDK {
         if (buildInfo.mode == BuildMode.debug) '_flutter_build_type Debug',
         if (buildInfo.mode != BuildMode.debug) '_flutter_build_type Release',
       ],
+      workingDirectory: getAuroraBuildDirectory(targetPlatform, buildInfo),
+      treatStderrAsStdout: true,
     );
-    return result.exitCode != 0;
+
+    if (result != 0) {
+      throwToolExit('Unable to generate build files');
+    }
   }
 
   Future<bool> installEmbedder() async {
+    // @todo
     return true;
   }
 
@@ -189,9 +181,6 @@ class AuroraPSDK {
   }
 
   Map<TargetPlatform, String>? _getArchMap() {
-    if (getStaticVersionMajor() == '5') {
-      return ARCHITECTURES_5;
-    }
-    return ARCHITECTURES_4;
+    return getStaticVersionMajor() == '5' ? ARCHITECTURES_5 : ARCHITECTURES_4;
   }
 }

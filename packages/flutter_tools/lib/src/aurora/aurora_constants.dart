@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 import '../build_info.dart';
@@ -13,19 +13,16 @@ const String FRAMEWORK_VERSION = '3.16.2-2';
 //////////////////////
 // Architectures
 
-/// List architectures available
-const Map<TargetPlatform, String> ARCHITECTURES_FULL = <TargetPlatform, String>{
-  TargetPlatform.aurora_arm: 'armv7hl',
-  TargetPlatform.aurora_arm64: 'aarch64',
-  TargetPlatform.aurora_x64: 'x86_64',
-};
-
-/// List architectures Aurora 5
-const Map<TargetPlatform, String> ARCHITECTURES_5 = ARCHITECTURES_FULL;
-
 /// List architectures Aurora 4
 const Map<TargetPlatform, String> ARCHITECTURES_4 = <TargetPlatform, String>{
   TargetPlatform.aurora_arm: 'armv7hl',
+};
+
+/// List architectures Aurora 5
+const Map<TargetPlatform, String> ARCHITECTURES_5 = <TargetPlatform, String>{
+  TargetPlatform.aurora_arm: 'armv7hl',
+  TargetPlatform.aurora_arm64: 'aarch64',
+  TargetPlatform.aurora_x64: 'x86_64',
 };
 
 //////////////////////

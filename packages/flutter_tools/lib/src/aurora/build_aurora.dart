@@ -82,15 +82,11 @@ Future<void> buildAurora(
 
     await _timedBuildStep(
       'aurora-build-rpm',
-      () async {
-        if (!(await psdk.buildRPM(
-          auroraProject.cmakeFile.parent.path,
-          buildInfo,
-          targetPlatform,
-        ))) {
-          throwToolExit('Unable to generate build files');
-        }
-      },
+      () => psdk.buildRPM(
+        auroraProject.cmakeFile.parent.path,
+        buildInfo,
+        targetPlatform,
+      ),
     );
   } finally {
     status.cancel();
