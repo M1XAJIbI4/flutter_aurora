@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 import '../build_info.dart';
@@ -45,6 +45,23 @@ const String ERROR_PSDK_TARGETS = '''
 No targets found in Platform SDK. Check their names, they should match the pattern:
 AuroraOS-{version}-base-{architecture}
 Platform SDK setup: https://developer.auroraos.ru/doc/software_development/psdk/setup''';
+
+/// Show error in doctor if not found sdk-chroot sudoers fix
+const String ERROR_PSDK_SUDOERS = r'''
+Executing the command requires root access.
+Update your sudoers settings using the template:
+
+Update file /etc/sudoers.d/mer-sdk-chroot:
+
+$USER ALL=(ALL) NOPASSWD: $PSDK_DIR
+Defaults!$PSDK_DIR env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
+
+Update file /etc/sudoers.d/sdk-chroot:
+
+$USER ALL=(ALL) NOPASSWD: $PSDK_DIR/sdk-chroot
+Defaults!$PSDK_DIR/sdk-chroot env_keep += "SSH_AGENT_PID SSH_AUTH_SOCK"
+
+Alternatively, enter the `sudo` command before executing the Flutter CLI command.''';
 
 /// Show error in doctor if not found PSDK target
 const String ERROR_PSDK_TARGET = '''

@@ -26,6 +26,10 @@ class AuroraPSDK {
       throw Exception(ERROR_PSDK_TOOL);
     }
     final AuroraPSDK psdk = AuroraPSDK._(tool);
+    // check sudo activate
+    if (!await psdk.isExistSudo()) {
+      throw Exception(ERROR_PSDK_SUDOERS);
+    }
     // init static version
     _version ??= await psdk.getVersion();
     // result
@@ -55,6 +59,45 @@ class AuroraPSDK {
 
   static String getStaticVersionMajor() {
     return getStaticVersion().substring(0, 1);
+  }
+
+  Future<bool> isExistSudo() async {
+    // Check settings sudoers
+
+    // final isExistSudoers0 = await File('/etc/sudoers.d/sdk-chroot')
+    //     .openRead()
+    //     .map(utf8.decode)
+    //     .transform(const LineSplitter()).toList();
+    //
+    // globals.printStatus('--------------------------');
+    // globals.printStatus(isExistSudoers0.firstWhere((String line) => line.contains(_tool)));
+    // globals.printStatus('--------------------------');
+
+    final String line = (await File('/etc/sudoers.d/sdk-chroot')
+            .openRead()
+            .map(utf8.decode)
+            .transform(const LineSplitter())
+            .toList())
+        .firstWhere((String line) => line.contains(_tool), orElse: () => '');
+
+    if (line.isNotEmpty) {
+      return true;
+    }
+
+    // Check sudo caches credentials
+    final RunResult result = await globals.processUtils.run(
+      <String>[
+        'sudo',
+        '-S',
+        'true',
+      ],
+    );
+
+    if (result.exitCode == 0) {
+      return true;
+    }
+
+    return false;
   }
 
   Future<String?> getVersion() async {

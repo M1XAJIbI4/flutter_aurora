@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
+
 import 'dart:io';
 
 import '../aurora/aurora_psdk.dart';
