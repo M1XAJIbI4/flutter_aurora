@@ -365,7 +365,7 @@ Future<void> precacheArtifacts([String? workingDirectory]) async {
   globals.printStatus('Upgrading engine...');
   final int code = await globals.processUtils.stream(
     <String>[
-      globals.fs.path.join('bin', 'flutter'), '--no-color', '--no-version-check', 'precache',
+      globals.fs.path.join('bin', 'flutter'), '--no-color', '--no-version-check', 'precache', '--force',
     ],
     allowReentrantFlutter: true,
     environment: Map<String, String>.of(globals.platform.environment),

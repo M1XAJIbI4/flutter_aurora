@@ -35,7 +35,7 @@ class AuroraEmbedder extends CachedArtifact {
     return artifactUpdater.downloadZipArchive(
       'Downloading aurora_embedder tools...',
       _toStorageUri(
-        branch: '',
+        branch: branch,
         latestVersion: branch != 'main' && branch != 'beta'
             ? await _getLatestVersion()
             : null,
@@ -58,7 +58,11 @@ class AuroraEmbedder extends CachedArtifact {
   }
 
   Future<String> _getBranchName() async {
-    return 'stable';
+    final RunResult runResult = await globals.processUtils.run(
+      <String>['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+      workingDirectory: Cache.flutterRoot,
+    );
+    return runResult.stdout.trim();
   }
 
   Future<String?> _getLatestVersion() async {

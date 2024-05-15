@@ -174,20 +174,19 @@ class ChannelCommand extends FlutterCommand {
         <String>['git', 'show-ref', '--verify', '--quiet', 'refs/heads/$branchName'],
         workingDirectory: Cache.flutterRoot,
       );
-      // @todo
-      // if (runResult.processResult.exitCode == 0) {
-      //   // branch already exists, try just switching to it
-      //   runResult = await globals.processUtils.run(
-      //     <String>['git', 'checkout', branchName, '--'],
-      //     workingDirectory: Cache.flutterRoot,
-      //   );
-      // } else {
-      //   // branch does not exist, we have to create it
-      //   runResult = await globals.processUtils.run(
-      //     <String>['git', 'checkout', '--track', '-b', branchName, 'origin/$branchName'],
-      //     workingDirectory: Cache.flutterRoot,
-      //   );
-      // }
+      if (runResult.processResult.exitCode == 0) {
+        // branch already exists, try just switching to it
+        runResult = await globals.processUtils.run(
+          <String>['git', 'checkout', branchName, '--'],
+          workingDirectory: Cache.flutterRoot,
+        );
+      } else {
+        // branch does not exist, we have to create it
+        runResult = await globals.processUtils.run(
+          <String>['git', 'checkout', '--track', '-b', branchName, 'origin/$branchName'],
+          workingDirectory: Cache.flutterRoot,
+        );
+      }
     }
     if (runResult.processResult.exitCode != 0) {
       throwToolExit(
