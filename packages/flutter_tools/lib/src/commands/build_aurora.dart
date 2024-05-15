@@ -92,7 +92,7 @@ class BuildAuroraCommand extends BuildSubCommand {
           'The target for the required architecture was not found in the Platform SDK.',
         );
       }
-      if (!(await psdk.installEmbedder())) {
+      if (!(await psdk.checkEmbedder(targetPlatform))) {
         throw Exception(
           'Installation error Aurora Flutter Embedder. Try update cache Flutter SDK.',
         );

@@ -27,32 +27,50 @@ class AuroraEmbedder extends CachedArtifact {
     FileSystem fileSystem,
     OperatingSystemUtils operatingSystemUtils,
   ) async {
-    final String? latestVersion = await _getLatestVersion();
-    if (latestVersion == null) {
-      return globals.printWarning('Url aurora_embedder not found...');
-    }
+    // Get current branch name Flutter SDK
+    final String branch = await _getBranchName();
+    // Clear folder embedder artifact
+    await _clearCacheForGetLatestVersion();
+    // Download
     return artifactUpdater.downloadZipArchive(
       'Downloading aurora_embedder tools...',
-      _toStorageUri(latestVersion),
+      _toStorageUri(
+        branch: '',
+        latestVersion: branch != 'main' && branch != 'beta'
+            ? await _getLatestVersion()
+            : null,
+      ),
       location,
     );
   }
 
-  Uri _toStorageUri(String latestVersion) {
-    return Uri.parse(
-      'https://gitlab.com/omprussia/flutter/flutter-embedder/-/archive/$latestVersion/flutter-embedder-$latestVersion.zip',
-    );
+  Uri _toStorageUri({required String branch, String? latestVersion}) {
+    // For channel main & beta null version
+    if (latestVersion == null) {
+      return Uri.parse(
+        'https://gitlab.com/omprussia/flutter/flutter-embedder/-/archive/$branch/flutter-embedder-main.zip',
+      );
+    } else {
+      return Uri.parse(
+        'https://gitlab.com/omprussia/flutter/flutter-embedder/-/archive/$latestVersion/flutter-embedder-$latestVersion.zip',
+      );
+    }
+  }
+
+  Future<String> _getBranchName() async {
+    return 'stable';
   }
 
   Future<String?> _getLatestVersion() async {
-    final String majorVersion =
+    // Use tag only for stable version
+    final String upstreamVersion =
         FRAMEWORK_VERSION.split('-').firstOrNull ?? FRAMEWORK_VERSION;
     final RunResult rawTags = await globals.processUtils.run(
       <String>[
         'curl',
         '--silent',
         '--fail',
-        'https://gitlab.com/api/v4/projects/53351457/repository/tags?per_page=50&order_by=version&search=$majorVersion*'
+        'https://gitlab.com/api/v4/projects/53351457/repository/tags?per_page=50&order_by=version&search=$upstreamVersion*'
       ],
     );
     if (rawTags.exitCode == 22) {
@@ -66,12 +84,12 @@ class AuroraEmbedder extends CachedArtifact {
     return (tag as Map<String, dynamic>)['name'].toString();
   }
 
-  static Future<String?> getLatestVersionCache() async {
-    return '';
-  }
-
-  static Future<String?> getEmbedderFolder() async {
-    return '';
+  Future<void> _clearCacheForGetLatestVersion() async {
+    final String artifactPath = globals.fs.path.join(
+      globals.cache.getCacheArtifacts().path,
+      'aurora_embedder',
+    );
+    await globals.fs.directory(artifactPath).delete(recursive: true);
   }
 }
 

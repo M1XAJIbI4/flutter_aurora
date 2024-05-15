@@ -143,9 +143,114 @@ class AuroraPSDK {
     }
   }
 
-  Future<bool> installEmbedder() async {
-    // @todo
+  Future<bool> checkEmbedder(
+    TargetPlatform targetPlatform,
+  ) async {
+    // Get folder embedder RPM
+    final Directory? embedderArtifact = await getPathEmbedder(targetPlatform);
+    if (embedderArtifact == null) {
+      return false;
+    }
+    // Get PSDK target name
+    final String? targetName = await findTargetName(targetPlatform);
+    if (targetName == null) {
+      return false;
+    }
+    // Get version install embedder
+    final String? installVersion = await getVersionEmbedder(targetName);
+    // Get list rpm packages
+    final List<FileSystemEntity> rpms = await embedderArtifact.list().toList();
+    // Get version folder embedder
+    final String folderVersion = globals.fs.path
+        .basename(rpms.first.path)
+        .replaceAll('.${_getArchMap()?[targetPlatform]}.rpm', '')
+        .replaceAll('flutter-embedder-', '')
+        .replaceAll('devel-', '');
+
+    // Install embedder
+    if (installVersion == null ||
+        folderVersion != installVersion && !installVersion.contains('-dev')) {
+      globals.printStatus(
+        '${installVersion == null ? 'Install' : 'Reinstall'} flutter embedder to target "$targetName"...',
+      );
+      await removeEmbedder(targetName);
+      final List<String> packages =
+          rpms.map((FileSystemEntity e) => e.path).toList();
+      packages.sort();
+      for (final String path in packages) {
+        if (!await installToTargetRPM(targetName, path)) {
+          return false;
+        }
+      }
+    }
     return true;
+  }
+
+  Future<Directory?> getPathEmbedder(
+    TargetPlatform targetPlatform,
+  ) async {
+    final String? arch = _getArchMap()?[targetPlatform];
+
+    if (arch == null) {
+      return null;
+    }
+
+    final Directory pathEmbedders = Directory(globals.fs.path.join(
+      globals.cache.getCacheArtifacts().path,
+      'aurora_embedder',
+    ));
+
+    final List<String> folder = (await pathEmbedders.list().toList())
+        .map((FileSystemEntity entity) => globals.fs.path.basename(entity.path))
+        .toList();
+
+    return Directory(globals.fs.path.join(
+      globals.cache.getCacheArtifacts().path,
+      'aurora_embedder',
+      folder.first,
+      'embedder',
+      'psdk_${AuroraPSDK.getStaticVersionMajor()}',
+      arch,
+    ));
+  }
+
+  Future<bool> installToTargetRPM(String targetName, String pathRPM) async {
+    final RunResult result = await globals.processUtils.run(
+      <String>[
+        _tool,
+        'sb2',
+        '-t',
+        targetName,
+        '-m',
+        'sdk-install',
+        '-R',
+        'zypper',
+        '--no-gpg-checks',
+        'in',
+        '-y',
+        pathRPM,
+      ],
+    );
+    return result.exitCode == 0;
+  }
+
+  Future<bool> removeEmbedder(String targetName) async {
+    final RunResult result = await globals.processUtils.run(
+      <String>[
+        _tool,
+        'sb2',
+        '-t',
+        targetName,
+        '-m',
+        'sdk-install',
+        '-R',
+        'zypper',
+        'rm',
+        '-y',
+        'flutter-embedder',
+      ],
+    );
+    return result.exitCode == 0;
   }
 
   Future<String?> getVersionEmbedder(String target) async {
