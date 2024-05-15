@@ -63,16 +63,6 @@ class AuroraPSDK {
 
   Future<bool> isExistSudo() async {
     // Check settings sudoers
-
-    // final isExistSudoers0 = await File('/etc/sudoers.d/sdk-chroot')
-    //     .openRead()
-    //     .map(utf8.decode)
-    //     .transform(const LineSplitter()).toList();
-    //
-    // globals.printStatus('--------------------------');
-    // globals.printStatus(isExistSudoers0.firstWhere((String line) => line.contains(_tool)));
-    // globals.printStatus('--------------------------');
-
     final String line = (await File('/etc/sudoers.d/sdk-chroot')
             .openRead()
             .map(utf8.decode)
