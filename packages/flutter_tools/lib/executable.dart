@@ -201,7 +201,6 @@ List<FlutterCommand> generateCommands({
   DebugAdapterCommand(verboseHelp: verboseHelp),
   DevicesCommand(verboseHelp: verboseHelp),
   DoctorCommand(verbose: verbose),
-  // @todo if not upstream
   AuroraUpdateCommand(isDowngrade: true),
   DriveCommand(verboseHelp: verboseHelp,
     fileSystem: globals.fs,
@@ -234,7 +233,6 @@ List<FlutterCommand> generateCommands({
   ScreenshotCommand(fs: globals.fs),
   ShellCompletionCommand(),
   TestCommand(verboseHelp: verboseHelp, verbose: verbose),
-  // @todo if not upstream
   AuroraUpdateCommand(),
   SymbolizeCommand(
     stdio: globals.stdio,
