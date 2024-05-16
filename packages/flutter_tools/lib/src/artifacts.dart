@@ -362,10 +362,10 @@ abstract class Artifacts {
 
   static Artifacts getLocalEngine(EngineBuildPaths engineBuildPaths) {
     Artifacts artifacts = CachedArtifacts(
-        fileSystem: globals.fs,
-        platform: globals.platform,
-        cache: globals.cache,
-        operatingSystemUtils: globals.os
+      fileSystem: globals.fs,
+      platform: globals.platform,
+      cache: globals.cache,
+      operatingSystemUtils: globals.os
     );
     if (engineBuildPaths.hostEngine != null && engineBuildPaths.targetEngine != null) {
       artifacts = CachedLocalEngineArtifacts(
@@ -381,11 +381,11 @@ abstract class Artifacts {
     }
     if (engineBuildPaths.webSdk != null) {
       artifacts = CachedLocalWebSdkArtifacts(
-          parent: artifacts,
-          webSdkPath: engineBuildPaths.webSdk!,
-          fileSystem: globals.fs,
-          platform: globals.platform,
-          operatingSystemUtils: globals.os
+        parent: artifacts,
+        webSdkPath: engineBuildPaths.webSdk!,
+        fileSystem: globals.fs,
+        platform: globals.platform,
+        operatingSystemUtils: globals.os
       );
     }
     return artifacts;
@@ -393,17 +393,17 @@ abstract class Artifacts {
 
   /// Returns the requested [artifact] for the [platform], [mode], and [environmentType] combination.
   String getArtifactPath(
-      Artifact artifact, {
-        TargetPlatform? platform,
-        BuildMode? mode,
-        EnvironmentType? environmentType,
-      });
+    Artifact artifact, {
+    TargetPlatform? platform,
+    BuildMode? mode,
+    EnvironmentType? environmentType,
+  });
 
   /// Retrieve a host specific artifact that does not depend on the
   /// current build mode or environment.
   FileSystemEntity getHostArtifact(
-      HostArtifact artifact,
-      );
+    HostArtifact artifact,
+  );
 
   // Returns which set of engine artifacts is currently used for the [platform]
   // and [mode] combination.
@@ -425,9 +425,9 @@ class CachedArtifacts implements Artifacts {
     required Cache cache,
     required OperatingSystemUtils operatingSystemUtils,
   }) : _fileSystem = fileSystem,
-        _platform = platform,
-        _cache = cache,
-        _operatingSystemUtils = operatingSystemUtils;
+       _platform = platform,
+       _cache = cache,
+       _operatingSystemUtils = operatingSystemUtils;
 
   final FileSystem _fileSystem;
   final Platform _platform;
@@ -439,8 +439,8 @@ class CachedArtifacts implements Artifacts {
 
   @override
   FileSystemEntity getHostArtifact(
-      HostArtifact artifact,
-      ) {
+    HostArtifact artifact,
+  ) {
     switch (artifact) {
       case HostArtifact.flutterWebSdk:
         final String path = _getFlutterWebSdkPath();
@@ -506,11 +506,11 @@ class CachedArtifacts implements Artifacts {
 
   @override
   String getArtifactPath(
-      Artifact artifact, {
-        TargetPlatform? platform,
-        BuildMode? mode,
-        EnvironmentType? environmentType,
-      }) {
+    Artifact artifact, {
+    TargetPlatform? platform,
+    BuildMode? mode,
+    EnvironmentType? environmentType,
+  }) {
     platform = _mapTargetPlatform(platform);
     switch (platform) {
       case TargetPlatform.android:
@@ -737,8 +737,8 @@ class CachedArtifacts implements Artifacts {
   String _getHostArtifactPath(Artifact artifact, TargetPlatform platform, BuildMode? mode) {
     switch (artifact) {
       case Artifact.genSnapshot:
-      // For script snapshots any gen_snapshot binary will do. Returning gen_snapshot for
-      // android_arm in profile mode because it is available on all supported host platforms.
+        // For script snapshots any gen_snapshot binary will do. Returning gen_snapshot for
+        // android_arm in profile mode because it is available on all supported host platforms.
         return _getAndroidArtifactPath(artifact, TargetPlatform.android_arm, BuildMode.profile);
       case Artifact.dart2jsSnapshot:
       case Artifact.dart2wasmSnapshot:
@@ -774,9 +774,9 @@ class CachedArtifacts implements Artifacts {
       case Artifact.linuxDesktopPath:
       case Artifact.windowsDesktopPath:
       case Artifact.linuxHeaders:
-      // TODO(zanderso): remove once debug desktop artifacts are uploaded
-      // under a separate directory from the host artifacts.
-      // https://github.com/flutter/flutter/issues/38935
+        // TODO(zanderso): remove once debug desktop artifacts are uploaded
+        // under a separate directory from the host artifacts.
+        // https://github.com/flutter/flutter/issues/38935
         String platformDirName = _enginePlatformDirectoryName(platform);
         if (mode == BuildMode.profile || mode == BuildMode.release) {
           platformDirName = '$platformDirName-${mode!.cliName}';
@@ -792,9 +792,9 @@ class CachedArtifacts implements Artifacts {
       case Artifact.fontSubset:
       case Artifact.constFinder:
         return _cache.getArtifactDirectory('engine')
-            .childDirectory(_enginePlatformDirectoryName(platform))
-            .childFile(_artifactToFileName(artifact, _platform, mode)!)
-            .path;
+                     .childDirectory(_enginePlatformDirectoryName(platform))
+                     .childFile(_artifactToFileName(artifact, _platform, mode)!)
+                     .path;
       case Artifact.auroraFlutterEngineSoPath:
         final String platformDirName = _enginePlatformDirectoryName(platform);
         final String engineArtifactsPath = _cache.getArtifactDirectory('engine').path;
@@ -833,9 +833,9 @@ class CachedArtifacts implements Artifacts {
       case TargetPlatform.linux_arm64:
       case TargetPlatform.darwin:
       case TargetPlatform.windows_x64:
-      // TODO(zanderso): remove once debug desktop artifacts are uploaded
-      // under a separate directory from the host artifacts.
-      // https://github.com/flutter/flutter/issues/38935
+        // TODO(zanderso): remove once debug desktop artifacts are uploaded
+        // under a separate directory from the host artifacts.
+        // https://github.com/flutter/flutter/issues/38935
         if (mode == BuildMode.debug || mode == null) {
           return _fileSystem.path.join(engineDir, platformName);
         }
@@ -871,7 +871,7 @@ TargetPlatform _currentHostPlatform(Platform platform, OperatingSystemUtils oper
   }
   if (platform.isLinux) {
     return operatingSystemUtils.hostPlatform == HostPlatform.linux_x64 ?
-    TargetPlatform.linux_x64 : TargetPlatform.linux_arm64;
+             TargetPlatform.linux_x64 : TargetPlatform.linux_arm64;
   }
   if (platform.isWindows) {
     return TargetPlatform.windows_x64;
@@ -890,7 +890,7 @@ String _getIosEngineArtifactPath(String engineDirectory,
   }
   Directory? flutterFrameworkSource;
   for (final Directory platformDirectory
-  in xcframeworkDirectory.listSync().whereType<Directory>()) {
+      in xcframeworkDirectory.listSync().whereType<Directory>()) {
     if (!platformDirectory.basename.startsWith('ios-')) {
       continue;
     }
@@ -913,31 +913,31 @@ String _getIosEngineArtifactPath(String engineDirectory,
 /// Manages the artifacts of a locally built engine.
 class CachedLocalEngineArtifacts implements Artifacts {
   CachedLocalEngineArtifacts(
-      this._hostEngineOutPath, {
-        required String engineOutPath,
-        required FileSystem fileSystem,
-        required Cache cache,
-        required ProcessManager processManager,
-        required Platform platform,
-        required OperatingSystemUtils operatingSystemUtils,
-        Artifacts? parent,
-      }) : _fileSystem = fileSystem,
-        localEngineInfo =
-        LocalEngineInfo(
-          targetOutPath: engineOutPath,
-          hostOutPath: _hostEngineOutPath,
-        ),
-        _cache = cache,
-        _processManager = processManager,
-        _platform = platform,
-        _operatingSystemUtils = operatingSystemUtils,
-        _backupCache = parent ??
-            CachedArtifacts(
-                fileSystem: fileSystem,
-                platform: platform,
-                cache: cache,
-                operatingSystemUtils: operatingSystemUtils
-            );
+    this._hostEngineOutPath, {
+    required String engineOutPath,
+    required FileSystem fileSystem,
+    required Cache cache,
+    required ProcessManager processManager,
+    required Platform platform,
+    required OperatingSystemUtils operatingSystemUtils,
+    Artifacts? parent,
+  }) : _fileSystem = fileSystem,
+       localEngineInfo =
+         LocalEngineInfo(
+           targetOutPath: engineOutPath,
+           hostOutPath: _hostEngineOutPath,
+         ),
+       _cache = cache,
+       _processManager = processManager,
+       _platform = platform,
+       _operatingSystemUtils = operatingSystemUtils,
+       _backupCache = parent ??
+         CachedArtifacts(
+           fileSystem: fileSystem,
+           platform: platform,
+           cache: cache,
+           operatingSystemUtils: operatingSystemUtils
+         );
 
   @override
   final LocalEngineInfo localEngineInfo;
@@ -1020,11 +1020,11 @@ class CachedLocalEngineArtifacts implements Artifacts {
 
   @override
   String getArtifactPath(
-      Artifact artifact, {
-        TargetPlatform? platform,
-        BuildMode? mode,
-        EnvironmentType? environmentType,
-      }) {
+    Artifact artifact, {
+    TargetPlatform? platform,
+    BuildMode? mode,
+    EnvironmentType? environmentType,
+  }) {
     platform ??= _currentHostPlatform(_platform, _operatingSystemUtils);
     platform = _mapTargetPlatform(platform);
     final bool isDirectoryArtifact = artifact == Artifact.flutterPatchedSdkPath;
@@ -1052,10 +1052,10 @@ class CachedLocalEngineArtifacts implements Artifacts {
         return _getIosEngineArtifactPath(
             localEngineInfo.targetOutPath, environmentType, _fileSystem, _platform);
       case Artifact.flutterPatchedSdkPath:
-      // When using local engine always use [BuildMode.debug] regardless of
-      // what was specified in [mode] argument because local engine will
-      // have only one flutter_patched_sdk in standard location, that
-      // is happen to be what debug(non-release) mode is using.
+        // When using local engine always use [BuildMode.debug] regardless of
+        // what was specified in [mode] argument because local engine will
+        // have only one flutter_patched_sdk in standard location, that
+        // is happen to be what debug(non-release) mode is using.
         if (platform == TargetPlatform.fuchsia_x64 || platform == TargetPlatform.fuchsia_arm64) {
           return _fileSystem.path.join(localEngineInfo.targetOutPath, 'flutter_runner_patched_sdk');
         }
@@ -1197,10 +1197,10 @@ class CachedLocalWebSdkArtifacts implements Artifacts {
     required Platform platform,
     required OperatingSystemUtils operatingSystemUtils
   }) : _parent = parent,
-        _webSdkPath = webSdkPath,
-        _fileSystem = fileSystem,
-        _platform = platform,
-        _operatingSystemUtils = operatingSystemUtils;
+       _webSdkPath = webSdkPath,
+       _fileSystem = fileSystem,
+       _platform = platform,
+       _operatingSystemUtils = operatingSystemUtils;
 
 
   final Artifacts _parent;
@@ -1218,8 +1218,8 @@ class CachedLocalWebSdkArtifacts implements Artifacts {
         case Artifact.engineDartBinary:
         case Artifact.engineDartAotRuntime:
           return _fileSystem.path.join(
-              _getDartSdkPath(), 'bin',
-              _artifactToFileName(artifact, _platform, mode));
+            _getDartSdkPath(), 'bin',
+            _artifactToFileName(artifact, _platform, mode));
         case Artifact.dart2jsSnapshot:
         case Artifact.dart2wasmSnapshot:
         case Artifact.frontendServerSnapshotForEngineDartSdk:
@@ -1400,11 +1400,11 @@ class OverrideArtifacts implements Artifacts {
 
   @override
   String getArtifactPath(
-      Artifact artifact, {
-        TargetPlatform? platform,
-        BuildMode? mode,
-        EnvironmentType? environmentType,
-      }) {
+    Artifact artifact, {
+    TargetPlatform? platform,
+    BuildMode? mode,
+    EnvironmentType? environmentType,
+  }) {
     if (artifact == Artifact.engineDartBinary && engineDartBinary != null) {
       return engineDartBinary!.path;
     }
@@ -1454,11 +1454,11 @@ class _TestArtifacts implements Artifacts {
 
   @override
   String getArtifactPath(
-      Artifact artifact, {
-        TargetPlatform? platform,
-        BuildMode? mode,
-        EnvironmentType? environmentType,
-      }) {
+    Artifact artifact, {
+    TargetPlatform? platform,
+    BuildMode? mode,
+    EnvironmentType? environmentType,
+  }) {
     // The path to file generators is the same even in the test environment.
     if (artifact == Artifact.flutterToolsFileGenerators) {
       return _getFileGeneratorsPath();
@@ -1494,13 +1494,13 @@ class _TestArtifacts implements Artifacts {
 
 class _TestLocalEngine extends _TestArtifacts {
   _TestLocalEngine(
-      String engineOutPath,
-      String engineHostOutPath,
-      super.fileSystem,
-      ) : localEngineInfo = LocalEngineInfo(
-    targetOutPath: engineOutPath,
-    hostOutPath: engineHostOutPath,
-  );
+    String engineOutPath,
+    String engineHostOutPath,
+    super.fileSystem,
+  ) : localEngineInfo = LocalEngineInfo(
+        targetOutPath: engineOutPath,
+        hostOutPath: engineHostOutPath,
+      );
 
   @override
   bool get isLocalEngine => true;

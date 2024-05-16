@@ -66,21 +66,21 @@ class _DefaultPersistentToolState implements PersistentToolState {
     required Logger logger,
     required Platform platform,
   }) : _config = Config(
-    _kFileName,
-    fileSystem: fileSystem,
-    logger: logger,
-    platform: platform,
-  );
+      _kFileName,
+      fileSystem: fileSystem,
+      logger: logger,
+      platform: platform,
+    );
 
   @visibleForTesting
   _DefaultPersistentToolState.test({
     required Directory directory,
     required Logger logger,
   }) : _config = Config.test(
-    name: _kFileName,
-    directory: directory,
-    logger: logger,
-  );
+      name: _kFileName,
+      directory: directory,
+      logger: logger,
+    );
 
   static const String _kFileName = 'tool_state';
   static const String _kRedisplayWelcomeMessage = 'redisplay-welcome-message';

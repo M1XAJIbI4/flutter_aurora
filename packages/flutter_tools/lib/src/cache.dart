@@ -131,13 +131,13 @@ class Cache {
     required Platform platform,
     required OperatingSystemUtils osUtils,
   }) : _rootOverride = rootOverride,
-        _logger = logger,
-        _fileSystem = fileSystem,
-        _platform = platform,
-        _osUtils = osUtils,
-        _net = Net(logger: logger, platform: platform),
-        _fsUtils = FileSystemUtils(fileSystem: fileSystem, platform: platform),
-        _artifacts = artifacts ?? <ArtifactSet>[];
+       _logger = logger,
+       _fileSystem = fileSystem,
+       _platform = platform,
+       _osUtils = osUtils,
+      _net = Net(logger: logger, platform: platform),
+      _fsUtils = FileSystemUtils(fileSystem: fileSystem, platform: platform),
+      _artifacts = artifacts ?? <ArtifactSet>[];
 
   /// Create a [Cache] for testing.
   ///
@@ -330,7 +330,7 @@ class Cache {
     }
     assert(_lock == null);
     final File lockFile =
-    _fileSystem.file(_fileSystem.path.join(flutterRoot!, 'bin', 'cache', 'lockfile'));
+      _fileSystem.file(_fileSystem.path.join(flutterRoot!, 'bin', 'cache', 'lockfile'));
     try {
       _lock = lockFile.openSync(mode: FileMode.write);
     } on FileSystemException catch (e) {
@@ -487,8 +487,8 @@ class Cache {
     String? overrideUrl = _platform.environment[kFlutterStorageBaseUrl];
     if (overrideUrl == null) {
       return storageRealm.isEmpty
-          ? 'https://storage.googleapis.com'
-          : 'https://storage.googleapis.com/$storageRealm';
+        ? 'https://storage.googleapis.com'
+        : 'https://storage.googleapis.com/$storageRealm';
     }
     // verify that this is a valid URI.
     overrideUrl = storageRealm.isEmpty ? overrideUrl : '$overrideUrl/$storageRealm';
@@ -503,8 +503,8 @@ class Cache {
 
   String get realmlessStorageBaseUrl {
     return storageRealm.isEmpty
-        ? storageBaseUrl
-        : storageBaseUrl.replaceAll('/$storageRealm', '');
+      ? storageBaseUrl
+      : storageBaseUrl.replaceAll('/$storageRealm', '');
   }
 
   /// The base for URLs that store Flutter engine artifacts in CIPD.
@@ -729,8 +729,8 @@ class Cache {
         if (_hostsBlockedInChina.contains(e.address?.host)) {
           _logger.printError(
             'Failed to retrieve Flutter tool dependencies: ${e.message}.\n'
-                "If you're in China, please see this page: "
-                'https://flutter.dev/community/china',
+            "If you're in China, please see this page: "
+            'https://flutter.dev/community/china',
             emphasis: true,
           );
         }
@@ -786,12 +786,12 @@ abstract class ArtifactSet {
 
   /// Updates the artifact.
   Future<void> update(
-      ArtifactUpdater artifactUpdater,
-      Logger logger,
-      FileSystem fileSystem,
-      OperatingSystemUtils operatingSystemUtils,
-      {bool offline = false}
-      );
+    ArtifactUpdater artifactUpdater,
+    Logger logger,
+    FileSystem fileSystem,
+    OperatingSystemUtils operatingSystemUtils,
+    {bool offline = false}
+  );
 
   /// The canonical name of the artifact.
   String get name;
@@ -804,10 +804,10 @@ abstract class ArtifactSet {
 /// An artifact set managed by the cache.
 abstract class CachedArtifact extends ArtifactSet {
   CachedArtifact(
-      this.name,
-      this.cache,
-      DevelopmentArtifact developmentArtifact,
-      ) : super(developmentArtifact);
+    this.name,
+    this.cache,
+    DevelopmentArtifact developmentArtifact,
+  ) : super(developmentArtifact);
 
   final Cache cache;
 
@@ -824,7 +824,7 @@ abstract class CachedArtifact extends ArtifactSet {
   // Whether or not to bypass normal platform filtering for this artifact.
   bool get ignorePlatformFiltering {
     return cache.includeAllPlatforms ||
-        (cache.platformOverrideArtifacts != null && cache.platformOverrideArtifacts!.contains(developmentArtifact.name));
+      (cache.platformOverrideArtifacts != null && cache.platformOverrideArtifacts!.contains(developmentArtifact.name));
   }
 
   @override
@@ -840,20 +840,20 @@ abstract class CachedArtifact extends ArtifactSet {
 
   @override
   Future<void> update(
-      ArtifactUpdater artifactUpdater,
-      Logger logger,
-      FileSystem fileSystem,
-      OperatingSystemUtils operatingSystemUtils,
-      {bool offline = false}
-      ) async {
+    ArtifactUpdater artifactUpdater,
+    Logger logger,
+    FileSystem fileSystem,
+    OperatingSystemUtils operatingSystemUtils,
+    {bool offline = false}
+  ) async {
     if (!location.existsSync()) {
       try {
         location.createSync(recursive: true);
       } on FileSystemException catch (err) {
         logger.printError(err.toString());
         throwToolExit(
-            'Failed to create directory for flutter cache at ${location.path}. '
-                'Flutter may be missing permissions in its cache directory.'
+          'Failed to create directory for flutter cache at ${location.path}. '
+          'Flutter may be missing permissions in its cache directory.'
         );
       }
     }
@@ -862,8 +862,8 @@ abstract class CachedArtifact extends ArtifactSet {
       if (version == null) {
         logger.printWarning(
           'No known version for the artifact name "$name". '
-              'Flutter can continue, but the artifact may be re-downloaded on '
-              'subsequent invocations until the problem is resolved.',
+          'Flutter can continue, but the artifact may be re-downloaded on '
+          'subsequent invocations until the problem is resolved.',
         );
       } else {
         cache.setStampFor(stampName, version!);
@@ -871,9 +871,9 @@ abstract class CachedArtifact extends ArtifactSet {
     } on FileSystemException catch (err) {
       logger.printWarning(
         'The new artifact "$name" was downloaded, but Flutter failed to update '
-            'its stamp file, receiving the error "$err". '
-            'Flutter can continue, but the artifact may be re-downloaded on '
-            'subsequent invocations until the problem is resolved.',
+        'its stamp file, receiving the error "$err". '
+        'Flutter can continue, but the artifact may be re-downloaded on '
+        'subsequent invocations until the problem is resolved.',
       );
     }
     artifactUpdater.removeDownloadedFiles();
@@ -883,19 +883,19 @@ abstract class CachedArtifact extends ArtifactSet {
   bool isUpToDateInner(FileSystem fileSystem) => true;
 
   Future<void> updateInner(
-      ArtifactUpdater artifactUpdater,
-      FileSystem fileSystem,
-      OperatingSystemUtils operatingSystemUtils,
-      );
+    ArtifactUpdater artifactUpdater,
+    FileSystem fileSystem,
+    OperatingSystemUtils operatingSystemUtils,
+  );
 }
 
 
 abstract class EngineCachedArtifact extends CachedArtifact {
   EngineCachedArtifact(
-      this.stampName,
-      Cache cache,
-      DevelopmentArtifact developmentArtifact,
-      ) : super('engine', cache, developmentArtifact);
+    this.stampName,
+    Cache cache,
+    DevelopmentArtifact developmentArtifact,
+  ) : super('engine', cache, developmentArtifact);
 
   @override
   final String stampName;
@@ -937,10 +937,10 @@ abstract class EngineCachedArtifact extends CachedArtifact {
 
   @override
   Future<void> updateInner(
-      ArtifactUpdater artifactUpdater,
-      FileSystem fileSystem,
-      OperatingSystemUtils operatingSystemUtils,
-      ) async {
+    ArtifactUpdater artifactUpdater,
+    FileSystem fileSystem,
+    OperatingSystemUtils operatingSystemUtils,
+  ) async {
     final String url = '${cache.storageBaseUrl}/flutter_infra_release/flutter/$version/';
 
     final Directory pkgDir = cache.getCacheDir('pkg');
@@ -1031,12 +1031,12 @@ class ArtifactUpdater {
     required Platform platform,
     required List<String> allowedBaseUrls,
   }) : _operatingSystemUtils = operatingSystemUtils,
-        _httpClient = httpClient,
-        _logger = logger,
-        _fileSystem = fileSystem,
-        _tempStorage = tempStorage,
-        _platform = platform,
-        _allowedBaseUrls = allowedBaseUrls;
+       _httpClient = httpClient,
+       _logger = logger,
+       _fileSystem = fileSystem,
+       _tempStorage = tempStorage,
+       _platform = platform,
+       _allowedBaseUrls = allowedBaseUrls;
 
   /// The number of times the artifact updater will repeat the artifact download loop.
   static const int _kRetryCount = 2;
@@ -1077,10 +1077,10 @@ class ArtifactUpdater {
 
   /// Download a zip archive from the given [url] and unzip it to [location].
   Future<void> downloadZipArchive(
-      String message,
-      Uri url,
-      Directory location,
-      ) {
+    String message,
+    Uri url,
+    Directory location,
+  ) {
     return _downloadArchive(
       message,
       url,
@@ -1101,11 +1101,11 @@ class ArtifactUpdater {
 
   /// Download an archive from the given [url] and unzip it to [location].
   Future<void> _downloadArchive(
-      String message,
-      Uri url,
-      Directory location,
-      void Function(File, Directory) extractor,
-      ) async {
+    String message,
+    Uri url,
+    Directory location,
+    void Function(File, Directory) extractor,
+  ) async {
     final String downloadPath = flattenNameSubdirs(url, _fileSystem);
     final File tempFile = _createDownloadFile(downloadPath);
     Status status;
@@ -1140,9 +1140,9 @@ class ArtifactUpdater {
           _logger.printError(error.toString());
           throwToolExit(
             'The value of $kFlutterStorageBaseUrl ($overrideUrl) could not be '
-                'parsed as a valid url. Please see https://flutter.dev/community/china '
-                'for an example of how to use it.\n'
-                'Full URL: $url',
+            'parsed as a valid url. Please see https://flutter.dev/community/china '
+            'for an example of how to use it.\n'
+            'Full URL: $url',
             exitCode: kNetworkProblemExitCode,
           );
         }
@@ -1155,7 +1155,7 @@ class ArtifactUpdater {
       /// Unzipping multiple file into a directory will not remove old files
       /// from previous versions that are not present in the new bundle.
       final Directory destination = location.childDirectory(
-          tempFile.fileSystem.path.basenameWithoutExtension(tempFile.path)
+        tempFile.fileSystem.path.basenameWithoutExtension(tempFile.path)
       );
       try {
         ErrorHandlingFileSystem.deleteIfExists(
@@ -1169,9 +1169,9 @@ class ArtifactUpdater {
         const int kSharingViolation = 32;
         if (_platform.isWindows && error.osError?.errorCode == kSharingViolation) {
           throwToolExit(
-              'Failed to delete ${destination.path} because the local file/directory is in use '
-                  'by another process. Try closing any running IDEs or editors and trying '
-                  'again'
+            'Failed to delete ${destination.path} because the local file/directory is in use '
+            'by another process. Try closing any running IDEs or editors and trying '
+            'again'
           );
         }
       }
@@ -1183,9 +1183,9 @@ class ArtifactUpdater {
         retries -= 1;
         if (retries == 0) {
           throwToolExit(
-              'Flutter could not download and/or extract $url. Ensure you have '
-                  'network connectivity and all of the required dependencies listed at '
-                  'flutter.dev/setup.\nThe original exception was: $err.'
+            'Flutter could not download and/or extract $url. Ensure you have '
+            'network connectivity and all of the required dependencies listed at '
+            'flutter.dev/setup.\nThe original exception was: $err.'
           );
         }
         _deleteIgnoringErrors(tempFile);
@@ -1213,17 +1213,17 @@ class ArtifactUpdater {
 
     // In tests make this a hard failure.
     assert(
-    isAllowedUrl,
-    'URL not allowed: $url\n'
-        'Allowed URLs must be based on one of: ${_allowedBaseUrls.join(', ')}',
+      isAllowedUrl,
+      'URL not allowed: $url\n'
+      'Allowed URLs must be based on one of: ${_allowedBaseUrls.join(', ')}',
     );
 
     // In production, issue a warning but allow the download to proceed.
     if (!isAllowedUrl) {
       status.pause();
       _logger.printWarning(
-          'Downloading an artifact that may not be reachable in some environments (e.g. firewalled environments): $url\n'
-              'This should not have happened. This is likely a Flutter SDK bug. Please file an issue at https://github.com/flutter/flutter/issues/new?template=1_activation.yml'
+        'Downloading an artifact that may not be reachable in some environments (e.g. firewalled environments): $url\n'
+        'This should not have happened. This is likely a Flutter SDK bug. Please file an issue at https://github.com/flutter/flutter/issues/new?template=1_activation.yml'
       );
       status.resume();
     }
@@ -1254,10 +1254,10 @@ class ArtifactUpdater {
       final String rawDigest = base64.encode(digest.bytes);
       if (rawDigest != md5Hash) {
         throw Exception(
-            'Expected $url to have md5 checksum $md5Hash, but was $rawDigest. This '
-                'may indicate a problem with your connection to the Flutter backend servers. '
-                'Please re-try the download after confirming that your network connection is '
-                'stable.'
+          'Expected $url to have md5 checksum $md5Hash, but was $rawDigest. This '
+          'may indicate a problem with your connection to the Flutter backend servers. '
+          'Please re-try the download after confirming that your network connection is '
+          'stable.'
         );
       }
     }

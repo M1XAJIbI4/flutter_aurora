@@ -79,7 +79,7 @@ Future<void> main(List<String> args) async {
   final bool verboseHelp = help && verbose;
   final bool daemon = args.contains('daemon');
   final bool runMachine = (args.contains('--machine') && args.contains('run')) ||
-      (args.contains('--machine') && args.contains('attach'));
+                          (args.contains('--machine') && args.contains('attach'));
 
   // Cache.flutterRoot must be set early because other features use it (e.g.
   // enginePath's initializer uses it). This can only work with the real
@@ -92,7 +92,7 @@ Future<void> main(List<String> args) async {
 
   await runner.run(
     args,
-        () => generateCommands(
+    () => generateCommands(
       verboseHelp: verboseHelp,
       verbose: verbose,
     ),
@@ -187,14 +187,14 @@ List<FlutterCommand> generateCommands({
   CleanCommand(verbose: verbose),
   ConfigCommand(verboseHelp: verboseHelp),
   CustomDevicesCommand(
-      customDevicesConfig: globals.customDevicesConfig,
-      operatingSystemUtils: globals.os,
-      terminal: globals.terminal,
-      platform: globals.platform,
-      featureFlags: featureFlags,
-      processManager: globals.processManager,
-      fileSystem: globals.fs,
-      logger: globals.logger
+    customDevicesConfig: globals.customDevicesConfig,
+    operatingSystemUtils: globals.os,
+    terminal: globals.terminal,
+    platform: globals.platform,
+    featureFlags: featureFlags,
+    processManager: globals.processManager,
+    fileSystem: globals.fs,
+    logger: globals.logger
   ),
   CreateCommand(verboseHelp: verboseHelp),
   DaemonCommand(hidden: !verboseHelp),
@@ -255,9 +255,9 @@ class LoggerFactory {
     required OutputPreferences outputPreferences,
     StopwatchFactory stopwatchFactory = const StopwatchFactory(),
   }) : _terminal = terminal,
-        _stdio = stdio,
-        _stopwatchFactory = stopwatchFactory,
-        _outputPreferences = outputPreferences;
+       _stdio = stdio,
+       _stopwatchFactory = stopwatchFactory,
+       _outputPreferences = outputPreferences;
 
   final Terminal _terminal;
   final Stdio _stdio;
@@ -282,10 +282,10 @@ class LoggerFactory {
       );
     } else {
       logger = StdoutLogger(
-          terminal: _terminal,
-          stdio: _stdio,
-          outputPreferences: _outputPreferences,
-          stopwatchFactory: _stopwatchFactory
+        terminal: _terminal,
+        stdio: _stdio,
+        outputPreferences: _outputPreferences,
+        stopwatchFactory: _stopwatchFactory
       );
     }
     if (verbose) {

@@ -24,39 +24,39 @@ const bool kIconTreeShakerEnabledDefault = true;
 /// Information about a build to be performed or used.
 class BuildInfo {
   const BuildInfo(
-      this.mode,
-      this.flavor, {
-        this.trackWidgetCreation = false,
-        this.frontendServerStarterPath,
-        List<String>? extraFrontEndOptions,
-        List<String>? extraGenSnapshotOptions,
-        List<String>? fileSystemRoots,
-        this.androidProjectArgs = const <String>[],
-        this.fileSystemScheme,
-        this.buildNumber,
-        this.buildName,
-        this.splitDebugInfoPath,
-        this.dartObfuscation = false,
-        List<String>? dartDefines,
-        this.bundleSkSLPath,
-        List<String>? dartExperiments,
-        this.webRenderer = WebRendererMode.auto,
-        required this.treeShakeIcons,
-        this.performanceMeasurementFile,
-        this.dartDefineConfigJsonMap = const <String, Object?>{},
-        this.packagesPath = '.dart_tool/package_config.json', // TODO(zanderso): make this required and remove the default.
-        this.nullSafetyMode = NullSafetyMode.sound,
-        this.codeSizeDirectory,
-        this.androidGradleDaemon = true,
-        this.packageConfig = PackageConfig.empty,
-        this.initializeFromDill,
-        this.assumeInitializeFromDillUpToDate = false,
-        this.buildNativeAssets = true,
-      }) : extraFrontEndOptions = extraFrontEndOptions ?? const <String>[],
-        extraGenSnapshotOptions = extraGenSnapshotOptions ?? const <String>[],
-        fileSystemRoots = fileSystemRoots ?? const <String>[],
-        dartDefines = dartDefines ?? const <String>[],
-        dartExperiments = dartExperiments ?? const <String>[];
+    this.mode,
+    this.flavor, {
+    this.trackWidgetCreation = false,
+    this.frontendServerStarterPath,
+    List<String>? extraFrontEndOptions,
+    List<String>? extraGenSnapshotOptions,
+    List<String>? fileSystemRoots,
+    this.androidProjectArgs = const <String>[],
+    this.fileSystemScheme,
+    this.buildNumber,
+    this.buildName,
+    this.splitDebugInfoPath,
+    this.dartObfuscation = false,
+    List<String>? dartDefines,
+    this.bundleSkSLPath,
+    List<String>? dartExperiments,
+    this.webRenderer = WebRendererMode.auto,
+    required this.treeShakeIcons,
+    this.performanceMeasurementFile,
+    this.dartDefineConfigJsonMap = const <String, Object?>{},
+    this.packagesPath = '.dart_tool/package_config.json', // TODO(zanderso): make this required and remove the default.
+    this.nullSafetyMode = NullSafetyMode.sound,
+    this.codeSizeDirectory,
+    this.androidGradleDaemon = true,
+    this.packageConfig = PackageConfig.empty,
+    this.initializeFromDill,
+    this.assumeInitializeFromDillUpToDate = false,
+    this.buildNativeAssets = true,
+  }) : extraFrontEndOptions = extraFrontEndOptions ?? const <String>[],
+       extraGenSnapshotOptions = extraGenSnapshotOptions ?? const <String>[],
+       fileSystemRoots = fileSystemRoots ?? const <String>[],
+       dartDefines = dartDefines ?? const <String>[],
+       dartExperiments = dartExperiments ?? const <String>[];
 
   final BuildMode mode;
 
@@ -362,16 +362,16 @@ class BuildInfo {
 /// Information about an Android build to be performed or used.
 class AndroidBuildInfo {
   const AndroidBuildInfo(
-      this.buildInfo, {
-        this.targetArchs = const <AndroidArch>[
-          AndroidArch.armeabi_v7a,
-          AndroidArch.arm64_v8a,
-          AndroidArch.x86_64,
-        ],
-        this.splitPerAbi = false,
-        this.fastStart = false,
-        this.multidexEnabled = false,
-      });
+    this.buildInfo, {
+    this.targetArchs = const <AndroidArch>[
+      AndroidArch.armeabi_v7a,
+      AndroidArch.arm64_v8a,
+      AndroidArch.x86_64,
+    ],
+    this.splitPerAbi = false,
+    this.fastStart = false,
+    this.multidexEnabled = false,
+  });
 
   // The build info containing the mode and flavor.
   final BuildInfo buildInfo;
@@ -409,9 +409,9 @@ enum BuildMode {
 
   factory BuildMode.fromCliName(String value) => values.singleWhere(
         (BuildMode element) => element.cliName == value,
-    orElse: () =>
-    throw ArgumentError('$value is not a supported build mode'),
-  );
+        orElse: () =>
+            throw ArgumentError('$value is not a supported build mode'),
+      );
 
   static const Set<BuildMode> releaseModes = <BuildMode>{
     release,
@@ -672,9 +672,9 @@ enum AndroidArch {
 
 /// The default set of iOS device architectures to build for.
 List<DarwinArch> defaultIOSArchsForEnvironment(
-    EnvironmentType environmentType,
-    Artifacts artifacts,
-    ) {
+  EnvironmentType environmentType,
+  Artifacts artifacts,
+) {
   // Handle single-arch local engines.
   final LocalEngineInfo? localEngineInfo = artifacts.localEngineInfo;
   if (localEngineInfo != null) {
@@ -910,8 +910,8 @@ String getWebBuildDirectory([bool isWasm = false]) {
 /// Returns the Linux build output directory.
 String getLinuxBuildDirectory([TargetPlatform? targetPlatform]) {
   final String arch = (targetPlatform == null) ?
-  _getCurrentHostPlatformArchName() :
-  targetPlatform.simpleName;
+      _getCurrentHostPlatformArchName() :
+      targetPlatform.simpleName;
   final String subDirs = 'linux/$arch';
   return globals.fs.path.join(getBuildDirectory(), subDirs);
 }
@@ -1058,9 +1058,9 @@ List<String> decodeCommaSeparated(Map<String, String> environmentDefines, String
     return <String>[];
   }
   return environmentDefines[key]!
-      .split(',')
-      .cast<String>()
-      .toList();
+    .split(',')
+    .cast<String>()
+    .toList();
 }
 
 /// Dart defines are encoded inside [environmentDefines] as a comma-separated list.
@@ -1069,10 +1069,10 @@ List<String> decodeDartDefines(Map<String, String> environmentDefines, String ke
     return <String>[];
   }
   return environmentDefines[key]!
-      .split(',')
-      .map<Object>(_defineDecoder.convert)
-      .cast<String>()
-      .toList();
+    .split(',')
+    .map<Object>(_defineDecoder.convert)
+    .cast<String>()
+    .toList();
 }
 
 /// The null safety runtime mode the app should be built in.

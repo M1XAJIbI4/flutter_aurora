@@ -442,7 +442,7 @@ String _gitCommitDate({
     if (lenient) {
       final DateTime dummyDate = DateTime.fromMillisecondsSinceEpoch(0);
       globals.printError('Failed to find the latest git commit date: $e\n'
-          'Returning $dummyDate instead.');
+        'Returning $dummyDate instead.');
       // Return something that DateTime.parse() can parse.
       return dummyDate.toString();
     } else {
@@ -468,10 +468,10 @@ class _FlutterVersionFromFile extends FlutterVersion {
   }) : super._();
 
   static _FlutterVersionFromFile? tryParseFromFile(
-      File jsonFile, {
-        required String flutterRoot,
-        SystemClock clock = const SystemClock(),
-      }) {
+    File jsonFile, {
+    required String flutterRoot,
+    SystemClock clock = const SystemClock(),
+  }) {
     try {
       final String jsonContents = jsonFile.readAsStringSync();
       final Map<String, Object?> manifest = jsonDecode(jsonContents) as Map<String, Object?>;
@@ -664,8 +664,8 @@ class VersionUpstreamValidator {
 
     if (repositoryUrl == null) {
       return VersionCheckError(
-          'The tool could not determine the remote upstream which is being '
-              'tracked by the SDK.'
+        'The tool could not determine the remote upstream which is being '
+        'tracked by the SDK.'
       );
     }
 
@@ -685,21 +685,21 @@ class VersionUpstreamValidator {
         // `FLUTTER_GIT_URL` environment variable or set it to the current
         // tracking remote.
         return VersionCheckError(
-            'The Flutter SDK is tracking "$repositoryUrl" but "FLUTTER_GIT_URL" '
-                'is set to "$flutterGit".\n'
-                'Either remove "FLUTTER_GIT_URL" from the environment or set it to '
-                '"$repositoryUrl". '
-                'If this is intentional, it is recommended to use "git" directly to '
-                'manage the SDK.'
+          'The Flutter SDK is tracking "$repositoryUrl" but "FLUTTER_GIT_URL" '
+          'is set to "$flutterGit".\n'
+          'Either remove "FLUTTER_GIT_URL" from the environment or set it to '
+          '"$repositoryUrl". '
+          'If this is intentional, it is recommended to use "git" directly to '
+          'manage the SDK.'
         );
       }
       // If `FLUTTER_GIT_URL` is unset, inform to set the environment variable.
       return VersionCheckError(
-          'The Flutter SDK is tracking a non-standard remote "$repositoryUrl".\n'
-              'Set the environment variable "FLUTTER_GIT_URL" to '
-              '"$repositoryUrl". '
-              'If this is intentional, it is recommended to use "git" directly to '
-              'manage the SDK.'
+        'The Flutter SDK is tracking a non-standard remote "$repositoryUrl".\n'
+        'Set the environment variable "FLUTTER_GIT_URL" to '
+        '"$repositoryUrl". '
+        'If this is intentional, it is recommended to use "git" directly to '
+        'manage the SDK.'
       );
     }
     return null;
@@ -849,10 +849,10 @@ class VersionCheckError implements Exception {
 /// If [lenient] is true and the command fails, returns an empty string.
 /// Otherwise, throws a [ToolExit] exception.
 String _runSync(
-    List<String> command, {
-      bool lenient = true,
-      required String? workingDirectory,
-    }) {
+  List<String> command, {
+  bool lenient = true,
+  required String? workingDirectory,
+}) {
   final ProcessResult results = globals.processManager.runSync(
     command,
     workingDirectory: workingDirectory,
@@ -864,9 +864,9 @@ String _runSync(
 
   if (!lenient) {
     throw VersionCheckError(
-        'Command exited with code ${results.exitCode}: ${command.join(' ')}\n'
-            'Standard out: ${results.stdout}\n'
-            'Standard error: ${results.stderr}'
+      'Command exited with code ${results.exitCode}: ${command.join(' ')}\n'
+      'Standard out: ${results.stdout}\n'
+      'Standard error: ${results.stderr}'
     );
   }
 
@@ -892,8 +892,8 @@ Future<String> _run(List<String> command) async {
   }
 
   throw VersionCheckError(
-      'Command exited with code ${results.exitCode}: ${command.join(' ')}\n'
-          'Standard error: ${results.stderr}'
+    'Command exited with code ${results.exitCode}: ${command.join(' ')}\n'
+    'Standard error: ${results.stderr}'
   );
 }
 
@@ -918,15 +918,15 @@ class GitTagVersion {
     this.gitTag,
   });
   const GitTagVersion.unknown()
-      : x = null,
-        y = null,
-        z = null,
-        hotfix = null,
-        commits = 0,
-        devVersion = null,
-        devPatch = null,
-        hash = '',
-        gitTag = '';
+    : x = null,
+      y = null,
+      z = null,
+      hotfix = null,
+      commits = 0,
+      devVersion = null,
+      devPatch = null,
+      hash = '',
+      gitTag = '';
 
   /// The X in vX.Y.Z.
   final int? x;
@@ -956,12 +956,12 @@ class GitTagVersion {
   final String? gitTag;
 
   static GitTagVersion determine(
-      ProcessUtils processUtils,
-      Platform platform, {
-        String? workingDirectory,
-        bool fetchTags = false,
-        String gitRef = 'HEAD'
-      }) {
+    ProcessUtils processUtils,
+    Platform platform, {
+    String? workingDirectory,
+    bool fetchTags = false,
+    String gitRef = 'HEAD'
+  }) {
     if (fetchTags) {
       final String channel = _runGit('git symbolic-ref --short HEAD', processUtils, workingDirectory);
       if (!kDevelopmentChannels.contains(channel) && kOfficialChannels.contains(channel)) {
@@ -973,7 +973,7 @@ class GitTagVersion {
     }
     // find all tags attached to the given [gitRef]
     final List<String> tags = _runGit(
-        'git tag --points-at $gitRef', processUtils, workingDirectory).trim().split('\n');
+      'git tag --points-at $gitRef', processUtils, workingDirectory).trim().split('\n');
 
     // Check first for a stable tag
     final RegExp stableTagPattern = RegExp(r'^\d+\.\d+\.\d+$');
@@ -993,11 +993,11 @@ class GitTagVersion {
     // If we're not currently on a tag, use git describe to find the most
     // recent tag and number of commits past.
     return parse(
-        _runGit(
-          'git describe --match *.*.* --long --tags $gitRef',
-          processUtils,
-          workingDirectory,
-        )
+      _runGit(
+        'git describe --match *.*.* --long --tags $gitRef',
+        processUtils,
+        workingDirectory,
+      )
     );
   }
 
@@ -1009,7 +1009,7 @@ class GitTagVersion {
   /// return '1.2.3-4.5.pre-6-gabc123').
   static GitTagVersion parseVersion(String version) {
     final RegExp versionPattern = RegExp(
-        r'^(\d+)\.(\d+)\.(\d+)(-\d+\.\d+\.pre)?(?:-(\d+)-g([a-f0-9]+))?$');
+      r'^(\d+)\.(\d+)\.(\d+)(-\d+\.\d+\.pre)?(?:-(\d+)-g([a-f0-9]+))?$');
     final Match? match = versionPattern.firstMatch(version.trim());
     if (match == null) {
       return const GitTagVersion.unknown();
@@ -1023,7 +1023,7 @@ class GitTagVersion {
     int? devVersion, devPatch;
     if (devString != null) {
       final Match? devMatch = RegExp(r'^-(\d+)\.(\d+)\.pre$')
-          .firstMatch(devString);
+        .firstMatch(devString);
       final List<String?>? devGroups = devMatch?.groups(<int>[1, 2]);
       devVersion = devGroups?[0] == null ? null : int.tryParse(devGroups![0]!);
       devPatch = devGroups?[1] == null ? null : int.tryParse(devGroups![1]!);
