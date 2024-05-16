@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -22,9 +22,9 @@ class PrecacheCommand extends FlutterCommand {
     required Logger logger,
     required FeatureFlags featureFlags,
   }) : _cache = cache,
-       _platform = platform,
-       _logger = logger,
-       _featureFlags = featureFlags {
+        _platform = platform,
+        _logger = logger,
+        _featureFlags = featureFlags {
     argParser.addFlag('all-platforms',
         abbr: 'a',
         negatable: false,
@@ -76,8 +76,8 @@ class PrecacheCommand extends FlutterCommand {
 
   @override
   final String description = "Populate the Flutter tool's cache of binary artifacts.\n\n"
-    'If no explicit platform flags are provided, this command will download the artifacts '
-    'for all currently enabled platforms';
+      'If no explicit platform flags are provided, this command will download the artifacts '
+      'for all currently enabled platforms';
 
   @override
   final String category = FlutterCommandCategory.sdk;

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -28,7 +28,7 @@ class UpgradeCommand extends FlutterCommand {
     required bool verboseHelp,
     UpgradeCommandRunner? commandRunner,
   })
-    : _commandRunner = commandRunner ?? UpgradeCommandRunner() {
+      : _commandRunner = commandRunner ?? UpgradeCommandRunner() {
     argParser
       ..addFlag(
         'force',
@@ -41,16 +41,16 @@ class UpgradeCommand extends FlutterCommand {
         hide: !verboseHelp,
         negatable: false,
         help: 'Trigger the second half of the upgrade flow. This should not be invoked '
-              'manually. It is used re-entrantly by the standard upgrade command after '
-              'the new version of Flutter is available, to hand off the upgrade process '
-              'from the old version to the new version.',
+            'manually. It is used re-entrantly by the standard upgrade command after '
+            'the new version of Flutter is available, to hand off the upgrade process '
+            'from the old version to the new version.',
       )
       ..addOption(
-        'working-directory',
-        hide: !verboseHelp,
-        help: 'Override the upgrade working directory. '
+          'working-directory',
+          hide: !verboseHelp,
+          help: 'Override the upgrade working directory. '
               'This is only intended to enable integration testing of the tool itself.'
-              // Also notably, this will override the FakeFlutterVersion if any is set!
+        // Also notably, this will override the FakeFlutterVersion if any is set!
       )
       ..addFlag(
         'verify-only',
@@ -86,8 +86,8 @@ class UpgradeCommand extends FlutterCommand {
         workingDirectory: _commandRunner.workingDirectory,
       ),
       flutterVersion: stringArg('working-directory') == null
-        ? globals.flutterVersion
-        : FlutterVersion(flutterRoot: _commandRunner.workingDirectory!, fs: globals.fs),
+          ? globals.flutterVersion
+          : FlutterVersion(flutterRoot: _commandRunner.workingDirectory!, fs: globals.fs),
       verifyOnly: boolArg('verify-only'),
     );
   }
@@ -147,16 +147,16 @@ class UpgradeCommandRunner {
       // explain that we are avoiding potential damage.
       if (flutterVersion.channel != 'master' && kOfficialChannels.contains(flutterVersion.channel)) {
         throwToolExit(
-          'Unknown flutter tag. Abandoning upgrade to avoid destroying local '
-          'changes. It is recommended to use git directly if not working on '
-          'an official channel.'
+            'Unknown flutter tag. Abandoning upgrade to avoid destroying local '
+                'changes. It is recommended to use git directly if not working on '
+                'an official channel.'
         );
-      // Otherwise explain that local changes can be lost.
+        // Otherwise explain that local changes can be lost.
       } else {
         throwToolExit(
-          'Unknown flutter tag. Abandoning upgrade to avoid destroying local '
-          'changes. If it is okay to remove local changes, then re-run this '
-          'command with "--force".'
+            'Unknown flutter tag. Abandoning upgrade to avoid destroying local '
+                'changes. If it is okay to remove local changes, then re-run this '
+                'command with "--force".'
         );
       }
     }
@@ -164,11 +164,11 @@ class UpgradeCommandRunner {
     // we should still warn.
     if (!force && await hasUncommittedChanges()) {
       throwToolExit(
-        'Your flutter checkout has local changes that would be erased by '
-        'upgrading. If you want to keep these changes, it is recommended that '
-        'you stash them via "git stash" or else commit the changes to a local '
-        'branch. If it is okay to remove local changes, then re-run this '
-        'command with "--force".'
+          'Your flutter checkout has local changes that would be erased by '
+              'upgrading. If you want to keep these changes, it is recommended that '
+              'you stash them via "git stash" or else commit the changes to a local '
+              'branch. If it is okay to remove local changes, then re-run this '
+              'command with "--force".'
       );
     }
     recordState(flutterVersion);
@@ -219,17 +219,17 @@ class UpgradeCommandRunner {
     if (globals.flutterVersion.channel == 'master' || globals.flutterVersion.channel == 'main') {
       globals.printStatus(
         '\n'
-        'This channel is intended for Flutter contributors. '
-        'This channel is not as thoroughly tested as the "beta" and "stable" channels. '
-        'We do not recommend using this channel for normal use as it more likely to contain serious regressions.\n'
-        '\n'
-        'For information on contributing to Flutter, see our contributing guide:\n'
-        '    https://github.com/flutter/flutter/blob/master/CONTRIBUTING.md\n'
-        '\n'
-        'For the most up to date stable version of flutter, consider using the "beta" channel instead. '
-        'The Flutter "beta" channel enjoys all the same automated testing as the "stable" channel, '
-        'but is updated roughly once a month instead of once a quarter.\n'
-        'To change channel, run the "flutter channel beta" command.',
+            'This channel is intended for Flutter contributors. '
+            'This channel is not as thoroughly tested as the "beta" and "stable" channels. '
+            'We do not recommend using this channel for normal use as it more likely to contain serious regressions.\n'
+            '\n'
+            'For information on contributing to Flutter, see our contributing guide:\n'
+            '    https://github.com/flutter/flutter/blob/master/CONTRIBUTING.md\n'
+            '\n'
+            'For the most up to date stable version of flutter, consider using the "beta" channel instead. '
+            'The Flutter "beta" channel enjoys all the same automated testing as the "stable" channel, '
+            'but is updated roughly once a month instead of once a quarter.\n'
+            'To change channel, run the "flutter channel beta" command.',
       );
     }
   }
@@ -244,11 +244,11 @@ class UpgradeCommandRunner {
       return result.stdout.trim().isNotEmpty;
     } on ProcessException catch (error) {
       throwToolExit(
-        'The tool could not verify the status of the current flutter checkout. '
-        'This might be due to git not being installed or an internal error. '
-        'If it is okay to ignore potential local changes, then re-run this '
-        'command with "--force".\n'
-        'Error: $error.'
+          'The tool could not verify the status of the current flutter checkout. '
+              'This might be due to git not being installed or an internal error. '
+              'If it is okay to ignore potential local changes, then re-run this '
+              'command with "--force".\n'
+              'Error: $error.'
       );
     }
   }
@@ -268,24 +268,24 @@ class UpgradeCommandRunner {
       );
       // Get the latest commit revision of the upstream
       final RunResult result = await globals.processUtils.run(
-          <String>['git', 'rev-parse', '--verify', kGitTrackingUpstream],
-          workingDirectory: workingDirectory,
+        <String>['git', 'rev-parse', '--verify', kGitTrackingUpstream],
+        workingDirectory: workingDirectory,
       );
       revision = result.stdout.trim();
     } on Exception catch (e) {
       final String errorString = e.toString();
       if (errorString.contains('fatal: HEAD does not point to a branch')) {
         throwToolExit(
-          'Unable to upgrade Flutter: Your Flutter checkout is currently not '
-          'on a release branch.\n'
-          'Use "flutter channel" to switch to an official channel, and retry. '
-          'Alternatively, re-install Flutter by going to $_flutterInstallDocs.'
+            'Unable to upgrade Flutter: Your Flutter checkout is currently not '
+                'on a release branch.\n'
+                'Use "flutter channel" to switch to an official channel, and retry. '
+                'Alternatively, re-install Flutter by going to $_flutterInstallDocs.'
         );
       } else if (errorString.contains('fatal: no upstream configured for branch')) {
         throwToolExit(
-          'Unable to upgrade Flutter: The current Flutter branch/channel is '
-          'not tracking any remote repository.\n'
-          'Re-install Flutter by going to $_flutterInstallDocs.'
+            'Unable to upgrade Flutter: The current Flutter branch/channel is '
+                'not tracking any remote repository.\n'
+                'Re-install Flutter by going to $_flutterInstallDocs.'
         );
       } else {
         throwToolExit(errorString);
@@ -296,10 +296,10 @@ class UpgradeCommandRunner {
     final VersionCheckError? error = VersionUpstreamValidator(version: localVersion, platform: globals.platform).run();
     if (error != null) {
       throwToolExit(
-        'Unable to upgrade Flutter: '
-        '${error.message}\n'
-        'Reinstalling Flutter may fix this issue. Visit $_flutterInstallDocs '
-        'for instructions.'
+          'Unable to upgrade Flutter: '
+              '${error.message}\n'
+              'Reinstalling Flutter may fix this issue. Visit $_flutterInstallDocs '
+              'for instructions.'
       );
     }
     return FlutterVersion.fromRevision(

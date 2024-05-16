@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -24,36 +24,35 @@ const bool kIconTreeShakerEnabledDefault = true;
 /// Information about a build to be performed or used.
 class BuildInfo {
   const BuildInfo(
-    this.mode,
-    this.flavor, {
-    this.trackWidgetCreation = false,
-    this.frontendServerStarterPath,
-    List<String>? extraFrontEndOptions,
-    List<String>? extraGenSnapshotOptions,
-    List<String>? fileSystemRoots,
-    this.androidProjectArgs = const <String>[],
-    this.fileSystemScheme,
-    this.buildNumber,
-    this.buildName,
-    this.splitDebugInfoPath,
-    this.dartObfuscation = false,
-    List<String>? dartDefines,
-    this.bundleSkSLPath,
-    List<String>? dartExperiments,
-    this.webRenderer = WebRendererMode.auto,
-    required this.treeShakeIcons,
-    this.performanceMeasurementFile,
-    this.dartDefineConfigJsonMap = const <String, Object?>{},
-    this.packagesPath =
-        '.dart_tool/package_config.json', // TODO(zanderso): make this required and remove the default.
-    this.nullSafetyMode = NullSafetyMode.sound,
-    this.codeSizeDirectory,
-    this.androidGradleDaemon = true,
-    this.packageConfig = PackageConfig.empty,
-    this.initializeFromDill,
-    this.assumeInitializeFromDillUpToDate = false,
-    this.buildNativeAssets = true,
-  })  : extraFrontEndOptions = extraFrontEndOptions ?? const <String>[],
+      this.mode,
+      this.flavor, {
+        this.trackWidgetCreation = false,
+        this.frontendServerStarterPath,
+        List<String>? extraFrontEndOptions,
+        List<String>? extraGenSnapshotOptions,
+        List<String>? fileSystemRoots,
+        this.androidProjectArgs = const <String>[],
+        this.fileSystemScheme,
+        this.buildNumber,
+        this.buildName,
+        this.splitDebugInfoPath,
+        this.dartObfuscation = false,
+        List<String>? dartDefines,
+        this.bundleSkSLPath,
+        List<String>? dartExperiments,
+        this.webRenderer = WebRendererMode.auto,
+        required this.treeShakeIcons,
+        this.performanceMeasurementFile,
+        this.dartDefineConfigJsonMap = const <String, Object?>{},
+        this.packagesPath = '.dart_tool/package_config.json', // TODO(zanderso): make this required and remove the default.
+        this.nullSafetyMode = NullSafetyMode.sound,
+        this.codeSizeDirectory,
+        this.androidGradleDaemon = true,
+        this.packageConfig = PackageConfig.empty,
+        this.initializeFromDill,
+        this.assumeInitializeFromDillUpToDate = false,
+        this.buildNativeAssets = true,
+      }) : extraFrontEndOptions = extraFrontEndOptions ?? const <String>[],
         extraGenSnapshotOptions = extraGenSnapshotOptions ?? const <String>[],
         fileSystemRoots = fileSystemRoots ?? const <String>[],
         dartDefines = dartDefines ?? const <String>[],
@@ -197,14 +196,10 @@ class BuildInfo {
   /// If set, builds native assets with `build.dart` from all packages.
   final bool buildNativeAssets;
 
-  static const BuildInfo debug = BuildInfo(BuildMode.debug, null,
-      trackWidgetCreation: true, treeShakeIcons: false);
-  static const BuildInfo profile = BuildInfo(BuildMode.profile, null,
-      treeShakeIcons: kIconTreeShakerEnabledDefault);
-  static const BuildInfo jitRelease = BuildInfo(BuildMode.jitRelease, null,
-      treeShakeIcons: kIconTreeShakerEnabledDefault);
-  static const BuildInfo release = BuildInfo(BuildMode.release, null,
-      treeShakeIcons: kIconTreeShakerEnabledDefault);
+  static const BuildInfo debug = BuildInfo(BuildMode.debug, null, trackWidgetCreation: true, treeShakeIcons: false);
+  static const BuildInfo profile = BuildInfo(BuildMode.profile, null, treeShakeIcons: kIconTreeShakerEnabledDefault);
+  static const BuildInfo jitRelease = BuildInfo(BuildMode.jitRelease, null, treeShakeIcons: kIconTreeShakerEnabledDefault);
+  static const BuildInfo release = BuildInfo(BuildMode.release, null, treeShakeIcons: kIconTreeShakerEnabledDefault);
 
   /// Returns whether a debug build is requested.
   ///
@@ -230,13 +225,9 @@ class BuildInfo {
   bool get isJitRelease => mode == BuildMode.jitRelease;
 
   bool get usesAot => isAotBuildMode(mode);
-
   bool get supportsEmulator => isEmulatorBuildMode(mode);
-
   bool get supportsSimulator => isEmulatorBuildMode(mode);
-
   String get modeName => mode.cliName;
-
   String get friendlyModeName => getFriendlyModeName(mode);
 
   /// the flavor name in the output apk files is lower-cased (see Flutter Gradle Plugin),
@@ -256,7 +247,8 @@ class BuildInfo {
     // the Environment map.
     return <String, String>{
       kBuildMode: mode.cliName,
-      if (dartDefines.isNotEmpty) kDartDefines: encodeDartDefines(dartDefines),
+      if (dartDefines.isNotEmpty)
+        kDartDefines: encodeDartDefines(dartDefines),
       kDartObfuscation: dartObfuscation.toString(),
       if (frontendServerStarterPath != null)
         kFrontendServerStarterPath: frontendServerStarterPath!,
@@ -264,18 +256,25 @@ class BuildInfo {
         kExtraFrontEndOptions: extraFrontEndOptions.join(','),
       if (extraGenSnapshotOptions.isNotEmpty)
         kExtraGenSnapshotOptions: extraGenSnapshotOptions.join(','),
-      if (splitDebugInfoPath != null) kSplitDebugInfo: splitDebugInfoPath!,
+      if (splitDebugInfoPath != null)
+        kSplitDebugInfo: splitDebugInfoPath!,
       kTrackWidgetCreation: trackWidgetCreation.toString(),
       kIconTreeShakerFlag: treeShakeIcons.toString(),
-      if (bundleSkSLPath != null) kBundleSkSLPath: bundleSkSLPath!,
-      if (codeSizeDirectory != null) kCodeSizeDirectory: codeSizeDirectory!,
+      if (bundleSkSLPath != null)
+        kBundleSkSLPath: bundleSkSLPath!,
+      if (codeSizeDirectory != null)
+        kCodeSizeDirectory: codeSizeDirectory!,
       if (fileSystemRoots.isNotEmpty)
         kFileSystemRoots: fileSystemRoots.join(','),
-      if (fileSystemScheme != null) kFileSystemScheme: fileSystemScheme!,
-      if (buildName != null) kBuildName: buildName!,
-      if (buildNumber != null) kBuildNumber: buildNumber!,
+      if (fileSystemScheme != null)
+        kFileSystemScheme: fileSystemScheme!,
+      if (buildName != null)
+        kBuildName: buildName!,
+      if (buildNumber != null)
+        kBuildNumber: buildNumber!,
     };
   }
+
 
   /// Convert to a structured string encoded structure appropriate for usage as
   /// environment variables or to embed in other scripts.
@@ -296,14 +295,17 @@ class BuildInfo {
         'EXTRA_FRONT_END_OPTIONS': extraFrontEndOptions.join(','),
       if (extraGenSnapshotOptions.isNotEmpty)
         'EXTRA_GEN_SNAPSHOT_OPTIONS': extraGenSnapshotOptions.join(','),
-      if (splitDebugInfoPath != null) 'SPLIT_DEBUG_INFO': splitDebugInfoPath!,
+      if (splitDebugInfoPath != null)
+        'SPLIT_DEBUG_INFO': splitDebugInfoPath!,
       'TRACK_WIDGET_CREATION': trackWidgetCreation.toString(),
       'TREE_SHAKE_ICONS': treeShakeIcons.toString(),
       if (performanceMeasurementFile != null)
         'PERFORMANCE_MEASUREMENT_FILE': performanceMeasurementFile!,
-      if (bundleSkSLPath != null) 'BUNDLE_SKSL_PATH': bundleSkSLPath!,
+      if (bundleSkSLPath != null)
+        'BUNDLE_SKSL_PATH': bundleSkSLPath!,
       'PACKAGE_CONFIG': packagesPath,
-      if (codeSizeDirectory != null) 'CODE_SIZE_DIRECTORY': codeSizeDirectory!,
+      if (codeSizeDirectory != null)
+        'CODE_SIZE_DIRECTORY': codeSizeDirectory!,
     };
     map.forEach((String key, String value) {
       if (environmentMap.containsKey(key)) {
@@ -331,17 +333,20 @@ class BuildInfo {
         '-Pextra-front-end-options=${extraFrontEndOptions.join(',')}',
       if (extraGenSnapshotOptions.isNotEmpty)
         '-Pextra-gen-snapshot-options=${extraGenSnapshotOptions.join(',')}',
-      if (splitDebugInfoPath != null) '-Psplit-debug-info=$splitDebugInfoPath',
+      if (splitDebugInfoPath != null)
+        '-Psplit-debug-info=$splitDebugInfoPath',
       '-Ptrack-widget-creation=$trackWidgetCreation',
       '-Ptree-shake-icons=$treeShakeIcons',
       if (performanceMeasurementFile != null)
         '-Pperformance-measurement-file=$performanceMeasurementFile',
-      if (bundleSkSLPath != null) '-Pbundle-sksl-path=$bundleSkSLPath',
-      if (codeSizeDirectory != null) '-Pcode-size-directory=$codeSizeDirectory',
-      for (final String projectArg in androidProjectArgs) '-P$projectArg',
+      if (bundleSkSLPath != null)
+        '-Pbundle-sksl-path=$bundleSkSLPath',
+      if (codeSizeDirectory != null)
+        '-Pcode-size-directory=$codeSizeDirectory',
+      for (final String projectArg in androidProjectArgs)
+        '-P$projectArg',
     ];
-    final Iterable<String> gradleConfKeys = result.map(
-        (final String gradleConf) => gradleConf.split('=')[0].substring(2));
+    final Iterable<String> gradleConfKeys = result.map((final String gradleConf) => gradleConf.split('=')[0].substring(2));
     dartDefineConfigJsonMap.forEach((String key, Object? value) {
       if (gradleConfKeys.contains(key)) {
         globals.printWarning(
@@ -357,16 +362,16 @@ class BuildInfo {
 /// Information about an Android build to be performed or used.
 class AndroidBuildInfo {
   const AndroidBuildInfo(
-    this.buildInfo, {
-    this.targetArchs = const <AndroidArch>[
-      AndroidArch.armeabi_v7a,
-      AndroidArch.arm64_v8a,
-      AndroidArch.x86_64,
-    ],
-    this.splitPerAbi = false,
-    this.fastStart = false,
-    this.multidexEnabled = false,
-  });
+      this.buildInfo, {
+        this.targetArchs = const <AndroidArch>[
+          AndroidArch.armeabi_v7a,
+          AndroidArch.arm64_v8a,
+          AndroidArch.x86_64,
+        ],
+        this.splitPerAbi = false,
+        this.fastStart = false,
+        this.multidexEnabled = false,
+      });
 
   // The build info containing the mode and flavor.
   final BuildInfo buildInfo;
@@ -404,9 +409,9 @@ enum BuildMode {
 
   factory BuildMode.fromCliName(String value) => values.singleWhere(
         (BuildMode element) => element.cliName == value,
-        orElse: () =>
-            throw ArgumentError('$value is not a supported build mode'),
-      );
+    orElse: () =>
+    throw ArgumentError('$value is not a supported build mode'),
+  );
 
   static const Set<BuildMode> releaseModes = <BuildMode>{
     release,
@@ -441,8 +446,7 @@ enum EnvironmentType {
   simulator,
 }
 
-String? validatedBuildNumberForPlatform(
-    TargetPlatform targetPlatform, String? buildNumber, Logger logger) {
+String? validatedBuildNumberForPlatform(TargetPlatform targetPlatform, String? buildNumber, Logger logger) {
   if (buildNumber == null) {
     return null;
   }
@@ -463,8 +467,7 @@ String? validatedBuildNumberForPlatform(
     }
     tmpBuildNumber = segments.join('.');
     if (tmpBuildNumber != buildNumber) {
-      logger.printTrace(
-          'Invalid build-number: $buildNumber for iOS/macOS, overridden by $tmpBuildNumber.\n'
+      logger.printTrace('Invalid build-number: $buildNumber for iOS/macOS, overridden by $tmpBuildNumber.\n'
           'See CFBundleVersion at https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html');
     }
     return tmpBuildNumber;
@@ -482,8 +485,7 @@ String? validatedBuildNumberForPlatform(
     }
     tmpBuildNumberStr = tmpBuildNumberInt.toString();
     if (tmpBuildNumberStr != buildNumber) {
-      logger.printTrace(
-          'Invalid build-number: $buildNumber for Android, overridden by $tmpBuildNumberStr.\n'
+      logger.printTrace('Invalid build-number: $buildNumber for Android, overridden by $tmpBuildNumberStr.\n'
           'See versionCode at https://developer.android.com/studio/publish/versioning');
     }
     return tmpBuildNumberStr;
@@ -491,8 +493,7 @@ String? validatedBuildNumberForPlatform(
   return buildNumber;
 }
 
-String? validatedBuildNameForPlatform(
-    TargetPlatform targetPlatform, String? buildName, Logger logger) {
+String? validatedBuildNameForPlatform(TargetPlatform targetPlatform, String? buildName, Logger logger) {
   if (buildName == null) {
     return null;
   }
@@ -513,8 +514,7 @@ String? validatedBuildNameForPlatform(
     }
     tmpBuildName = segments.join('.');
     if (tmpBuildName != buildName) {
-      logger.printTrace(
-          'Invalid build-name: $buildName for iOS/macOS, overridden by $tmpBuildName.\n'
+      logger.printTrace('Invalid build-name: $buildName for iOS/macOS, overridden by $tmpBuildName.\n'
           'See CFBundleShortVersionString at https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html');
     }
     return tmpBuildName;
@@ -672,18 +672,18 @@ enum AndroidArch {
 
 /// The default set of iOS device architectures to build for.
 List<DarwinArch> defaultIOSArchsForEnvironment(
-  EnvironmentType environmentType,
-  Artifacts artifacts,
-) {
+    EnvironmentType environmentType,
+    Artifacts artifacts,
+    ) {
   // Handle single-arch local engines.
   final LocalEngineInfo? localEngineInfo = artifacts.localEngineInfo;
   if (localEngineInfo != null) {
     final String localEngineName = localEngineInfo.localTargetName;
     if (localEngineName.contains('_arm64')) {
-      return <DarwinArch>[DarwinArch.arm64];
+      return <DarwinArch>[ DarwinArch.arm64 ];
     }
     if (localEngineName.contains('_sim')) {
-      return <DarwinArch>[DarwinArch.x86_64];
+      return <DarwinArch>[ DarwinArch.x86_64 ];
     }
   } else if (environmentType == EnvironmentType.simulator) {
     return <DarwinArch>[
@@ -702,9 +702,9 @@ List<DarwinArch> defaultMacOSArchsForEnvironment(Artifacts artifacts) {
   final LocalEngineInfo? localEngineInfo = artifacts.localEngineInfo;
   if (localEngineInfo != null) {
     if (localEngineInfo.localTargetName.contains('_arm64')) {
-      return <DarwinArch>[DarwinArch.arm64];
+      return <DarwinArch>[ DarwinArch.arm64 ];
     }
-    return <DarwinArch>[DarwinArch.x86_64];
+    return <DarwinArch>[ DarwinArch.x86_64 ];
   }
   return <DarwinArch>[
     DarwinArch.x86_64,
@@ -737,8 +737,7 @@ DarwinArch getDarwinArchForName(String arch) {
   throw Exception('Unsupported MacOS arch name "$arch"');
 }
 
-String getNameForTargetPlatform(TargetPlatform platform,
-    {DarwinArch? darwinArch}) {
+String getNameForTargetPlatform(TargetPlatform platform, {DarwinArch? darwinArch}) {
   switch (platform) {
     case TargetPlatform.android_arm:
       return 'android-arm';
@@ -858,8 +857,7 @@ HostPlatform getCurrentHostPlatform() {
   return HostPlatform.linux_x64;
 }
 
-FileSystemEntity getWebPlatformBinariesDirectory(
-    Artifacts artifacts, WebRendererMode webRenderer) {
+FileSystemEntity getWebPlatformBinariesDirectory(Artifacts artifacts, WebRendererMode webRenderer) {
   return artifacts.getHostArtifact(HostArtifact.webPlatformKernelFolder);
 }
 
@@ -870,8 +868,7 @@ String getBuildDirectory([Config? config, FileSystem? fileSystem]) {
   final Config localConfig = config ?? globals.config;
   final FileSystem localFilesystem = fileSystem ?? globals.fs;
 
-  final String buildDir =
-      localConfig.getValue('build-dir') as String? ?? 'build';
+  final String buildDir = localConfig.getValue('build-dir') as String? ?? 'build';
   if (localFilesystem.path.isAbsolute(buildDir)) {
     throw Exception(
         'build-dir config setting in ${globals.config.configPath} must be relative');
@@ -912,9 +909,9 @@ String getWebBuildDirectory([bool isWasm = false]) {
 
 /// Returns the Linux build output directory.
 String getLinuxBuildDirectory([TargetPlatform? targetPlatform]) {
-  final String arch = (targetPlatform == null)
-      ? _getCurrentHostPlatformArchName()
-      : targetPlatform.simpleName;
+  final String arch = (targetPlatform == null) ?
+  _getCurrentHostPlatformArchName() :
+  targetPlatform.simpleName;
   final String subDirs = 'linux/$arch';
   return globals.fs.path.join(getBuildDirectory(), subDirs);
 }
@@ -925,15 +922,11 @@ String getNameForBuildMode(BuildMode buildMode) {
 }
 
 /// Returns the Aurora build output directory.
-String getAuroraBuildDirectory(
-  TargetPlatform targetPlatform,
-  BuildInfo buildInfo,
-) {
+String getAuroraBuildDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
   final String arch = getNameForTargetPlatform(targetPlatform);
   final String buildMode = getNameForBuildMode(buildInfo.mode);
   final String psdkVersion = AuroraPSDK.getStaticVersion();
-  return globals.fs.path
-      .join(getBuildDirectory(), 'aurora/psdk_$psdkVersion/$arch/$buildMode');
+  return globals.fs.path.join(getBuildDirectory(), 'aurora/psdk_$psdkVersion/$arch/$buildMode');
 }
 
 /// Returns the Windows build output directory.
@@ -1042,10 +1035,8 @@ const String kBuildNumber = 'BuildNumber';
 /// Will be "build" when building and "install" when archiving.
 const String kXcodeAction = 'Action';
 
-final Converter<String, String> _defineEncoder =
-    utf8.encoder.fuse(base64.encoder);
-final Converter<String, String> _defineDecoder =
-    base64.decoder.fuse(utf8.decoder);
+final Converter<String, String> _defineEncoder = utf8.encoder.fuse(base64.encoder);
+final Converter<String, String> _defineDecoder = base64.decoder.fuse(utf8.decoder);
 
 /// Encode a List of dart defines in a base64 string.
 ///
@@ -1062,20 +1053,19 @@ String encodeDartDefines(List<String> defines) {
   return defines.map(_defineEncoder.convert).join(',');
 }
 
-List<String> decodeCommaSeparated(
-    Map<String, String> environmentDefines, String key) {
-  if (!environmentDefines.containsKey(key) ||
-      environmentDefines[key]!.isEmpty) {
+List<String> decodeCommaSeparated(Map<String, String> environmentDefines, String key) {
+  if (!environmentDefines.containsKey(key) || environmentDefines[key]!.isEmpty) {
     return <String>[];
   }
-  return environmentDefines[key]!.split(',').cast<String>().toList();
+  return environmentDefines[key]!
+      .split(',')
+      .cast<String>()
+      .toList();
 }
 
 /// Dart defines are encoded inside [environmentDefines] as a comma-separated list.
-List<String> decodeDartDefines(
-    Map<String, String> environmentDefines, String key) {
-  if (!environmentDefines.containsKey(key) ||
-      environmentDefines[key]!.isEmpty) {
+List<String> decodeDartDefines(Map<String, String> environmentDefines, String key) {
+  if (!environmentDefines.containsKey(key) || environmentDefines[key]!.isEmpty) {
     return <String>[];
   }
   return environmentDefines[key]!
@@ -1089,7 +1079,6 @@ List<String> decodeDartDefines(
 enum NullSafetyMode {
   sound,
   unsound,
-
   /// The null safety mode was not detected. Only supported for 'flutter test'.
   autodetect,
 }

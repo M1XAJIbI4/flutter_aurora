@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -63,21 +66,21 @@ class _DefaultPersistentToolState implements PersistentToolState {
     required Logger logger,
     required Platform platform,
   }) : _config = Config(
-      _kFileName,
-      fileSystem: fileSystem,
-      logger: logger,
-      platform: platform,
-    );
+    _kFileName,
+    fileSystem: fileSystem,
+    logger: logger,
+    platform: platform,
+  );
 
   @visibleForTesting
   _DefaultPersistentToolState.test({
     required Directory directory,
     required Logger logger,
   }) : _config = Config.test(
-      name: _kFileName,
-      directory: directory,
-      logger: logger,
-    );
+    name: _kFileName,
+    directory: directory,
+    logger: logger,
+  );
 
   static const String _kFileName = 'tool_state';
   static const String _kRedisplayWelcomeMessage = 'redisplay-welcome-message';

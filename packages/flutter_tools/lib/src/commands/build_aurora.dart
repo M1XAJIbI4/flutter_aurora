@@ -69,7 +69,7 @@ class BuildAuroraCommand extends BuildSubCommand {
     final BuildInfo buildInfo = await getBuildInfo();
     final FlutterProject flutterProject = FlutterProject.current();
     final TargetPlatform targetPlatform =
-        getTargetPlatformForName(stringArg('target-platform')!);
+    getTargetPlatformForName(stringArg('target-platform')!);
 
     if (!featureFlags.isAuroraEnabled) {
       throwToolExit(
@@ -87,7 +87,7 @@ class BuildAuroraCommand extends BuildSubCommand {
     try {
       final AuroraPSDK psdk = await AuroraPSDK.fromPath(stringArg('psdk-dir')!);
       final bool? isHasTarget =
-          psdk.getArchPlatforms()?.contains(targetPlatform);
+      psdk.getArchPlatforms()?.contains(targetPlatform);
       if (isHasTarget == null || !isHasTarget) {
         throw Exception(
           'The target for the required architecture was not found in the Platform SDK.',

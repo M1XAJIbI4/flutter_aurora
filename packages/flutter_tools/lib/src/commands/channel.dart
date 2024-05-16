@@ -1,6 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
-// SPDX-License-Identifier: BSD-3-Clause
-
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -26,7 +23,7 @@ class ChannelCommand extends FlutterCommand {
     argParser.addFlag(
       'cache-artifacts',
       help: 'After switching channels, download all required binary artifacts. '
-            'This is the equivalent of running "flutter precache" with the "--all-platforms" flag.',
+          'This is the equivalent of running "flutter precache" with the "--all-platforms" flag.',
       defaultsTo: true,
     );
   }
