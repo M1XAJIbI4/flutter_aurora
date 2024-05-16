@@ -10,8 +10,8 @@ class AuroraWorkflow implements Workflow {
   const AuroraWorkflow({
     required Platform platform,
     required FeatureFlags featureFlags,
-  }) : _platform = platform,
-       _featureFlags = featureFlags;
+  })  : _platform = platform,
+        _featureFlags = featureFlags;
 
   final Platform _platform;
   final FeatureFlags _featureFlags;

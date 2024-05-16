@@ -30,10 +30,7 @@ class AuroraDoctorValidator extends DoctorValidator {
       /// Check available architectures
       final List<ValidationMessage> messages = <ValidationMessage>[];
       for (final String arch in psdkTargetsArch) {
-        if (psdkTargetsName
-            .where((String e) => e.contains('-$arch'))
-            .toList()
-            .isEmpty) {
+        if (psdkTargetsName.where((String e) => e.contains('-$arch')).toList().isEmpty) {
           messages.add(ERROR_PSDK_TARGET.format(<String, String>{
             'arch': arch,
           }).toError());

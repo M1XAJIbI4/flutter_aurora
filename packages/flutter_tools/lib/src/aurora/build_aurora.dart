@@ -18,28 +18,19 @@ import '../project.dart';
 import 'aurora_psdk.dart';
 
 File codeSizeFileForArch(BuildInfo buildInfo, String arch) {
-  return globals.fs
-      .directory(buildInfo.codeSizeDirectory)
-      .childFile('snapshot.$arch.json');
+  return globals.fs.directory(buildInfo.codeSizeDirectory).childFile('snapshot.$arch.json');
 }
 
 File precompilerTraceFileForArch(BuildInfo buildInfo, String arch) {
-  return globals.fs
-      .directory(buildInfo.codeSizeDirectory)
-      .childFile('trace.$arch.json');
+  return globals.fs.directory(buildInfo.codeSizeDirectory).childFile('trace.$arch.json');
 }
 
-Directory getBuildBundleDirectory(
-    TargetPlatform targetPlatform, BuildInfo buildInfo) {
-  return globals.fs
-      .directory(getAuroraBuildDirectory(targetPlatform, buildInfo))
-      .childDirectory('bundle');
+Directory getBuildBundleDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
+  return globals.fs.directory(getAuroraBuildDirectory(targetPlatform, buildInfo)).childDirectory('bundle');
 }
 
-Directory getBuildBundleLibDirectory(
-    TargetPlatform targetPlatform, BuildInfo buildInfo) {
-  return getBuildBundleDirectory(targetPlatform, buildInfo)
-      .childDirectory('lib');
+Directory getBuildBundleLibDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
+  return getBuildBundleDirectory(targetPlatform, buildInfo).childDirectory('lib');
 }
 
 Future<void> buildAurora(
@@ -56,29 +47,24 @@ Future<void> buildAurora(
 
   createPluginSymlinks(auroraProject.parent);
 
-  final Status status =
-      globals.logger.startProgress('Building Aurora application...');
+  final Status status = globals.logger.startProgress('Building Aurora application...');
 
   try {
-    await _timedBuildStep('aurora-recreate-build-dir',
-        () => _recreateBuildDir(auroraProject, targetPlatform, buildInfo));
+    await _timedBuildStep(
+        'aurora-recreate-build-dir', () => _recreateBuildDir(auroraProject, targetPlatform, buildInfo));
 
-    await _timedBuildStep('aurora-build-assets',
-        () => _buildAssets(auroraProject, targetPlatform, buildInfo, target));
+    await _timedBuildStep('aurora-build-assets', () => _buildAssets(auroraProject, targetPlatform, buildInfo, target));
 
     if (buildInfo.mode != BuildMode.debug) {
-      await _timedBuildStep('aurora-build-kernel',
-          () => _buildKernel(auroraProject, targetPlatform, buildInfo, target));
+      await _timedBuildStep(
+          'aurora-build-kernel', () => _buildKernel(auroraProject, targetPlatform, buildInfo, target));
 
-      await _timedBuildStep('aurora-build-snapshot',
-          () => _buildSnapshot(auroraProject, targetPlatform, buildInfo));
+      await _timedBuildStep('aurora-build-snapshot', () => _buildSnapshot(auroraProject, targetPlatform, buildInfo));
     }
 
-    await _timedBuildStep('aurora-copy-engine',
-        () => _copyEngine(auroraProject, buildInfo, targetPlatform));
+    await _timedBuildStep('aurora-copy-engine', () => _copyEngine(auroraProject, buildInfo, targetPlatform));
 
-    await _timedBuildStep('aurora-copy-icu',
-        () => _copyIcudtl(auroraProject, buildInfo, targetPlatform));
+    await _timedBuildStep('aurora-copy-icu', () => _copyIcudtl(auroraProject, buildInfo, targetPlatform));
 
     await _timedBuildStep(
       'aurora-build-rpm',
@@ -103,9 +89,7 @@ Future<void> buildAurora(
     );
 
     final File outputFile = globals.fsUtils.getUniqueFile(
-      globals.fs
-          .directory(globals.fsUtils.homeDirPath)
-          .childDirectory('.flutter-devtools'),
+      globals.fs.directory(globals.fsUtils.homeDirPath).childDirectory('.flutter-devtools'),
       'aurora-code-size-analysis',
       'json',
     )..writeAsStringSync(jsonEncode(output));
@@ -114,17 +98,14 @@ Future<void> buildAurora(
       'A summary of your Linux bundle analysis can be found at: ${outputFile.path}',
     );
 
-    final String relativeAppSizePath =
-        outputFile.path.split('.flutter-devtools/').last.trim();
-    globals.printStatus(
-        '\nTo analyze your app size in Dart DevTools, run the following command:\n'
+    final String relativeAppSizePath = outputFile.path.split('.flutter-devtools/').last.trim();
+    globals.printStatus('\nTo analyze your app size in Dart DevTools, run the following command:\n'
         'flutter pub global activate devtools; flutter pub global run devtools '
         '--appSizeBase=$relativeAppSizePath');
   }
 
-  final Directory rpmsDir = globals.fs
-      .directory(getAuroraBuildDirectory(targetPlatform, buildInfo))
-      .childDirectory('RPMS');
+  final Directory rpmsDir =
+      globals.fs.directory(getAuroraBuildDirectory(targetPlatform, buildInfo)).childDirectory('RPMS');
 
   final String rpms = await rpmsDir
       .list()
@@ -135,21 +116,16 @@ Future<void> buildAurora(
   globals.logger.printBox(rpms, title: 'Result');
 }
 
-Future<void> _timedBuildStep(
-    String name, Future<void> Function() action) async {
+Future<void> _timedBuildStep(String name, Future<void> Function() action) async {
   final Stopwatch sw = Stopwatch()..start();
   await action();
   globals.printTrace('$name: ${sw.elapsedMilliseconds} ms.');
-  globals.flutterUsage.sendTiming(
-      'build', name, Duration(milliseconds: sw.elapsedMilliseconds));
+  globals.flutterUsage.sendTiming('build', name, Duration(milliseconds: sw.elapsedMilliseconds));
 }
 
-Future<void> _recreateBuildDir(AuroraProject auroraProject,
-    TargetPlatform targetPlatform, BuildInfo buildInfo) async {
-  final Directory buildDirectory = globals.fs
-      .directory(await getAuroraBuildDirectory(targetPlatform, buildInfo));
-  final Directory bundleLibDirectory =
-      buildDirectory.childDirectory('bundle').childDirectory('lib');
+Future<void> _recreateBuildDir(AuroraProject auroraProject, TargetPlatform targetPlatform, BuildInfo buildInfo) async {
+  final Directory buildDirectory = globals.fs.directory(await getAuroraBuildDirectory(targetPlatform, buildInfo));
+  final Directory bundleLibDirectory = buildDirectory.childDirectory('bundle').childDirectory('lib');
 
   if (await buildDirectory.exists()) {
     await buildDirectory.delete(recursive: true);
@@ -158,16 +134,13 @@ Future<void> _recreateBuildDir(AuroraProject auroraProject,
   await bundleLibDirectory.create(recursive: true);
 }
 
-Future<void> _buildAssets(AuroraProject auroraProject,
-    TargetPlatform targetPlatform, BuildInfo buildInfo, String target) async {
-  final Directory assetsDirPath =
-      getBuildBundleDirectory(targetPlatform, buildInfo)
-          .childDirectory('flutter_assets');
+Future<void> _buildAssets(
+    AuroraProject auroraProject, TargetPlatform targetPlatform, BuildInfo buildInfo, String target) async {
+  final Directory assetsDirPath = getBuildBundleDirectory(targetPlatform, buildInfo).childDirectory('flutter_assets');
   final FlutterProject flutterProject = FlutterProject.current();
 
-  final String depfilePath = globals.fs.path.join(
-      getAuroraBuildDirectory(targetPlatform, buildInfo),
-      'snapshot_blob.bin.d');
+  final String depfilePath =
+      globals.fs.path.join(getAuroraBuildDirectory(targetPlatform, buildInfo), 'snapshot_blob.bin.d');
   const Target buildTarget = CopyFlutterBundle();
 
   final Environment environment = Environment(
@@ -176,9 +149,7 @@ Future<void> _buildAssets(AuroraProject auroraProject,
     buildDir: flutterProject.dartTool.childDirectory('flutter_build'),
     cacheDir: globals.cache.getRoot(),
     flutterRootDir: globals.fs.directory(Cache.flutterRoot),
-    engineVersion: globals.artifacts!.isLocalEngine
-        ? null
-        : globals.flutterVersion.engineRevision,
+    engineVersion: globals.artifacts!.isLocalEngine ? null : globals.flutterVersion.engineRevision,
     defines: <String, String>{
       // used by the KernelSnapshot target
       kTargetPlatform: getNameForTargetPlatform(targetPlatform),
@@ -195,8 +166,7 @@ Future<void> _buildAssets(AuroraProject auroraProject,
     generateDartPluginRegistry: true,
   );
 
-  final BuildResult result =
-      await globals.buildSystem.build(buildTarget, environment);
+  final BuildResult result = await globals.buildSystem.build(buildTarget, environment);
 
   if (!result.success) {
     for (final ExceptionMeasurement measurement in result.exceptions.values) {
@@ -223,14 +193,13 @@ Future<void> _buildAssets(AuroraProject auroraProject,
   depfileService.writeToFile(depfile, outputDepfile);
 }
 
-Future<void> _buildKernel(AuroraProject auroraProject,
-    TargetPlatform targetPlatform, BuildInfo buildInfo, String target) async {
-  final String? engineDartBinaryPath = globals.artifacts
-      ?.getArtifactPath(Artifact.engineDartBinary, platform: targetPlatform);
-  final String? frontendSnapshotPath = globals.artifacts
-      ?.getArtifactPath(Artifact.frontendServerSnapshotForEngineDartSdk);
-  final String? patchedSdkProductPath =
-      globals.artifacts?.getArtifactPath(Artifact.flutterPatchedSdkPath);
+Future<void> _buildKernel(
+    AuroraProject auroraProject, TargetPlatform targetPlatform, BuildInfo buildInfo, String target) async {
+  final String? engineDartBinaryPath =
+      globals.artifacts?.getArtifactPath(Artifact.engineDartBinary, platform: targetPlatform);
+  final String? frontendSnapshotPath =
+      globals.artifacts?.getArtifactPath(Artifact.frontendServerSnapshotForEngineDartSdk);
+  final String? patchedSdkProductPath = globals.artifacts?.getArtifactPath(Artifact.flutterPatchedSdkPath);
 
   if (engineDartBinaryPath == null) {
     throwToolExit('Engine dart binary not found');
@@ -247,12 +216,10 @@ Future<void> _buildKernel(AuroraProject auroraProject,
   final FlutterProject flutterProject = FlutterProject.current();
   final String packagesConfigFile = flutterProject.packageConfigFile.path;
   final String fsRoot = flutterProject.directory.path;
-  final String relativePackagesConfigFile =
-      globals.fs.path.relative(packagesConfigFile, from: fsRoot);
+  final String relativePackagesConfigFile = globals.fs.path.relative(packagesConfigFile, from: fsRoot);
   final String buildDir = getAuroraBuildDirectory(targetPlatform, buildInfo);
   final String outDillPath = globals.fs.path.join(buildDir, 'app.dill');
-  final String depfilePath =
-      globals.fs.path.join(buildDir, 'kernel_snapshot.d');
+  final String depfilePath = globals.fs.path.join(buildDir, 'kernel_snapshot.d');
   final File dartPluginRegistrant = flutterProject.dartPluginRegistrant;
 
   final int result = await globals.processUtils.stream(<String>[
@@ -293,20 +260,16 @@ Future<void> _buildSnapshot(
   TargetPlatform targetPlatform,
   BuildInfo buildInfo,
 ) async {
-  final String? genSnapshot = globals.artifacts?.getArtifactPath(
-      Artifact.genSnapshot,
-      platform: targetPlatform,
-      mode: buildInfo.mode);
+  final String? genSnapshot =
+      globals.artifacts?.getArtifactPath(Artifact.genSnapshot, platform: targetPlatform, mode: buildInfo.mode);
 
   if (genSnapshot == null) {
     throwToolExit('Gensnapshot utility not found');
   }
 
   final String arch = getNameForTargetPlatform(targetPlatform);
-  final String dillPath = globals.fs.path.join(
-      await getAuroraBuildDirectory(targetPlatform, buildInfo), 'app.dill');
-  final Directory bundleLibDir =
-      getBuildBundleLibDirectory(targetPlatform, buildInfo);
+  final String dillPath = globals.fs.path.join(await getAuroraBuildDirectory(targetPlatform, buildInfo), 'app.dill');
+  final Directory bundleLibDir = getBuildBundleLibDirectory(targetPlatform, buildInfo);
   final String elf = globals.fs.path.join(bundleLibDir.path, 'libapp.so');
 
   final int result = await globals.processUtils.stream(
@@ -346,11 +309,9 @@ Future<void> _copyEngine(
     throwToolExit('Flutter engine shared library not found');
   }
 
-  final Directory bundleLibDir =
-      getBuildBundleLibDirectory(targetPlatform, buildInfo);
+  final Directory bundleLibDir = getBuildBundleLibDirectory(targetPlatform, buildInfo);
   final File sourceFlutterEngineSo = globals.fs.file(flutterEngineSoPath);
-  final File destFlutterEngineSo =
-      bundleLibDir.childFile(sourceFlutterEngineSo.basename);
+  final File destFlutterEngineSo = bundleLibDir.childFile(sourceFlutterEngineSo.basename);
 
   await sourceFlutterEngineSo.copy(destFlutterEngineSo.path);
 }
@@ -370,8 +331,7 @@ Future<void> _copyIcudtl(
     throwToolExit('icudtl.dat not found');
   }
 
-  final Directory bundleDir =
-      getBuildBundleDirectory(targetPlatform, buildInfo);
+  final Directory bundleDir = getBuildBundleDirectory(targetPlatform, buildInfo);
   final File sourceIcudtl = globals.fs.file(icudtlPath);
   final File destIcudtl = bundleDir.childFile(sourceIcudtl.basename);
 

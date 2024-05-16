@@ -56,8 +56,7 @@ class BuildAuroraCommand extends BuildSubCommand {
   bool get hidden => !featureFlags.isAuroraEnabled || !globals.platform.isLinux;
 
   @override
-  Future<Set<DevelopmentArtifact>> get requiredArtifacts async =>
-      <DevelopmentArtifact>{
+  Future<Set<DevelopmentArtifact>> get requiredArtifacts async => <DevelopmentArtifact>{
         DevelopmentArtifact.aurora,
       };
 
@@ -68,8 +67,7 @@ class BuildAuroraCommand extends BuildSubCommand {
   Future<FlutterCommandResult> runCommand() async {
     final BuildInfo buildInfo = await getBuildInfo();
     final FlutterProject flutterProject = FlutterProject.current();
-    final TargetPlatform targetPlatform =
-    getTargetPlatformForName(stringArg('target-platform')!);
+    final TargetPlatform targetPlatform = getTargetPlatformForName(stringArg('target-platform')!);
 
     if (!featureFlags.isAuroraEnabled) {
       throwToolExit(
@@ -77,8 +75,7 @@ class BuildAuroraCommand extends BuildSubCommand {
       );
     }
 
-    if (!globals.platform.isLinux ||
-        _operatingSystemUtils.hostPlatform != HostPlatform.linux_x64) {
+    if (!globals.platform.isLinux || _operatingSystemUtils.hostPlatform != HostPlatform.linux_x64) {
       throw Exception(
         '"build aurora" only supported on Linux x64 hosts.',
       );
@@ -86,8 +83,7 @@ class BuildAuroraCommand extends BuildSubCommand {
 
     try {
       final AuroraPSDK psdk = await AuroraPSDK.fromPath(stringArg('psdk-dir')!);
-      final bool? isHasTarget =
-      psdk.getArchPlatforms()?.contains(targetPlatform);
+      final bool? isHasTarget = psdk.getArchPlatforms()?.contains(targetPlatform);
       if (isHasTarget == null || !isHasTarget) {
         throw Exception(
           'The target for the required architecture was not found in the Platform SDK.',

@@ -36,9 +36,7 @@ class AuroraEmbedder extends CachedArtifact {
       'Downloading aurora_embedder tools...',
       _toStorageUri(
         branch: branch,
-        latestVersion: branch != 'main' && branch != 'beta'
-            ? await _getLatestVersion()
-            : null,
+        latestVersion: branch != 'main' && branch != 'beta' ? await _getLatestVersion() : null,
       ),
       location,
     );
@@ -67,8 +65,7 @@ class AuroraEmbedder extends CachedArtifact {
 
   Future<String?> _getLatestVersion() async {
     // Use tag only for stable version
-    final String upstreamVersion =
-        FRAMEWORK_VERSION.split('-').firstOrNull ?? FRAMEWORK_VERSION;
+    final String upstreamVersion = FRAMEWORK_VERSION.split('-').firstOrNull ?? FRAMEWORK_VERSION;
     final RunResult rawTags = await globals.processUtils.run(
       <String>[
         'curl',
@@ -80,8 +77,7 @@ class AuroraEmbedder extends CachedArtifact {
     if (rawTags.exitCode == 22) {
       return null;
     }
-    final dynamic tag =
-        (json.decode(rawTags.toString()) as List<dynamic>).firstOrNull;
+    final dynamic tag = (json.decode(rawTags.toString()) as List<dynamic>).firstOrNull;
     if (tag == null) {
       return null;
     }

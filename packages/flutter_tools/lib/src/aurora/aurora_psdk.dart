@@ -63,12 +63,9 @@ class AuroraPSDK {
 
   Future<bool> isExistSudo() async {
     // Check settings sudoers
-    final String line = (await File('/etc/sudoers.d/sdk-chroot')
-            .openRead()
-            .map(utf8.decode)
-            .transform(const LineSplitter())
-            .toList())
-        .firstWhere((String line) => line.contains(_tool), orElse: () => '');
+    final String line =
+        (await File('/etc/sudoers.d/sdk-chroot').openRead().map(utf8.decode).transform(const LineSplitter()).toList())
+            .firstWhere((String line) => line.contains(_tool), orElse: () => '');
 
     if (line.isNotEmpty) {
       return true;
@@ -97,12 +94,7 @@ class AuroraPSDK {
         'version',
       ],
     );
-    return const LineSplitter()
-        .convert(result.stdout)
-        .toList()
-        .lastOrNull
-        ?.split(' ')
-        .elementAt(1);
+    return const LineSplitter().convert(result.stdout).toList().lastOrNull?.split(' ').elementAt(1);
   }
 
   Future<List<String>?> getListTargets() async {
@@ -127,10 +119,8 @@ class AuroraPSDK {
       return null;
     }
 
-    final List<String> psdkTargets = targetsNames
-        .where((String e) =>
-            e.contains('Aurora') && e.contains(arch) && !e.contains('default'))
-        .toList();
+    final List<String> psdkTargets =
+        targetsNames.where((String e) => e.contains('Aurora') && e.contains(arch) && !e.contains('default')).toList();
 
     return psdkTargets.firstOrNull;
   }
@@ -201,14 +191,12 @@ class AuroraPSDK {
         .replaceAll('devel-', '');
 
     // Install embedder
-    if (installVersion == null ||
-        folderVersion != installVersion && !installVersion.contains('-dev')) {
+    if (installVersion == null || folderVersion != installVersion && !installVersion.contains('-dev')) {
       globals.printStatus(
         '${installVersion == null ? 'Install' : 'Reinstall'} flutter embedder to target "$targetName"...',
       );
       await removeEmbedder(targetName);
-      final List<String> packages =
-          rpms.map((FileSystemEntity e) => e.path).toList();
+      final List<String> packages = rpms.map((FileSystemEntity e) => e.path).toList();
       packages.sort();
       for (final String path in packages) {
         if (!await installToTargetRPM(targetName, path)) {
