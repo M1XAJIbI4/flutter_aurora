@@ -295,6 +295,38 @@ int main(int argc, char *argv[]) {
 }
 ```
 
+## Форматирование Dart
+
+Для форматирования кода Dart мы используем [dart format](https://dart.dev/tools/dart-format) размером строки в `120` символов.
+Размер строки можно указать через параметр `--line-length`.
+Версия Dart должна соответствовать последнему релизу Flutter для ОС Аврора,
+который расположен в папке `bin` установленного Flutter.
+
+Команда на форматирования может выглядеть следующим образом:
+
+```shell
+dart-aurora format --line-length=120 .
+```
+
+## Форматирование C++
+
+Для форматирования кода С++ мы используем [clang-format](https://clang.llvm.org/docs/ClangFormat.html).
+Конфигурацию используем с Flutter Engine [.clang-format](https://github.com/flutter/engine/blob/main/.clang-format),
+но отключаем ReflowComments.
+
+Команда на форматирования может выглядеть следующим образом:
+
+```shell
+clang-format --style=file:$HOME/Downloads/clang-format.txt --style="{ReflowComments: false}" -i client_wrapper_demo_plugin.h
+```
+
+Для форматирования всех файлов в папке можно использовать следующую команду:
+
+```shell
+find . -type f -iname '*.h' -o -iname '*.cpp' | xargs \
+clang-format --style=file:$HOME/Downloads/clang-format.txt --style="{ReflowComments: false}" -i
+```
+
 <style>
 @media screen and (min-width: 1220px) {
     .md-content {

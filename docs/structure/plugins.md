@@ -110,19 +110,19 @@
 
 ```markdown
     # {AURORA_PLUGIN}
-    
+
     The Aurora implementation of [`{PARENT_PLUGIN}`](https://pub.dev/packages/{PARENT_PLUGIN}).
-    
+
     {AURORA_PLUGIN_DESC}
-    
+
     ## Usage
-    
+
     This package is not an _endorsed_ implementation of `{PARENT_PLUGIN}`.
     Therefore, you have to include `{AURORA_PLUGIN}`
     alongside `{PARENT_PLUGIN}` as dependencies in your `pubspec.yaml` file.
-    
+
     **pubspec.yaml**
-    
+
     ```yaml
     dependencies:
     {PARENT_PLUGIN}: ^{PARENT_PLUGIN_VERSION}
@@ -132,14 +132,14 @@
        ref: {AURORA_PLUGIN_VERSION}
        path: packages/{PARENT_PLUGIN}/{AURORA_PLUGIN}
     ```
-    
+
     ***main.cpp**
-    
+
     ```c++
     #include <flutter/flutter_aurora.h>
     #include <flutter/flutter_compatibility_qt.h> // <- Add for Qt
     #include "generated_plugin_registrant.h"
-    
+
     int main(int argc, char *argv[]) {
      aurora::Initialize(argc, argv);
      aurora::EnableQtCompatibility(); // <- Enable Qt
@@ -148,23 +148,23 @@
      return 0;
     }
     ```
-    
+
     ***.desktop**
-    
+
     ```desktop
     Permissions={AURORA_PLUGIN_PERMISSIONS}
     ```
-    
+
     ***.spec**
-    
+
     ```spec
     %global __requires_exclude ^lib({AURORA_PLUGIN_LIB_EXCLUDE})\\.so.*$
-    
+
     BuildRequires: pkgconfig({AURORA_PLUGIN_DEPENDENCY})
     ```
-    
+
     ***.dart**
-    
+
     ```dart
     {EXAMPLE_DART}
     ```
@@ -182,3 +182,4 @@
 - Имплементация плагина должна иметь название основного плагина + `_aurora` в конце.
 - Должен быть реализован пример для плагина с использованием пакета [`internal_aurora`](https://gitlab.com/omprussia/flutter/flutter-plugins/-/tree/main/packages/internal_aurora).
 - Желательно свериться с уже существующими плагинами для соблюдения общей структуры.
+- Соблюдать правила форматирования кода: [Dart](../faq/index.md#dart), [C++](../faq/index.md/#c).
