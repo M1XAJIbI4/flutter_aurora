@@ -317,14 +317,14 @@ c небольшими изменениями [.clang-format](https://gitlab.com
 Команда на форматирование может выглядеть следующим образом:
 
 ```shell
-clang-format --style=file:$HOME/Downloads/clang-format.txt --style="{ReflowComments: false}" -i client_wrapper_demo_plugin.h
+clang-format --style=file:$HOME/Downloads/clang-format.txt -i client_wrapper_demo_plugin.h
 ```
 
 Для форматирования всех файлов в папке можно использовать следующую команду:
 
 ```shell
 find . -type f -iname '*.h' -o -iname '*.cpp' | xargs \
-clang-format --style=file:$HOME/Downloads/clang-format.txt --style="{ReflowComments: false}" -i
+clang-format --style=file:$HOME/Downloads/clang-format.txt -i
 ```
 
 <style>
