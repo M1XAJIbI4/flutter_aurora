@@ -320,12 +320,6 @@ c небольшими изменениями [.clang-format](https://gitlab.com
 wget https://gitlab.com/omprussia/flutter/flutter/-/raw/main/.clang-format -O $HOME/.aurora-clang-format
 ```
 
-Команда на форматирование может выглядеть следующим образом:
-
-```shell
-clang-format --style=file:$HOME/.aurora-clang-format -i client_wrapper_demo_plugin.h
-```
-
 Для форматирования всех файлов в папке можно использовать следующую команду:
 
 ```shell
