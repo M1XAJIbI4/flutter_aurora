@@ -79,6 +79,7 @@ git clone --branch {version}\
 
 ```shell
 echo "alias flutter-aurora=$HOME/.local/opt/flutter-{version}/bin/flutter" >> ~/.bashrc
+echo "alias dart-aurora=$HOME/.local/opt/flutter-{version}/bin/dart" >> ~/.bashrc
 ```
 
 Применяем изменения `~/.bashrc`:
