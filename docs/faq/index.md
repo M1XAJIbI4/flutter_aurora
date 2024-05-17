@@ -314,17 +314,23 @@ dart-aurora format --line-length=120 .
 Конфигурацию используем с [Flutter Engine](https://github.com/flutter/engine/blob/main/.clang-format)
 c небольшими изменениями [.clang-format](https://gitlab.com/omprussia/flutter/flutter/-/blob/main/.clang-format).
 
+Скачать конфигурационный файл `clang-format` можно следующей командой:
+
+```shell
+wget https://gitlab.com/omprussia/flutter/flutter/-/raw/doc_about_format_code/.clang-format -O $HOME/.aurora-clang-format
+```
+
 Команда на форматирование может выглядеть следующим образом:
 
 ```shell
-clang-format --style=file:$HOME/Downloads/clang-format.txt -i client_wrapper_demo_plugin.h
+clang-format --style=file:$HOME/.aurora-clang-format -i client_wrapper_demo_plugin.h
 ```
 
 Для форматирования всех файлов в папке можно использовать следующую команду:
 
 ```shell
 find . -type f -iname '*.h' -o -iname '*.cpp' | xargs \
-clang-format --style=file:$HOME/Downloads/clang-format.txt -i
+clang-format --style=file:$HOME/.aurora-clang-format -i
 ```
 
 <style>
