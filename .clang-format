@@ -11,6 +11,7 @@ SortIncludes: true
 ReflowComments: false
 ColumnLimit: 120
 IndentWidth: 4
+AccessModifierOffset: -4
 ---
 Language: ObjC
 ColumnLimit: 100
