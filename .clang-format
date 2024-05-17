@@ -9,6 +9,8 @@ Standard: Cpp11
 SortIncludes: true
 # Aurora OS
 ReflowComments: false
+ColumnLimit: 120
+IndentWidth: 4
 ---
 Language: ObjC
 ColumnLimit: 100
