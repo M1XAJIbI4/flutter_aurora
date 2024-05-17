@@ -317,7 +317,7 @@ c небольшими изменениями [.clang-format](https://gitlab.com
 Скачать конфигурационный файл `clang-format` можно следующей командой:
 
 ```shell
-wget https://gitlab.com/omprussia/flutter/flutter/-/raw/doc_about_format_code/.clang-format -O $HOME/.aurora-clang-format
+wget https://gitlab.com/omprussia/flutter/flutter/-/raw/main/.clang-format -O $HOME/.aurora-clang-format
 ```
 
 Команда на форматирование может выглядеть следующим образом:
