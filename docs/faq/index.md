@@ -312,7 +312,7 @@ dart-aurora format --line-length=120 .
 
 Для форматирования кода С++ мы используем [clang-format](https://clang.llvm.org/docs/ClangFormat.html).
 Конфигурацию используем с [Flutter Engine](https://github.com/flutter/engine/blob/main/.clang-format)
-c небольшими изменениями [.clang-format](https://gitlab.com/omprussia/flutter/flutter/-/blob/main/.clang-format).
+c небольшими изменениями [.clang-format](https://gitlab.com/omprussia/flutter/flutter/-/blob/stable/.clang-format).
 
 Скачать конфигурационный файл `clang-format` можно следующей командой:
 
