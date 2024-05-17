@@ -81,6 +81,12 @@ git clone --branch {version}\
 echo "alias flutter-aurora=$HOME/.local/opt/flutter-{version}/bin/flutter" >> ~/.bashrc
 ```
 
+Для удобства вызова командной строки Dart добавляем `alias` в `~/.bashrc`:
+
+```shell
+echo "alias dart-aurora=$HOME/.local/opt/flutter-{version}/bin/dart" >> ~/.bashrc
+```
+
 Применяем изменения `~/.bashrc`:
 
 ```shell
