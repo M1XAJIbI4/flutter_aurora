@@ -302,7 +302,7 @@ int main(int argc, char *argv[]) {
 Версия Dart должна соответствовать последнему релизу Flutter для ОС Аврора,
 который расположен в папке `bin` установленного Flutter.
 
-Команда на форматирования может выглядеть следующим образом:
+Команда на форматирование может выглядеть следующим образом:
 
 ```shell
 dart-aurora format --line-length=120 .
@@ -311,10 +311,10 @@ dart-aurora format --line-length=120 .
 ## Форматирование C++
 
 Для форматирования кода С++ мы используем [clang-format](https://clang.llvm.org/docs/ClangFormat.html).
-Конфигурацию используем с Flutter Engine [.clang-format](https://github.com/flutter/engine/blob/main/.clang-format),
-но отключаем ReflowComments.
+Конфигурацию используем с [Flutter Engine](https://github.com/flutter/engine/blob/main/.clang-format)
+c небольшими изменениями [.clang-format](https://gitlab.com/omprussia/flutter/flutter/-/blob/main/.clang-format).
 
-Команда на форматирования может выглядеть следующим образом:
+Команда на форматирование может выглядеть следующим образом:
 
 ```shell
 clang-format --style=file:$HOME/Downloads/clang-format.txt --style="{ReflowComments: false}" -i client_wrapper_demo_plugin.h
