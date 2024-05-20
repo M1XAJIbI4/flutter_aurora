@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -36,7 +39,6 @@ const Map<String, String> kObsoleteBranches = <String, String>{
 
 /// The names of each channel/branch in order of increasing stability.
 enum Channel {
-  master,
   main,
   beta,
   stable,
@@ -44,21 +46,18 @@ enum Channel {
 
 // Beware: Keep order in accordance with stability
 const Set<String> kOfficialChannels = <String>{
-  'master',
   'main',
   'beta',
   'stable',
 };
 
 const Map<String, String> kChannelDescriptions = <String, String>{
-  'master': 'latest development branch, for contributors',
-  'main': 'latest development branch, follows master channel',
-  'beta': 'updated monthly, recommended for experienced users',
-  'stable': 'updated quarterly, for new users and for production app releases',
+  'main': 'latest development branch, for contributors',
+  'beta': 'recommended for experienced users',
+  'stable': 'for new users and for production app releases',
 };
 
 const Set<String> kDevelopmentChannels = <String>{
-  'master',
   'main',
 };
 

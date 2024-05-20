@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -12,6 +12,7 @@ import 'package:file/memory.dart';
 import 'package:meta/meta.dart';
 import 'package:process/process.dart';
 
+import 'aurora/aurora_constants.dart';
 import 'base/common.dart';
 import 'base/error_handling_io.dart';
 import 'base/file_system.dart';
@@ -631,6 +632,10 @@ class Cache {
   }
 
   String? getVersionFor(String artifactName) {
+    // @todo if not upstream
+    if (artifactName.startsWith('aurora')) {
+      return FRAMEWORK_VERSION;
+    }
     final File versionFile = _fileSystem.file(_fileSystem.path.join(
       _rootOverride?.path ?? flutterRoot!,
       'bin',
@@ -948,10 +953,17 @@ abstract class EngineCachedArtifact extends CachedArtifact {
       final String urlPath = toolsDir[1];
       final Directory dir = fileSystem.directory(fileSystem.path.join(location.path, cacheDir));
 
+      final bool isUrl = urlPath.contains('https://');
+      // @todo if not upstream
+      final Uri downloadUrl = isUrl ? Uri.parse(urlPath) : Uri.parse(url + urlPath);
+      // @todo if not upstream
       // Avoid printing things like 'Downloading linux-x64 tools...' multiple times.
-      final String friendlyName = urlPath.replaceAll('/artifacts.zip', '').replaceAll('.zip', '');
-      await artifactUpdater.downloadZipArchive('Downloading $friendlyName tools...', Uri.parse(url + urlPath), dir);
+      final String friendlyName = (isUrl
+          ? '${downloadUrl.pathSegments.firstOrNull}/${downloadUrl.pathSegments.lastOrNull}'
+          : urlPath.replaceAll('/artifacts.zip', ''))
+          .replaceAll('.zip', '');
 
+      await artifactUpdater.downloadZipArchive('Downloading $friendlyName tools...', downloadUrl, dir);
       _makeFilesExecutable(dir, operatingSystemUtils);
 
       final File frameworkZip = fileSystem.file(fileSystem.path.join(dir.path, 'FlutterMacOS.framework.zip'));
@@ -1193,7 +1205,11 @@ class ArtifactUpdater {
   /// See also:
   ///   * https://cloud.google.com/storage/docs/xml-api/reference-headers#xgooghash
   Future<void> _download(Uri url, File file, Status status) async {
-    final bool isAllowedUrl = _allowedBaseUrls.any((String baseUrl) => url.toString().startsWith(baseUrl));
+    // @todo if not upstream
+    final bool isAllowedUrl =
+        url.toString().startsWith('https://gitlab.com/omprussia') ||
+            _allowedBaseUrls
+                .any((String baseUrl) => url.toString().startsWith(baseUrl));
 
     // In tests make this a hard failure.
     assert(

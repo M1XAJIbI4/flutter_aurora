@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -365,7 +365,7 @@ Future<void> precacheArtifacts([String? workingDirectory]) async {
   globals.printStatus('Upgrading engine...');
   final int code = await globals.processUtils.stream(
     <String>[
-      globals.fs.path.join('bin', 'flutter'), '--no-color', '--no-version-check', 'precache',
+      globals.fs.path.join('bin', 'flutter'), '--no-color', '--no-version-check', 'precache', '--force',
     ],
     allowReentrantFlutter: true,
     environment: Map<String, String>.of(globals.platform.environment),

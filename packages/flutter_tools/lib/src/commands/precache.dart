@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -47,6 +50,8 @@ class PrecacheCommand extends FlutterCommand {
         help: 'Precache artifacts for web development.');
     argParser.addFlag('linux',
         help: 'Precache artifacts for Linux desktop development.');
+    argParser.addFlag('aurora',
+        help: 'Precache artifacts for Aurora development.');
     argParser.addFlag('windows',
         help: 'Precache artifacts for Windows desktop development.');
     argParser.addFlag('macos',

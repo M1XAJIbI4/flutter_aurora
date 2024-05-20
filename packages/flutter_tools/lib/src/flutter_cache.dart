@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -8,6 +11,7 @@ import 'package:meta/meta.dart';
 import 'package:package_config/package_config.dart';
 
 import 'android/java.dart';
+import 'aurora/aurora_artifacts.dart';
 import 'base/common.dart';
 import 'base/error_handling_io.dart';
 import 'base/file_system.dart';
@@ -42,6 +46,8 @@ class FlutterCache extends Cache {
     registerArtifact(FlutterSdk(this, platform: platform));
     registerArtifact(WindowsEngineArtifacts(this, platform: platform));
     registerArtifact(MacOSEngineArtifacts(this, platform: platform));
+    registerArtifact(AuroraEmbedder(this));
+    registerArtifact(AuroraEngineArtifacts(this, platform: platform));
     registerArtifact(LinuxEngineArtifacts(this, platform: platform));
     registerArtifact(LinuxFuchsiaSDKArtifacts(this, platform: platform));
     registerArtifact(MacOSFuchsiaSDKArtifacts(this, platform: platform));

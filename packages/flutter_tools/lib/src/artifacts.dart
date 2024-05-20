@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -9,7 +9,8 @@ import 'package:file/memory.dart';
 import 'package:meta/meta.dart';
 import 'package:process/process.dart';
 
-import 'aurora/aurora_sdk.dart';
+import 'aurora/aurora_constants.dart';
+import 'aurora/aurora_psdk.dart';
 import 'base/common.dart';
 import 'base/file_system.dart';
 import 'base/os.dart';
@@ -815,12 +816,19 @@ class CachedArtifacts implements Artifacts {
       case TargetPlatform.aurora_arm:
       case TargetPlatform.aurora_arm64:
       case TargetPlatform.aurora_x64:
-        final String psdkMajorKeyVersion = getPsdkMajorKeyVersion();
+        final String enginePath = _fileSystem.path.join(
+          engineDir,
+          'aurora',
+          'flutter-engine-$FRAMEWORK_VERSION',
+          'engines',
+          'psdk_${AuroraPSDK.getStaticVersionMajor()}',
+        );
         if (mode == BuildMode.debug || mode == null) {
-          return _fileSystem.path.join(engineDir, psdkMajorKeyVersion, platformName);
+          return _fileSystem.path.join(enginePath, platformName);
         }
-        final String suffix = mode != BuildMode.debug ? '-${snakeCase(mode.cliName, '-')}' : '';
-        return _fileSystem.path.join(engineDir, psdkMajorKeyVersion, platformName + suffix);
+        final String suffix =
+        mode != BuildMode.debug ? '-${snakeCase(mode.cliName, '-')}' : '';
+        return _fileSystem.path.join(enginePath, platformName + suffix);
       case TargetPlatform.linux_x64:
       case TargetPlatform.linux_arm64:
       case TargetPlatform.darwin:

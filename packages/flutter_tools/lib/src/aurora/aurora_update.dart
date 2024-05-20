@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 import '../base/common.dart';
@@ -23,8 +23,7 @@ class AuroraUpdateCommand extends FlutterCommand {
   FlutterVersion get _flutterVersion => globals.flutterVersion;
 
   @override
-  String get description =>
-      'Downgrade Flutter to the last active version for the current channel.';
+  String get description => 'Downgrade Flutter to the last active version for the current channel.';
 
   @override
   String get name => _isDowngrade ? 'downgrade' : 'upgrade';
@@ -42,8 +41,7 @@ class AuroraUpdateCommand extends FlutterCommand {
       tag = await getUpgradeTag();
     }
     if (tag == null || tag == FRAMEWORK_VERSION_BLOCK) {
-      globals.printStatus(
-          '\nYou have the latest version with the ability update.\n');
+      globals.printStatus('\nYou have the latest version with the ability update.\n');
       globals.printStatus(_flutterVersion.toString());
     } else {
       await checkout(tag);
@@ -97,10 +95,9 @@ class AuroraUpdateCommand extends FlutterCommand {
 
   // Clear local cache
   Future<void> clearCache() async {
-    final Directory cacheDirectory = globals.fs
-        .directory(globals.fs.path.join(Cache.flutterRoot!, 'bin', 'cache'));
-    final Directory toolsDirectory = globals.fs.directory(globals.fs.path
-        .join(Cache.flutterRoot!, 'packages', 'flutter_tools', '.dart_tool'));
+    final Directory cacheDirectory = globals.fs.directory(globals.fs.path.join(Cache.flutterRoot!, 'bin', 'cache'));
+    final Directory toolsDirectory =
+        globals.fs.directory(globals.fs.path.join(Cache.flutterRoot!, 'packages', 'flutter_tools', '.dart_tool'));
     await cacheDirectory.delete(recursive: true);
     await toolsDirectory.delete(recursive: true);
   }
@@ -116,15 +113,7 @@ class AuroraUpdateCommand extends FlutterCommand {
       throwToolExit(null, exitCode: result.exitCode);
     } else {
       globals.printStatus('\nThe update Flutter SDK successful.\n');
-      globals.printStatus(result.stdout.trim()
-          .split('\n')
-          .reversed
-          .take(4)
-          .toList()
-          .reversed
-          .join('\n'));
+      globals.printStatus(result.stdout.trim().split('\n').reversed.take(4).toList().reversed.join('\n'));
     }
   }
 }
-
-

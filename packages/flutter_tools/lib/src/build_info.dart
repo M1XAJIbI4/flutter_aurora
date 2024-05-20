@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2023 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
 // SPDX-License-Identifier: BSD-3-Clause
 
 // Copyright 2014 The Flutter Authors. All rights reserved.
@@ -8,7 +8,7 @@
 import 'package:package_config/package_config_types.dart';
 
 import 'artifacts.dart';
-import 'aurora/aurora_sdk.dart';
+import 'aurora/aurora_psdk.dart';
 import 'base/config.dart';
 import 'base/file_system.dart';
 import 'base/logger.dart';
@@ -808,7 +808,7 @@ TargetPlatform getTargetPlatformForName(String platform) {
       return TargetPlatform.darwin;
     case 'linux-x64':
       return TargetPlatform.linux_x64;
-   case 'linux-arm64':
+    case 'linux-arm64':
       return TargetPlatform.linux_arm64;
     case 'aurora-arm':
       return TargetPlatform.aurora_arm;
@@ -925,7 +925,7 @@ String getNameForBuildMode(BuildMode buildMode) {
 String getAuroraBuildDirectory(TargetPlatform targetPlatform, BuildInfo buildInfo) {
   final String arch = getNameForTargetPlatform(targetPlatform);
   final String buildMode = getNameForBuildMode(buildInfo.mode);
-  final String psdkVersion = getInitPsdkVersion();
+  final String psdkVersion = AuroraPSDK.getStaticVersion();
   return globals.fs.path.join(getBuildDirectory(), 'aurora/psdk_$psdkVersion/$arch/$buildMode');
 }
 

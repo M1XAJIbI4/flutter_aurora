@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2023-2024 Open Mobile Platform LLC <community@omp.ru>
+// SPDX-License-Identifier: BSD-3-Clause
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -82,7 +85,6 @@ class _DefaultPersistentToolState implements PersistentToolState {
   static const String _kFileName = 'tool_state';
   static const String _kRedisplayWelcomeMessage = 'redisplay-welcome-message';
   static const Map<Channel, String> _lastActiveVersionKeys = <Channel,String>{
-    Channel.master: 'last-active-master-version',
     Channel.main: 'last-active-main-version',
     Channel.beta: 'last-active-beta-version',
     Channel.stable: 'last-active-stable-version',
